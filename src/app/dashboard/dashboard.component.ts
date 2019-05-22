@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import 'hammerjs';
 
-
+/* data */
+// TODO: replace with *API
+import { DETAILS } from '../data/story-dialogue';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,7 +13,17 @@ import 'hammerjs';
 
 export class DashboardComponent implements OnInit {
 
-  memorize = 'something';
+  details = DETAILS;
+
+  // props -- responses
+  // optionOne = 'YES';
+  // optionTwo = 'NO';
+  options = ['yes', 'no'];
+  
+  onOptionButton(c, d) {
+    console.log({c});
+    console.log({d});
+  }
 
   constructor() { }
 

@@ -1,9 +1,12 @@
-<mat-card>
-  <mat-card-content>
-    dashboard works!
-    {{ memorize }}
-  </mat-card-content>
-
-  <mat-card-actions>
-  </mat-card-actions>
+<mat-card >
+  <div *ngFor="let detail of details">
+    <mat-card-title class="content--title">	{{ detail.title }} </mat-card-title>
+    <mat-card-content class="content--title">
+      {{ detail.text }}
+    </mat-card-content>
+  
+    <mat-card-actions>
+      <app-button (click)=onOptionButton *ngFor="let option of options" [option]='option'></app-button>
+    </mat-card-actions>
+  </div>
 </mat-card>

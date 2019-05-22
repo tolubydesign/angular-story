@@ -11,11 +11,13 @@ import { AppRoutingModule } from './app-routing.module';
 /* components */
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ButtonComponent } from './button/button.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    DashboardComponent
+    DashboardComponent,
+    ButtonComponent
   ],
   imports: [
     BrowserModule,

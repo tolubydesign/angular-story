@@ -18,13 +18,26 @@ export class DashboardComponent implements OnInit {
   // props -- responses
   // optionOne = 'YES';
   // optionTwo = 'NO';
-  options = ['yes', 'no'];
-  
-  onOptionButton(c, d) {
-    console.log({c});
-    console.log({d});
+
+  optionSetOne = 'yes';
+  optionSetTwo = 'no';
+
+  onOption( value: string) {
+    console.log({value});
+    if (value = "firstValue") {
+      this.initialFunction();
+    } else if (value = "secondValue") {
+      this.secondaryFunction();
+    } else { return; }
   }
 
+  initialFunction() {
+    console.log(' initial function called');
+  }
+  secondaryFunction() {
+    console.log(' secondary function called');
+  }
+  
   constructor() { }
 
   ngOnInit() {

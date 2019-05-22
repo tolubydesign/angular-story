@@ -1,5 +1,7 @@
-<!-- <button mat-button>{{ response }}</button> -->
-<!-- <button *ngIf="optionOne" mat-button>{{ optionOne }}</button> -->
-<button (click)=onOption() mat-button>{{ option }}</button>
+
+<button *ngIf="optionSetOne" (click)="optionSet('firstValue')" mat-button>{{ optionSetOne }}</button>
+<button *ngIf="optionSetTwo" (click)="optionSet('secondValue')" mat-button>{{ optionSetTwo }}</button>
+<!-- <button *ngIf="optionSetThree" (click)=optionSet(true) mat-button>{{ optionSetThree }}</button>
+<button *ngIf="optionSetFour" (click)=optionSet(false) mat-button>{{ optionSetFour }}</button> -->
 
 

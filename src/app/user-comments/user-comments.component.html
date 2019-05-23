@@ -1,0 +1,8 @@
+<mat-card *ngFor="let comment of (comments$ | async)">
+  <mat-card-title> {{ comment.email }} </mat-card-title>
+  <mat-card-content> {{ comment.body }} </mat-card-content>
+</mat-card>
+
+<p>{{ time | async }}</p>
+
+<!-- <button (click)="kill()">KILL</button> -->

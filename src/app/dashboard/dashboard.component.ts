@@ -24,9 +24,9 @@ export class DashboardComponent implements OnInit {
 
   onOption( value: string) {
     console.log({value});
-    if (value = "firstValue") {
+    if (value = 'firstValue') {
       this.initialFunction();
-    } else if (value = "secondValue") {
+    } else if (value = 'secondValue') {
       this.secondaryFunction();
     } else { return; }
   }
@@ -37,7 +37,7 @@ export class DashboardComponent implements OnInit {
   secondaryFunction() {
     console.log(' secondary function called');
   }
-  
+
   constructor() { }
 
   ngOnInit() {

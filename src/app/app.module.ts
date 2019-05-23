@@ -8,16 +8,21 @@ import { MatButtonModule, MatCheckboxModule, MatCardModule } from '@angular/mate
 /* router */
 import { AppRoutingModule } from './app-routing.module';
 
+/* requests */
+import { HttpClientModule } from '@angular/common/http';
+
 /* components */
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ButtonComponent } from './button/button.component';
+import { UserCommentsComponent } from './user-comments/user-comments.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
-    ButtonComponent
+    ButtonComponent,
+    UserCommentsComponent
   ],
   imports: [
     BrowserModule,
@@ -26,6 +31,7 @@ import { ButtonComponent } from './button/button.component';
     MatButtonModule,
     MatCheckboxModule,
     MatCardModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

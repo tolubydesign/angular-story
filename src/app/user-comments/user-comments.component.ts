@@ -36,7 +36,7 @@ export class UserCommentsComponent implements OnInit {
   commentArray: any;
   buttonValues = [];
   usersOnDisplay = [];
-  numericalNumber: number;
+  numericalNumbers = [];
 
   constructor(private httpService: HttpClient, private messageService: MessageService) { }
 
@@ -44,43 +44,48 @@ export class UserCommentsComponent implements OnInit {
     this.getComments();
     this.comments$ = this.httpService.get<Comment[]>(this.commentUrl);
     this.commentArray = this.comments$;
-    console.log(this.results);
     this.createRandomNumber();
-    this.buttonValues = [
-      this.firstDisplayValue,
-      this.secondDisplayValue,
-      this.thirdDisplayValue,
-      this.fourthDisplayValue,
-    ];
-    console.log(`buttonValues :: ${this.buttonValues}`);
+    console.log('buttonValues', this.buttonValues);
   }
 
   onButton(e: any) {
-    console.log(e);
-    const value = e.target.innerText;
-    this.usersOnDisplay.push(value);
-    this.numericalNumber = value;
+    const value = (Number(e.target.innerText));
+    console.log(value);
+    // this.numericalNumber = value;
+    this.numericalNumbers.push(value);
+    console.log(this.numericalNumbers);
     this.showComments();
     this.reloadButtonValues();
   }
 
   createRandomNumber() {
     this.firstDisplayValue = Math.floor(Math.random() * 100);
+    // this.preventZeroValues(this.firstDisplayValue);
+
     this.secondDisplayValue = Math.floor(Math.random() * 100);
+    // this.preventZeroValues(this.secondDisplayValue);
+
     this.thirdDisplayValue = Math.floor(Math.random() * 100);
+    // this.preventZeroValues(this.thirdDisplayValue);
+
     this.fourthDisplayValue = Math.floor(Math.random() * 100);
+    // this.preventZeroValues(this.fourthDisplayValue);
+
+    this.buttonValues = [
+      Number(this.firstDisplayValue),
+      Number(this.secondDisplayValue),
+      Number(this.thirdDisplayValue),
+      Number(this.fourthDisplayValue),
+    ];
   }
 
   reloadButtonValues() {
     this.createRandomNumber();
-    this.buttonValues = [
-      this.firstDisplayValue,
-      this.secondDisplayValue,
-      this.thirdDisplayValue,
-      this.fourthDisplayValue,
-    ];
   }
 
+  preventZeroValues(e: number) {
+    e === 0 ? e = 1 : e = Math.floor(Math.random() * 100);
+  }
   getComments() {
     return this.httpService.get(this.commentUrl)
       .pipe(
@@ -95,21 +100,27 @@ export class UserCommentsComponent implements OnInit {
           ];
         })
       )
-      .subscribe(() => {
-        // console.log(result);
-      });
+      .subscribe(() => {});
   }
   showComments() {
-    console.log(this.usersOnDisplay);
     return this.httpService.get(this.commentUrl)
     .pipe(
       map(info => {
-        this.usersOnDisplay = [
-          info[this.numericalNumber]
-        ];
+        // TODO: create forloop that throws out different items (using numbers) from 'info' then push that info to local array
+        // TODO: have this be run through a service worker
+        this.numericalNumbers.forEach( (value, i) => {
+          console.log({value});
+          try {
+            this.usersOnDisplay = [
+              info[ value - 1 ],
+            ];
+            console.log('this.usersOnDisplay ', this.usersOnDisplay);
+          } catch (error) {
+            return console.log(error);
+          }
+        });
       })
-    ).subscribe(() => {
-    });
+    ).subscribe(() => {});
   }
 
 }

@@ -1,8 +1,18 @@
-<mat-card *ngFor="let comment of (comments$ | async)">
-  <mat-card-title> {{ comment.email }} </mat-card-title>
-  <mat-card-content> {{ comment.body }} </mat-card-content>
+<mat-card-content>{{ pageTitle }}</mat-card-content>
+<mat-card-actions>
+  <button *ngFor="let item of buttonValues" mat-button (click)="onButton($event)" [value]="item">{{ item }}</button>
+  <!-- <button mat-button [value]="secondDisplayValue">{{ secondDisplayValue }}</button>
+  <button mat-button [value]="thirdDisplayValue">{{ thirdDisplayValue }}</button>
+  <button mat-button [value]="fourthDisplayValue">{{ fourthDisplayValue }}</button> -->
+</mat-card-actions>
+<div *ngFor="let users of usersOnDisplay">
+  <p>{{ users }}</p>
+</div>
+<button mat-button>{{ arrayOfDisplayNumbers }}</button>
+<mat-card *ngFor="let comment of results">
+  <div *ngIf="comment">
+    <mat-card-content>  {{ comment.id }} id </mat-card-content>
+    <mat-card-title> {{ comment.email }} email</mat-card-title>
+    <mat-card-content> {{ comment.body }} body </mat-card-content>
+  </div>
 </mat-card>
-
-<p>{{ time | async }}</p>
-
-<!-- <button (click)="kill()">KILL</button> -->

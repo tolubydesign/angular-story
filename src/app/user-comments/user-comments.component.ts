@@ -1,7 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
-import { of, interval, Subscription, Observable } from 'rxjs';
+import { of, interval, Subscription, Observable, } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { MessageService } from '../services/message.service';
+import { map } from 'rxjs/operators';
 
 interface Comment {
   postId: number;
@@ -18,20 +21,41 @@ interface Comment {
   styleUrls: ['./user-comments.component.sass']
 })
 export class UserCommentsComponent implements OnInit {
-  // comments: Comment[];
-  pageTitle = 'Collection of Comments';
-  // time: number;
 
-  constructor(private httpService: HttpClient) {  }
+  firstDisplayValue = null;
+  secondDisplayValue = null;
+  thirdDisplayValue = null;
+  fourthDisplayValue = null;
+  arrayOfDisplayNumbers = [];
+  pageTitle = 'Collection of Comments';
+  private commentUrl = 'https://jsonplaceholder.typicode.com/comments';
+
+  results: any;
+  itemsOnDisplay = 3;
+
   comments$: Observable<Comment[]>;
-  // Observable<string[]>
+  commentArray: any;
+  buttonValues = [];
+  usersOnDisplay = [];
+
+  constructor(private httpService: HttpClient, private messageService: MessageService) { }
 
   ngOnInit() {
-    this.comments$ = this.httpService.get<Comment[]>('https://jsonplaceholder.typicode.com/comments');
-
+    this.getComments();
+    this.comments$ = this.httpService.get<Comment[]>(this.commentUrl);
+    this.commentArray = this.comments$;
+    console.log(this.results);
+    this.createRandomNumber();
+    this.buttonValues = [
+      this.firstDisplayValue,
+      this.secondDisplayValue,
+      this.thirdDisplayValue,
+      this.fourthDisplayValue,
+    ];
+    console.log(this.buttonValues);
     // this.comments$.subscribe(
     //   data => {
-    //     this.comments  = data; 
+    //     this.comments  = data;
     //   }
     // )
 
@@ -47,10 +71,37 @@ export class UserCommentsComponent implements OnInit {
     // );
   }
 
-  kill() {
-    // this.time.unsubscribe();
+  onButton(e) {
+    const value = e.target.innerText;
+    console.log(e);
+    console.log(value);
+    this.usersOnDisplay.push(value);
   }
 
+  createRandomNumber() {
+    this.firstDisplayValue = Math.floor(Math.random() * 100);
+    this.secondDisplayValue = Math.floor(Math.random() * 100);
+    this.thirdDisplayValue = Math.floor(Math.random() * 100);
+    this.fourthDisplayValue = Math.floor(Math.random() * 100);
+  }
 
+  getComments() {
+    return this.httpService.get(this.commentUrl)
+      .pipe(
+        map(data => {
+          console.log(data[2]);
+          // this.results = data;
+          this.results = [
+            data[this.firstDisplayValue],
+            data[this.secondDisplayValue],
+            data[this.thirdDisplayValue],
+            data[this.fourthDisplayValue]
+          ];
+        })
+      )
+      .subscribe(result => {
+        console.log(result);
+      });
+  }
 
 }

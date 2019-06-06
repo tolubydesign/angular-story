@@ -1,12 +1,11 @@
 <mat-card-content>{{ pageTitle }}</mat-card-content>
 <mat-card-actions>
-  <button *ngFor="let item of buttonValues" mat-button (click)="onButton($event)" [value]="item">{{ item }}</button>
-  <!-- <button mat-button [value]="secondDisplayValue">{{ secondDisplayValue }}</button>
-  <button mat-button [value]="thirdDisplayValue">{{ thirdDisplayValue }}</button>
-  <button mat-button [value]="fourthDisplayValue">{{ fourthDisplayValue }}</button> -->
+  <button *ngFor="let item of buttonValues" mat-button (click)="onButton($event)" [value]="item + 1">{{ item }}</button>
 </mat-card-actions>
 <div *ngFor="let users of usersOnDisplay">
-  <p>{{ users }}</p>
+  <p>{{ users.id - 1 }}</p>
+  <p>{{ users.email }}</p>
+  <p>{{ users.body }}</p>
 </div>
 <button mat-button>{{ arrayOfDisplayNumbers }}</button>
 <mat-card *ngFor="let comment of results">

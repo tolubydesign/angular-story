@@ -26,7 +26,6 @@ export class UserCommentsComponent implements OnInit {
   secondDisplayValue = null;
   thirdDisplayValue = null;
   fourthDisplayValue = null;
-  arrayOfDisplayNumbers = [];
   pageTitle = 'Collection of Comments';
   private commentUrl = 'https://jsonplaceholder.typicode.com/comments';
 
@@ -37,6 +36,7 @@ export class UserCommentsComponent implements OnInit {
   commentArray: any;
   buttonValues = [];
   usersOnDisplay = [];
+  numericalNumber: number;
 
   constructor(private httpService: HttpClient, private messageService: MessageService) { }
 
@@ -52,30 +52,16 @@ export class UserCommentsComponent implements OnInit {
       this.thirdDisplayValue,
       this.fourthDisplayValue,
     ];
-    console.log(this.buttonValues);
-    // this.comments$.subscribe(
-    //   data => {
-    //     this.comments  = data;
-    //   }
-    // )
-
-    //   data => {
-    //     this.comments = data as string [];
-    //   },
-    //   (err: HttpErrorResponse) => {
-    //     console.log( err.message );
-    //   }
-    // );
-    // this.time = interval(1000).subscribe(
-    //   res => console.log(res)
-    // );
+    console.log(`buttonValues :: ${this.buttonValues}`);
   }
 
-  onButton(e) {
-    const value = e.target.innerText;
+  onButton(e: any) {
     console.log(e);
-    console.log(value);
+    const value = e.target.innerText;
     this.usersOnDisplay.push(value);
+    this.numericalNumber = value;
+    this.showComments();
+    this.reloadButtonValues();
   }
 
   createRandomNumber() {
@@ -85,23 +71,45 @@ export class UserCommentsComponent implements OnInit {
     this.fourthDisplayValue = Math.floor(Math.random() * 100);
   }
 
+  reloadButtonValues() {
+    this.createRandomNumber();
+    this.buttonValues = [
+      this.firstDisplayValue,
+      this.secondDisplayValue,
+      this.thirdDisplayValue,
+      this.fourthDisplayValue,
+    ];
+  }
+
   getComments() {
     return this.httpService.get(this.commentUrl)
       .pipe(
         map(data => {
-          console.log(data[2]);
+          // console.log(data[2]);
           // this.results = data;
           this.results = [
             data[this.firstDisplayValue],
-            data[this.secondDisplayValue],
-            data[this.thirdDisplayValue],
-            data[this.fourthDisplayValue]
+            // data[this.secondDisplayValue],
+            // data[this.thirdDisplayValue],
+            // data[this.fourthDisplayValue],
           ];
         })
       )
-      .subscribe(result => {
-        console.log(result);
+      .subscribe(() => {
+        // console.log(result);
       });
+  }
+  showComments() {
+    console.log(this.usersOnDisplay);
+    return this.httpService.get(this.commentUrl)
+    .pipe(
+      map(info => {
+        this.usersOnDisplay = [
+          info[this.numericalNumber]
+        ];
+      })
+    ).subscribe(() => {
+    });
   }
 
 }

@@ -14,7 +14,6 @@ interface Comment {
   body: string;
 }
 
-
 @Component({
   selector: 'app-user-comments',
   templateUrl: './user-comments.component.html',
@@ -50,10 +49,8 @@ export class UserCommentsComponent implements OnInit {
 
   onButton(e: any) {
     const value = (Number(e.target.innerText));
-    console.log(value);
     // this.numericalNumber = value;
     this.numericalNumbers.push(value);
-    console.log(this.numericalNumbers);
     this.showComments();
     this.reloadButtonValues();
   }
@@ -86,37 +83,35 @@ export class UserCommentsComponent implements OnInit {
   preventZeroValues(e: number) {
     e === 0 ? e = 1 : e = Math.floor(Math.random() * 100);
   }
+
   getComments() {
     return this.httpService.get(this.commentUrl)
-      .pipe(
-        map(data => {
-          // console.log(data[2]);
-          // this.results = data;
-          this.results = [
-            data[this.firstDisplayValue],
-            // data[this.secondDisplayValue],
-            // data[this.thirdDisplayValue],
-            // data[this.fourthDisplayValue],
-          ];
-        })
-      )
-      .subscribe(() => {});
+    .pipe(
+      map(data => {
+        this.results = [
+          data[this.firstDisplayValue],
+          // data[this.secondDisplayValue],
+          // data[this.thirdDisplayValue],
+          // data[this.fourthDisplayValue],
+        ];
+      })
+    )
+    .subscribe(() => {});
   }
+
   showComments() {
     return this.httpService.get(this.commentUrl)
     .pipe(
       map(info => {
-        // TODO: create forloop that throws out different items (using numbers) from 'info' then push that info to local array
+        // TODO: create for-loop that throws out different items (using numbers) from 'info' then push that info to local array
         // TODO: have this be run through a service worker
         this.numericalNumbers.forEach( (value, i) => {
-          console.log({value});
           try {
             this.usersOnDisplay = [
               info[ value - 1 ],
             ];
-            console.log('this.usersOnDisplay ', this.usersOnDisplay);
           } catch (error) {
-            return console.log(error);
+            console.log(error);
           }
         });
       })

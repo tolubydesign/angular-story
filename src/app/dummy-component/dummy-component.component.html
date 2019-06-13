@@ -1,0 +1,15 @@
+<p>
+  dummy-component works!
+</p>
+
+<mat-card>
+  <div *ngFor="let comment of serverComments">
+    <p>
+      {{ comment.id  | json }}
+    </p>
+    <p>
+      {{ comment.name | json }}
+    </p>
+    <br>
+  </div>
+</mat-card>

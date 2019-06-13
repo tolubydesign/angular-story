@@ -5,14 +5,7 @@ import { of, interval, Subscription, Observable, } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { MessageService } from '../services/message.service';
 import { map } from 'rxjs/operators';
-
-interface Comment {
-  postId: number;
-  id: number;
-  name: string;
-  email: string;
-  body: string;
-}
+import { Comment } from '../data/Comment';
 
 @Component({
   selector: 'app-user-comments',
@@ -20,7 +13,8 @@ interface Comment {
   styleUrls: ['./user-comments.component.sass']
 })
 export class UserCommentsComponent implements OnInit {
-
+  
+  /* data */
   firstDisplayValue = null;
   secondDisplayValue = null;
   thirdDisplayValue = null;

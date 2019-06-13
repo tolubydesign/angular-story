@@ -16,13 +16,15 @@ import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ButtonComponent } from './button/button.component';
 import { UserCommentsComponent } from './user-comments/user-comments.component';
+import { DummyComponentComponent } from './dummy-component/dummy-component.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
     ButtonComponent,
-    UserCommentsComponent
+    UserCommentsComponent,
+    DummyComponentComponent
   ],
   imports: [
     BrowserModule,

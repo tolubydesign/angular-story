@@ -1,10 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Comment } from '../data/Comment';
 import { HttpClient } from '@angular/common/http';
 import { MessageService } from './message.service';
 import { Observable, of } from 'rxjs';
-import { catchError,  map, tap, } from 'rxjs/operators';
+import { catchError, map, tap, finalize } from 'rxjs/operators';
+
+// data
 import { COMMENT_DATA } from '../data/mock-data';
+import { MOCK_STORY_DATA } from '../data/mock-story-data';
+
+// class and interface
+import { MockStoryStructure } from '../data/mock-story-structure';
+import { Comment } from '../data/Comment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +20,7 @@ export class UserCommentsService {
 
   private commentUrl = 'https://jsonplaceholder.typicode.com/comments';
   numericalNumbers: any;
+  data: any;
 
 
   constructor(
@@ -22,7 +29,7 @@ export class UserCommentsService {
   ) { }
 
   private log(message: string) {
-    this.messageService.add(`${ message }`);
+    this.messageService.add(`${message}`);
   }
 
   getLocalComments(): Observable<Comment[]> {
@@ -33,19 +40,21 @@ export class UserCommentsService {
     // );
   }
 
-  getServerComments(): Observable<Comment[]> {
-    return this.httpService.get<Comment[]>(this.commentUrl);
-    // return this.httpService.get<Comment[]>(this.commentUrl).pipe(
-    //   map(info => { this.numericalNumbers.forEach( () => {
-    //       try {
-    //         this.usersOnDisplay = [
-    //           info[ value - 1 ],
-    //         ];
-    //       } catch (error) {
-    //         console.log(error);
-    //       }
-    //     });
-    //   })
-    // ).subscribe(() => {});
+  getLocalStoryLayout(): Observable<MockStoryStructure[]> {
+    return of(MOCK_STORY_DATA);
+  }
+
+  getServerComments() {
+    return this.httpService.get(this.commentUrl).pipe(
+      map((res) => {
+        this.data = res;
+        // console.log(this.data);
+      }))
+      .subscribe(() => { });
+  }
+
+  getCurrentDate() {
+    const newDate = new Date();
+    return newDate;
   }
 }

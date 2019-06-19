@@ -17,6 +17,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ButtonComponent } from './button/button.component';
 import { UserCommentsComponent } from './user-comments/user-comments.component';
 import { DummyComponentComponent } from './dummy-component/dummy-component.component';
+import { MockStoryDashboardComponent } from './mock-story-dashboard/mock-story-dashboard.component';
+import { MockStoryCharactersComponent } from './mock-story-characters/mock-story-characters.component';
+import { MockStoryBoardComponent } from './mock-story-board/mock-story-board.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +27,10 @@ import { DummyComponentComponent } from './dummy-component/dummy-component.compo
     DashboardComponent,
     ButtonComponent,
     UserCommentsComponent,
-    DummyComponentComponent
+    DummyComponentComponent,
+    MockStoryDashboardComponent,
+    MockStoryCharactersComponent,
+    MockStoryBoardComponent
   ],
   imports: [
     BrowserModule,

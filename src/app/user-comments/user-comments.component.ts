@@ -10,7 +10,7 @@ import { Comment } from '../data/Comment';
 @Component({
   selector: 'app-user-comments',
   templateUrl: './user-comments.component.html',
-  styleUrls: ['./user-comments.component.sass']
+  styleUrls: ['./user-comments.component.scss']
 })
 export class UserCommentsComponent implements OnInit {
   

@@ -1,0 +1,15 @@
+<p>
+  mock story dashboard
+</p>
+
+<div class="mock-story-board">
+  <div class="story-board--char-images">
+    <app-mock-story-characters class="character-image" *ngFor="let image of loopingCount(2)">
+    </app-mock-story-characters>
+  </div>
+
+  <div class="story--text">
+    <app-mock-story-board [dialogue]="dialogue" ></app-mock-story-board>
+  </div>
+  <app-dummy-component></app-dummy-component>
+</div>

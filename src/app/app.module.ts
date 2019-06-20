@@ -20,6 +20,7 @@ import { DummyComponentComponent } from './dummy-component/dummy-component.compo
 import { MockStoryDashboardComponent } from './mock-story-dashboard/mock-story-dashboard.component';
 import { MockStoryCharactersComponent } from './mock-story-characters/mock-story-characters.component';
 import { MockStoryBoardComponent } from './mock-story-board/mock-story-board.component';
+import { NavButtonComponent } from './nav-button/nav-button.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { MockStoryBoardComponent } from './mock-story-board/mock-story-board.com
     DummyComponentComponent,
     MockStoryDashboardComponent,
     MockStoryCharactersComponent,
-    MockStoryBoardComponent
+    MockStoryBoardComponent,
+    NavButtonComponent
   ],
   imports: [
     BrowserModule,

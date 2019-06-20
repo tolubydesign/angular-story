@@ -38,12 +38,10 @@ export class DummyComponentComponent implements OnInit {
 
   getServerUsers() {
     this.serverComments = this.userCommentsService.getServerComments();
+    this.service = this.userCommentsService.data;
 
     // this.userCommentsService.getServerComments().pipe(
     //   (data) => { this.serverComments = data; });
-
-    this.service = this.userCommentsService.data;
-    console.log(this.service);
 
     // this.userCommentsService.getServerComments()
     //   // .pipe(map(data => this.serverComments = data));

@@ -40,9 +40,9 @@ export class UserCommentsService {
     // );
   }
 
-  getLocalStoryLayout(): Observable<MockStoryStructure[]> {
-    return of(MOCK_STORY_DATA);
-  }
+  // getLocalStoryLayout(): Observable<MockStoryStructure[]> {
+  //   return of(MOCK_STORY_DATA);
+  // }
 
   getServerComments() {
     return this.httpService.get(this.commentUrl).pipe(

@@ -97,13 +97,13 @@ export class UserCommentsComponent implements OnInit {
     return this.httpService.get(this.commentUrl)
     .pipe(
       map(info => {
-        // TODO: create for-loop that throws out different items (using numbers) from 'info' then push that info to local array
-        // TODO: have this be run through a service worker
         this.numericalNumbers.forEach( (value, i) => {
           try {
             this.usersOnDisplay = [
+              /* "-1" to make the display number match the logic number */
               info[ value - 1 ],
             ];
+            console.log('users on display', this.usersOnDisplay);
           } catch (error) {
             console.log(error);
           }

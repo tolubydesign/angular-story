@@ -1,6 +1,3 @@
-<p>
-  mock story dashboard
-</p>
 
 <div class="mock-story-board">
   <div class="story-board--char-images">
@@ -9,7 +6,25 @@
   </div>
 
   <div class="story--text">
-    <app-mock-story-board [dialogue]="dialogue" ></app-mock-story-board>
+    <app-mock-story-board class="story--text-container" [dialogue]="dialogue"></app-mock-story-board>
   </div>
-  <app-dummy-component></app-dummy-component>
+
+  <!-- choices: reader choices -->
+  <mat-card-actions>
+    <div>
+      <div *ngFor="let option of options | keyvalues">
+        <button mat-button value="{{ option.decisions - 1 }}" >
+          {{ option.decisions }}
+          {{ option.summary }}
+        </button>
+      </div>
+    </div>
+  </mat-card-actions>
+
+  <!-- navigation buttons -->
+  <div class="navigation--button">
+    <app-nav-button (click)="navigateDialogue('previous')" navigationButton="previous"></app-nav-button>
+    <app-nav-button (click)="navigateDialogue('next')" navigationButton="next"></app-nav-button>
+  </div>
+  <!-- <app-dummy-component></app-dummy-component> -->
 </div>

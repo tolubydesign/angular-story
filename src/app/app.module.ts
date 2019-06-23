@@ -21,6 +21,7 @@ import { MockStoryDashboardComponent } from './mock-story-dashboard/mock-story-d
 import { MockStoryCharactersComponent } from './mock-story-characters/mock-story-characters.component';
 import { MockStoryBoardComponent } from './mock-story-board/mock-story-board.component';
 import { NavButtonComponent } from './nav-button/nav-button.component';
+import { StoryChoiceSelectComponent } from './story-choice-select/story-choice-select.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { NavButtonComponent } from './nav-button/nav-button.component';
     MockStoryDashboardComponent,
     MockStoryCharactersComponent,
     MockStoryBoardComponent,
-    NavButtonComponent
+    NavButtonComponent,
+    StoryChoiceSelectComponent
   ],
   imports: [
     BrowserModule,

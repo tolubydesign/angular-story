@@ -1,8 +1,16 @@
-.mock-story-board {
-  .story-board--char-images {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-  }
+
+.narrative {
+  font-size: 16px;
+  text-align: center;
+  margin: 2rem auto;
+  max-width: 910px;
+  padding: 1rem;
+}
+
+.narrative--display-button {
+  margin: 1rem auto;
+}
+
+.dummy--text--local-dialogue {
+  text-align: center;
 }

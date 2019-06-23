@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-nav-button',
@@ -7,7 +7,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavButtonComponent implements OnInit {
 
-  constructor() { }
+  @Input() navigationButton: string;
+  // @Input() nextPosition: string;
+  // @Input() previousPosition: string;
+
+  constructor(
+  ) { }
 
   ngOnInit() {
   }

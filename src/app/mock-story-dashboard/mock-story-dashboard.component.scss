@@ -1,3 +1,4 @@
+
 .mock-story-board {
   .story-board--char-images {
     display: flex;
@@ -5,4 +6,19 @@
     justify-content: space-around;
     align-items: center;
   }
+}
+
+.navigation--button {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 40px auto;
+  max-width: 370px;
+}
+
+.story--text-container {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
 }

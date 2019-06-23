@@ -35,6 +35,8 @@ export class MockStoryDashboardComponent implements OnInit {
     console.log('current dialogue option', this.dialogue);
     this.setCurrentChoices();
     console.log('options in mock', this.options);
+    console.log('!');
+    this.storyService.getLocalJsonStory();
   }
 
   loopingCount(total: number) {

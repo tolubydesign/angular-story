@@ -25,10 +25,11 @@ export class StoryService {
   optionalTextChoices: string[] = null;
   options: (number | string)[] = null;
 
-  jsonStoryUrl = '../data/json/story.json';
-  story$: any;
+  jsonStoryUrl = './assets/data/story.json';
+  storyNarrative: any = null;
+
   constructor(
-    private _http: HttpClient,
+    private httpClient: HttpClient,
   ) { }
 
   getLocalDialogue(): Observable<MockStoryStructure[]> {
@@ -79,11 +80,17 @@ export class StoryService {
   }
 
   getLocalJsonStory() {
-    return this._http.get(this.jsonStoryUrl).pipe(
-      map(res => {
-        this.story$ = res;
-        console.log(this.story$);
-      })
-    )
+    // return this.httpClient.get("./assets/story.json").subscribe(
+    return this.httpClient.get(this.jsonStoryUrl).subscribe(
+      res => {
+        this.storyNarrative = res;
+      },
+      error => console.log({error}),
+      () => {
+        console.log('information collected');
+        console.log(this.storyNarrative[this.currentStoryPosition]);
+      }
+    );
+      // .do(data => console.log(data));
   }
 }

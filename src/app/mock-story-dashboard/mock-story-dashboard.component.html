@@ -10,18 +10,17 @@
   </div>
 
   <!-- choices: reader choices -->
-  <!--
+  
     <mat-card-actions>
       <div>
-        <div *ngFor="let option of options">
-          <button mat-button value="{{ option.decisions - 1 }}" >
-            {{ option.decisions }}
-            {{ option.summary }}
+        <div *ngFor="let option of collections">
+          <button mat-button value="{{ option.state }}" >
+            {{ option.name }}
           </button>
         </div>
       </div>
     </mat-card-actions>
-  -->
+ 
 
   <!-- navigation buttons -->
   <div class="navigation--button">

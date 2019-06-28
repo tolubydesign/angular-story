@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-
 import { StoryService } from '../services/story.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-mock-story-board',
@@ -21,12 +21,16 @@ export class MockStoryBoardComponent implements OnInit {
   }
 
   getStory() {
-    this.storyService.getLocalDialogue().subscribe(
+    this.storyService.getLocalDialogue()
+    .pipe(
+      map(res => res)
+    )
+    .subscribe(
       data => {
         console.log(data[0].story);
         data.forEach(value =>
           this.localDialogue = value.story,
-          console.log(this.localDialogue)
+          // console.log('local dialogue', this.localDialogue)
         );
       },
       error => console.log(error),

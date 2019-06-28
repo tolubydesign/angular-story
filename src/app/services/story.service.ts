@@ -26,7 +26,7 @@ export class StoryService {
   options: (number | string)[] = null;
 
   jsonStoryUrl = './assets/data/story.json';
-  storyNarrative: any = null;
+
 
   constructor(
     private httpClient: HttpClient,
@@ -79,18 +79,8 @@ export class StoryService {
     // console.log('123', this.choices[this.currentStoryPosition].decisions);
   }
 
-  getLocalJsonStory() {
+  getLocalJsonStory(): Observable<object> {
     // return this.httpClient.get("./assets/story.json").subscribe(
-    return this.httpClient.get(this.jsonStoryUrl).subscribe(
-      res => {
-        this.storyNarrative = res;
-      },
-      error => console.log({error}),
-      () => {
-        console.log('information collected');
-        console.log(this.storyNarrative[this.currentStoryPosition]);
-      }
-    );
-      // .do(data => console.log(data));
+    return this.httpClient.get(this.jsonStoryUrl);
   }
 }

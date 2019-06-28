@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { map } from 'rxjs/operators';
+import { Component, OnInit, Pipe } from '@angular/core';
+import { map, concatAll, filter } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 
 // class and interface
 import { MockStoryStructure } from '../data/mock-story-structure';
@@ -12,6 +13,12 @@ import { StoryService } from '../services/story.service';
   templateUrl: './mock-story-dashboard.component.html',
   styleUrls: ['./mock-story-dashboard.component.scss']
 })
+
+// tslint:disable-next-line: use-pipe-transform-interface
+@Pipe({
+  name: 'merge'
+})
+
 export class MockStoryDashboardComponent implements OnInit {
 
   nextPosition = 'next';
@@ -22,7 +29,11 @@ export class MockStoryDashboardComponent implements OnInit {
   /* reader choices that can be picked */
   currentChoices: number[] = null;
   // currentTextChoices: string[] = null;
-  options = null;
+  storyNarrative: any = null;
+  collections = null;
+  decisions: any[] = null;
+  summaries: any[] = null;
+
 
   constructor(
     private storyService: StoryService,
@@ -32,11 +43,7 @@ export class MockStoryDashboardComponent implements OnInit {
     this.storyService.showChoices();
     this.getCurrentStoryPosition();
     this.setDialogue();
-    console.log('current dialogue option', this.dialogue);
-    this.setCurrentChoices();
-    console.log('options in mock', this.options);
-    console.log('!');
-    this.storyService.getLocalJsonStory();
+    this.localJsonStory();
   }
 
   loopingCount(total: number) {
@@ -54,15 +61,17 @@ export class MockStoryDashboardComponent implements OnInit {
   }
 
   /* set the current story options the reader can decide on picking */
+  /*
   setCurrentChoices() {
     this.storyService.updateDialogueChoices();
     this.currentChoices = this.storyService.optionalChoices;
-    this.options = this.storyService.options;
-    let elements = this.options;
-    console.log({elements})
+    this._options = this.storyService.options;
+    const elements = this._options;
+    console.log({ elements });
     // this.currentTextChoices = this.storyService.optionalTextChoices;
     // this.currentTextChoices = this.storyService.optionalTextChoices
   }
+  */
 
   navigateDialogue(element: string) {
     this.storyService.switchStoryPosition(element);
@@ -83,6 +92,37 @@ export class MockStoryDashboardComponent implements OnInit {
   updateDialogue() {
     this.getCurrentStoryPosition();
     this.setDialogue();
-    this.setCurrentChoices();
+    this.localJsonStory();
   }
+
+  localJsonStory() {
+    this.storyService.getLocalJsonStory()
+      .pipe(
+        map(res => {
+          // console.log(res[this.currentPosition].options);
+          const decisions = res[this.currentPosition].options.decisions;
+          const summary = res[this.currentPosition].options.summary;
+          const option = {...decisions, ...summary};
+          this.decisions = decisions;
+          this.summaries = summary;
+          this.functioning(decisions, summary);
+          return res;
+        }),
+      ).subscribe(
+        val => { console.log('data gathering'); },
+        error => { console.log('data collection error occurred : ', error); },
+        () => console.log('information gathered')
+      );
+  }
+
+  functioning(decisions: any, summary: any ) {
+    const arr = [];
+    decisions.forEach((elt: number, i: string) => {
+      arr.push({ state: elt, name: summary[i] });
+    });
+    this.collections = arr;
+    console.log({arr});
+  }
+
 }
+

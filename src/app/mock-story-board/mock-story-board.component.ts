@@ -21,20 +21,30 @@ export class MockStoryBoardComponent implements OnInit {
   }
 
   getStory() {
-    this.storyService.getLocalDialogue()
-    .pipe(
-      map(res => res)
-    )
-    .subscribe(
+    this.storyService.getLocalJsonStory().pipe(
+      map( res => res )
+    ).subscribe(
       data => {
-        console.log(data[0].story);
-        data.forEach(value =>
-          this.localDialogue = value.story,
-          // console.log('local dialogue', this.localDialogue)
-        );
+        console.log({data});
       },
-      error => console.log(error),
-      () => console.log('story lines collected'));
+      error => {
+        console.log(error);
+      },
+      () => console.log('got information')
+    );
+    // this.storyService.getLocalDialogue()
+    // .pipe(
+    //   map(res => res)
+    // )
+    // .subscribe(
+    //   data => {
+    //     console.log(data[0].story);
+    //     data.forEach(value =>
+    //       this.localDialogue = value.story,
+    //     );
+    //   },
+    //   error => console.log(error),
+    //   () => console.log('story lines collected'));
   }
 
   onShowDialogue() {

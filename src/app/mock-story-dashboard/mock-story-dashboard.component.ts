@@ -1,4 +1,4 @@
-import { Component, OnInit, Pipe } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { map, concatAll, filter } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
@@ -14,23 +14,12 @@ import { StoryService } from '../services/story.service';
   styleUrls: ['./mock-story-dashboard.component.scss']
 })
 
-// tslint:disable-next-line: use-pipe-transform-interface
-@Pipe({
-  name: 'merge'
-})
-
 export class MockStoryDashboardComponent implements OnInit {
 
-  nextPosition = 'next';
-  previousPosition = 'previous';
   currentPosition: number = null;
   dialogue: string = null;
-  playerChoiceDialogue: any[] = null;
   /* reader choices that can be picked */
-  currentChoices: number[] = null;
-  // currentTextChoices: string[] = null;
-  storyNarrative: any = null;
-  collections = null;
+  readerChoices = null;
   decisions: any[] = null;
   summaries: any[] = null;
 
@@ -57,21 +46,12 @@ export class MockStoryDashboardComponent implements OnInit {
 
   /* set dialogue summaries. refers to what choices the reader can pick */
   setDialogue() {
-    this.dialogue = this.storyService.choices[this.currentPosition].summary;
+    this.storyService.getLocalJsonStory().subscribe(
+      data => {
+        this.dialogue = data[this.currentPosition].story;
+      }
+    );
   }
-
-  /* set the current story options the reader can decide on picking */
-  /*
-  setCurrentChoices() {
-    this.storyService.updateDialogueChoices();
-    this.currentChoices = this.storyService.optionalChoices;
-    this._options = this.storyService.options;
-    const elements = this._options;
-    console.log({ elements });
-    // this.currentTextChoices = this.storyService.optionalTextChoices;
-    // this.currentTextChoices = this.storyService.optionalTextChoices
-  }
-  */
 
   navigateDialogue(element: string) {
     this.storyService.switchStoryPosition(element);
@@ -79,49 +59,49 @@ export class MockStoryDashboardComponent implements OnInit {
     this.updateDialogue();
   }
 
-  // getNextPosition() {
-  //   this.storyService.switchStoryPosition(null, true);
-  //   this.updateDialogue();
-  // }
-
-  // getPreviousPosition() {
-  //   this.storyService.switchStoryPosition(true, null);
-  //   this.updateDialogue();
-  // }
-
   updateDialogue() {
     this.getCurrentStoryPosition();
     this.setDialogue();
     this.localJsonStory();
   }
 
+  /* an action a reader has decide to pick */
+  onReaderDecision(action: any) {
+    let selectedAction = Number(action.target.value);
+    console.log({action});
+    console.log(action.target.value);
+    // console.log({selectedAction});
+  }
+
+
+  /* set the current story options the reader can decide on picking */
   localJsonStory() {
     this.storyService.getLocalJsonStory()
       .pipe(
         map(res => {
-          // console.log(res[this.currentPosition].options);
           const decisions = res[this.currentPosition].options.decisions;
           const summary = res[this.currentPosition].options.summary;
-          const option = {...decisions, ...summary};
           this.decisions = decisions;
           this.summaries = summary;
-          this.functioning(decisions, summary);
+          this.assignReaderOptions(decisions, summary);
           return res;
         }),
       ).subscribe(
-        val => { console.log('data gathering'); },
+        val => { },
         error => { console.log('data collection error occurred : ', error); },
         () => console.log('information gathered')
       );
   }
 
-  functioning(decisions: any, summary: any ) {
-    const arr = [];
-    decisions.forEach((elt: number, i: string) => {
-      arr.push({ state: elt, name: summary[i] });
+  assignReaderOptions(decisions: any, summary: any) {
+    let combinedArrays = [];
+    decisions.forEach((decisionsValue: number, index: string) => {
+      combinedArrays.push({ decision: decisionsValue, summary: summary[index] });
     });
-    this.collections = arr;
-    console.log({arr});
+    this.readerChoices = combinedArrays;
+    console.log(this.readerChoices);
+    /* reset array to allow for new values to be inputted */
+    combinedArrays = [];
   }
 
 }

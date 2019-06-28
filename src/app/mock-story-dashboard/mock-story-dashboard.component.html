@@ -1,7 +1,7 @@
-
 <div class="mock-story-board">
+  <!-- characters in action -->
   <div class="story-board--char-images">
-    <app-mock-story-characters class="character-image" *ngFor="let image of loopingCount(2)">
+    <app-mock-story-characters class="character-image" *ngFor="let image of loopingCount(1)">
     </app-mock-story-characters>
   </div>
 
@@ -10,17 +10,12 @@
   </div>
 
   <!-- choices: reader choices -->
-  
-    <mat-card-actions>
-      <div>
-        <div *ngFor="let option of collections">
-          <button mat-button value="{{ option.state }}" >
-            {{ option.name }}
-          </button>
-        </div>
-      </div>
-    </mat-card-actions>
- 
+  <mat-card-actions>
+    <button *ngFor="let choice of readerChoices" mat-button (click)="onReaderDecision($event)" value="{{ choice.decision }}">
+      {{ choice.summary }}
+    </button>
+  </mat-card-actions>
+
 
   <!-- navigation buttons -->
   <div class="navigation--button">

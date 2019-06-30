@@ -10,8 +10,12 @@
   </div>
 
   <!-- choices: reader choices -->
-  <mat-card-actions>
-    <button *ngFor="let choice of readerChoices" mat-button (click)="onReaderDecision($event)" value="{{ choice.decision }}">
+  <mat-card-actions class="story--choices--container">
+    <button 
+    *ngFor="let choice of readerChoices"
+    (click)="onReaderDecision($event)"
+    value="{{ choice.decision }}"
+    class="story-choice">
       {{ choice.summary }}
     </button>
   </mat-card-actions>

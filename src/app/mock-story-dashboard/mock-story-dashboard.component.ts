@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { map, concatAll, filter } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 
 // class and interface
 import { MockStoryStructure } from '../data/mock-story-structure';
@@ -22,6 +22,7 @@ export class MockStoryDashboardComponent implements OnInit {
   readerChoices = null;
   decisions: any[] = null;
   summaries: any[] = null;
+  jsonSubscription$: Subscription = null;
 
 
   constructor(
@@ -68,7 +69,7 @@ export class MockStoryDashboardComponent implements OnInit {
   /* an action a reader has decide to pick */
   onReaderDecision(action: any) {
     let selectedAction = Number(action.target.value);
-    console.log({action});
+    console.log({ action });
     console.log(action.target.value);
     // console.log({selectedAction});
   }
@@ -76,7 +77,7 @@ export class MockStoryDashboardComponent implements OnInit {
 
   /* set the current story options the reader can decide on picking */
   localJsonStory() {
-    this.storyService.getLocalJsonStory()
+    this.jsonSubscription$ = this.storyService.getLocalJsonStory()
       .pipe(
         map(res => {
           const decisions = res[this.currentPosition].options.decisions;
@@ -89,7 +90,10 @@ export class MockStoryDashboardComponent implements OnInit {
       ).subscribe(
         val => { },
         error => { console.log('data collection error occurred : ', error); },
-        () => console.log('information gathered')
+        () => {
+          console.log('information gathered')
+          this.disconnectSubscription();
+        }
       );
   }
 
@@ -102,6 +106,10 @@ export class MockStoryDashboardComponent implements OnInit {
     console.log(this.readerChoices);
     /* reset array to allow for new values to be inputted */
     combinedArrays = [];
+  }
+
+  disconnectSubscription() {
+    this.jsonSubscription$.unsubscribe();
   }
 
 }

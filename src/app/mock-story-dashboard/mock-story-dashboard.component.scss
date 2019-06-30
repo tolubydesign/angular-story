@@ -12,7 +12,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  margin: 40px auto;
+  margin: 1em auto;
   max-width: 370px;
 }
 
@@ -21,4 +21,19 @@
   justify-content: center;
   align-content: center;
   flex-direction: column;
+}
+
+.story--choices--container {
+  display: flex;
+  justify-content: space-around;
+  margin: 0 1em;
+  flex-wrap: wrap;
+  align-content: center;
+  
+  .story-choice {
+    max-width: 200px;
+    border: none;
+    padding: 1em;
+    border-radius: 3px;
+  }
 }

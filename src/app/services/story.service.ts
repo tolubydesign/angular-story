@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Observable, of, Subscription } from 'rxjs';
 import { MOCK_STORY_DATA } from '../data/mock-story-data';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -20,7 +20,7 @@ export class StoryService {
   dialogue = '';
   choices: any = null;
   optionalChoices: number[] = null;
-
+  subscription$: Subscription = null;
   localStoryAddress = './assets/data/story.json';
 
 
@@ -53,10 +53,11 @@ export class StoryService {
   }
 
   showChoices() {
-    this.httpClient.get(this.localStoryAddress).subscribe(
-      data => {
+    this.subscription$ = this.httpClient.get(this.localStoryAddress).subscribe(
+      (data: any) => {
+        console.log({ data });
         this.choices = data;
-        console.log({data});
+        return data;
       },
       error => {
         console.log('error collecting narrative', error);
@@ -81,6 +82,10 @@ export class StoryService {
 
   getLocalJsonStory() {
     return this.httpClient.get(this.localStoryAddress);
+  }
+
+  disconnectSubscription() {
+    this.subscription$.unsubscribe();
   }
 
 }

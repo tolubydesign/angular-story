@@ -9,7 +9,7 @@ import { map } from 'rxjs/operators';
 })
 export class MockStoryBoardComponent implements OnInit {
 
-  @Input() dialogue: string;
+  @Input() narrative: string;
   localDialogue: string;
 
   constructor(
@@ -17,7 +17,7 @@ export class MockStoryBoardComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.storyService.currentStoryPosition = 1;
+    this.storyService.currentStoryPosition = 0;
   }
 
   getStory() {

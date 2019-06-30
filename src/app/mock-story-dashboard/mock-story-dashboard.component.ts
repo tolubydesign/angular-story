@@ -17,7 +17,7 @@ import { StoryService } from '../services/story.service';
 export class MockStoryDashboardComponent implements OnInit {
 
   currentPosition: number = null;
-  dialogue: string = null;
+  narrative: string = null;
   /* reader choices that can be picked */
   readerChoices = null;
   decisions: any[] = null;
@@ -49,7 +49,7 @@ export class MockStoryDashboardComponent implements OnInit {
   setDialogue() {
     this.storyService.getLocalJsonStory().subscribe(
       data => {
-        this.dialogue = data[this.currentPosition].story;
+        this.narrative = data[this.currentPosition].story;
       }
     );
   }

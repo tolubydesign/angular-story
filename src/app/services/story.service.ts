@@ -80,7 +80,7 @@ export class StoryService {
     //   );
   }
 
-  getLocalJsonStory() {
+  getLocalJsonStory(): Observable<object> {
     return this.httpClient.get(this.localStoryAddress);
   }
 

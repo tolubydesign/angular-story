@@ -35,6 +35,7 @@ export class MockStoryDashboardComponent implements OnInit {
     this.getCurrentStoryPosition();
     this.setDialogue();
     this.localJsonStory();
+    this.storyService.completeStory();
   }
 
   loopingCount(total: number) {
@@ -49,19 +50,17 @@ export class MockStoryDashboardComponent implements OnInit {
   /* set dialogue summaries. refers to what choices the reader can pick */
   setDialogue(): any {
     this.storyService.getLocalJsonStory().pipe(
-      map( res => {
+      map(res => {
         return res;
       })
     )
-    .subscribe(
-      data => {
-        // console.log({ data });
-        // console.log('currentPosition', this.currentPosition);
-        this.narrative = data[this.currentPosition].story;
-        this.title = data[this.currentPosition].title;
-        return data;
-      }
-    );
+      .subscribe(
+        data => {
+          this.narrative = data[this.currentPosition].story;
+          this.title = data[this.currentPosition].title;
+          return data;
+        }
+      );
   }
 
   navigateDialogue(element: string) {
@@ -78,9 +77,11 @@ export class MockStoryDashboardComponent implements OnInit {
 
   /* an action a reader has decide to pick */
   onReaderDecision(action: any) {
-    let selectedAction = Number(action.target.value);
+    let chosenAction = Number(action.target.value);
     console.log({ action });
     console.log(action.target.value);
+    this.storyService.updateNarrative(chosenAction);
+    this.updateDialogue();
     // console.log({selectedAction});
   }
 
@@ -101,7 +102,7 @@ export class MockStoryDashboardComponent implements OnInit {
         val => { },
         error => { console.log('data collection error occurred : ', error); },
         () => {
-          console.log('information gathered')
+          console.log('information gathered');
           this.disconnectSubscription();
         }
       );
@@ -120,6 +121,10 @@ export class MockStoryDashboardComponent implements OnInit {
 
   disconnectSubscription() {
     this.jsonSubscription$.unsubscribe();
+  }
+
+  update(a: number) {
+    return a;
   }
 
 }

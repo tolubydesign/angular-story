@@ -10,6 +10,7 @@ import { map } from 'rxjs/operators';
 export class MockStoryBoardComponent implements OnInit {
 
   @Input() narrative: string;
+  @Input() title: string;
   localDialogue: string;
 
   constructor(
@@ -25,7 +26,7 @@ export class MockStoryBoardComponent implements OnInit {
       map( res => res )
     ).subscribe(
       data => {
-        console.log({data});
+        console.log('--', {data});
       },
       error => {
         console.log(error);

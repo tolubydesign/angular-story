@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable, of, Subscription } from 'rxjs';
 import { MOCK_STORY_DATA } from '../data/mock-story-data';
 import { HttpClient } from '@angular/common/http';
@@ -16,7 +16,7 @@ import { MockStoryStructure } from '../data/mock-story-structure';
 })
 export class StoryService {
 
-  currentStoryPosition = 1;
+  currentStoryPosition: number = null;
   dialogue = '';
   choices: any = null;
   optionalChoices: number[] = null;
@@ -53,6 +53,7 @@ export class StoryService {
   }
 
   showChoices() {
+    this.currentStoryPosition = 0;
     this.subscription$ = this.httpClient.get(this.localStoryAddress).subscribe(
       (data: any) => {
         console.log({ data });
@@ -62,7 +63,9 @@ export class StoryService {
       error => {
         console.log('error collecting narrative', error);
       },
-      () => { console.log('story narrative collected'); },
+      () => {
+        console.log('story narrative collected');
+      },
     );
 
     // return of(MOCK_STORY_DATA)

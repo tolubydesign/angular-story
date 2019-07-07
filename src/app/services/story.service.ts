@@ -19,14 +19,10 @@ import { MockStoryDashboardComponent } from '../mock-story-dashboard/mock-story-
 export class StoryService {
 
   currentStoryPosition = 0;
-  // TODO: delete line below
-  choices: any = null;
-  optionalChoices: number[] = null;
-  subscription$: Subscription = null;
   completeStoryUrl = './assets/data/story.json';
   // TODO: update and compress code
   completeStory$: Subscription = null;
-  fullNarrative: object = null;
+  fullNarrative: object[] = null;
   narrativeData$: object = [];
 
   constructor(
@@ -47,7 +43,7 @@ export class StoryService {
         return;
       }
     } else if (event === 'next') {
-      if (this.currentStoryPosition < this.choices.length - 1) {
+      if (this.currentStoryPosition < this.fullNarrative.length - 1) {
         console.log(this.currentStoryPosition);
         this.currentStoryPosition = this.currentStoryPosition + 1;
       } else {
@@ -59,44 +55,6 @@ export class StoryService {
     }
   }
 
-  showChoices() {
-    this.subscription$ = this.httpClient.get(this.completeStoryUrl).subscribe(
-      (data: any) => {
-        console.log({ data });
-        this.choices = data;
-        return data;
-      },
-      error => {
-        console.log('error collecting narrative', error);
-      },
-      () => {
-        console.log('story narrative collected');
-      },
-    );
-
-    // return of(MOCK_STORY_DATA)
-    //   .pipe(
-    //     map(res => res)
-    //   ).subscribe(
-    //     data => {
-    //       this.choices = data;
-    //       console.log('service choices', this.choices);
-    //     },
-    //     error => {
-    //       console.log('error collecting narrative', error);
-    //     },
-    //     () => { console.log('story narrative collected'); },
-    //   );
-  }
-
-  getLocalJsonStory(): Observable<object> {
-    return this.httpClient.get(this.completeStoryUrl);
-  }
-
-  disconnectSubscription() {
-    this.subscription$.unsubscribe();
-  }
-
   completeStory() {
     this.currentStoryPosition = 0;
     this.completeStory$ = this.httpClient.get(this.completeStoryUrl)
@@ -104,17 +62,18 @@ export class StoryService {
         map(res => res)
       )
       .subscribe(
-        (data: any) => {
+        (data: any[]) => {
           this.fullNarrative = data;
-          return data;
+          console.log('full narrative', this.fullNarrative);
+          // return data;
+          throw Error;
         },
         (error: any) => {
-          console.log('an error has occurred');
-          console.log(error);
+          console.log('an error has occurred', error);
         },
         () => {
           this.completeStory$.unsubscribe();
-          console.log('information on the narrative has been collected');
+          console.log('(service) narrative colleted');
         }
       );
   }

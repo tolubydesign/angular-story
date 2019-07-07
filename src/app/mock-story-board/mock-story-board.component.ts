@@ -22,7 +22,7 @@ export class MockStoryBoardComponent implements OnInit {
   }
 
   getStory() {
-    this.storyService.getLocalJsonStory().pipe(
+    this.storyService.componentData().pipe(
       map( res => res )
     ).subscribe(
       data => {
@@ -33,19 +33,6 @@ export class MockStoryBoardComponent implements OnInit {
       },
       () => console.log('got information')
     );
-    // this.storyService.getLocalDialogue()
-    // .pipe(
-    //   map(res => res)
-    // )
-    // .subscribe(
-    //   data => {
-    //     console.log(data[0].story);
-    //     data.forEach(value =>
-    //       this.localDialogue = value.story,
-    //     );
-    //   },
-    //   error => console.log(error),
-    //   () => console.log('story lines collected'));
   }
 
   onShowDialogue() {

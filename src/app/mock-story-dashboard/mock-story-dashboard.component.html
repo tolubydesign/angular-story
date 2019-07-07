@@ -19,7 +19,7 @@
     *ngFor="let choice of readerChoices"
     (click)="onReaderDecision($event)"
     value="{{ choice.decision }}"
-    class="story-choice">
+    class="story-choice pointer">
       {{ choice.summary }}
     </button>
   </mat-card-actions>

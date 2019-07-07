@@ -31,11 +31,10 @@ export class MockStoryDashboardComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.storyService.showChoices();
+    this.storyService.completeStory();
     this.getCurrentStoryPosition();
     this.setDialogue();
     this.localJsonStory();
-    this.storyService.completeStory();
   }
 
   loopingCount(total: number) {
@@ -49,11 +48,10 @@ export class MockStoryDashboardComponent implements OnInit {
 
   /* set dialogue summaries. refers to what choices the reader can pick */
   setDialogue(): any {
-    this.storyService.getLocalJsonStory().pipe(
-      map(res => {
-        return res;
-      })
-    )
+    this.storyService.componentData()
+      .pipe(
+        map(res => res )
+      )
       .subscribe(
         data => {
           this.narrative = data[this.currentPosition].story;
@@ -85,10 +83,9 @@ export class MockStoryDashboardComponent implements OnInit {
     // console.log({selectedAction});
   }
 
-
   /* set the current story options the reader can decide on picking */
   localJsonStory() {
-    this.jsonSubscription$ = this.storyService.getLocalJsonStory()
+    this.jsonSubscription$ = this.storyService.componentData()
       .pipe(
         map(res => {
           const decisions = res[this.currentPosition].options.decisions;
@@ -99,7 +96,7 @@ export class MockStoryDashboardComponent implements OnInit {
           return res;
         }),
       ).subscribe(
-        val => { },
+        val => val,
         error => { console.log('data collection error occurred : ', error); },
         () => {
           console.log('information gathered');

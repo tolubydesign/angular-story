@@ -57,7 +57,7 @@ export class StoryService {
 
   completeStory() {
     this.currentStoryPosition = 0;
-    this.completeStory$ = this.httpClient.get(this.completeStoryUrl)
+    this.completeStory$ = this.httpClient.get<MockStoryStructure[]>(this.completeStoryUrl)
       .pipe(
         map(res => res)
       )

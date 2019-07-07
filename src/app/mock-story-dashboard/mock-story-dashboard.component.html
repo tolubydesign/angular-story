@@ -21,15 +21,14 @@
   </div>
 
   <!-- choices: reader choices -->
-  <mat-card-actions class="story--choices--container">
-    <button 
+  <div class="story--choices--container">
+    <button
+    value="{{ choice.decision }}"
     *ngFor="let choice of readerChoices"
     (click)="onReaderDecision($event)"
-    value="{{ choice.decision }}"
     class="story-choice pointer">
       {{ choice.summary }}
     </button>
-  </mat-card-actions>
+  </div>
 
-  <app-dummy-component></app-dummy-component>
 </div>

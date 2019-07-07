@@ -13,6 +13,13 @@
     [narrative]="narrative"></app-mock-story-board>
   </div>
 
+
+  <!-- navigation buttons : for development -->
+  <div class="navigation--button">
+    <app-nav-button (click)="onNavigateDialogue('previous')" navigationButton="previous"></app-nav-button>
+    <app-nav-button (click)="onNavigateDialogue('next')" navigationButton="next"></app-nav-button>
+  </div>
+
   <!-- choices: reader choices -->
   <mat-card-actions class="story--choices--container">
     <button 
@@ -24,11 +31,5 @@
     </button>
   </mat-card-actions>
 
-
-  <!-- navigation buttons -->
-  <div class="navigation--button">
-    <app-nav-button (click)="onNavigateDialogue('previous')" navigationButton="previous"></app-nav-button>
-    <app-nav-button (click)="onNavigateDialogue('next')" navigationButton="next"></app-nav-button>
-  </div>
-  <!-- <app-dummy-component></app-dummy-component> -->
+  <app-dummy-component></app-dummy-component>
 </div>

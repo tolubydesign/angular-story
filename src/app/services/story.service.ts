@@ -65,8 +65,7 @@ export class StoryService {
         (data: any[]) => {
           this.fullNarrative = data;
           console.log('full narrative', this.fullNarrative);
-          // return data;
-          throw Error;
+          return data;
         },
         (error: any) => {
           console.log('an error has occurred', error);

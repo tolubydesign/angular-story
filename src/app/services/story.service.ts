@@ -33,7 +33,7 @@ export class StoryService {
   //   return of(MOCK_STORY_DATA);
   // }
 
-  switchStoryPosition(event: string) {
+  navigateNarrative(event: string) {
     if (event === 'previous') {
       if (this.currentStoryPosition > 0) {
         console.log(this.currentStoryPosition);

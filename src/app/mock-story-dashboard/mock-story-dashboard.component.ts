@@ -61,8 +61,8 @@ export class MockStoryDashboardComponent implements OnInit {
       );
   }
 
-  navigateDialogue(element: string) {
-    this.storyService.switchStoryPosition(element);
+  onNavigateDialogue(element: string) {
+    this.storyService.navigateNarrative(element);
     // update whole of program
     this.updateDialogue();
   }

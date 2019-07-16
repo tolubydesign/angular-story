@@ -36,11 +36,15 @@
     padding: 1em;
     border-radius: 3px;
     margin: .5em;
-    background: none;
-
+    color: #ddd;
+    background-image: linear-gradient(60deg, #545454, #3e3b3b);
+    opacity: .9;
+    // background: none;
+    
     &:hover {
       background-color: rgb(235, 235, 235);
       animation: move-up .5s;
+      transform: translate(0, -6px);
     }
   }
 }

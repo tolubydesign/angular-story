@@ -3,7 +3,9 @@ import { NgModule } from '@angular/core';
 
 /* angular material */
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { MatButtonModule, MatCheckboxModule, MatCardModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 /* router */
 import { AppRoutingModule } from './app-routing.module';

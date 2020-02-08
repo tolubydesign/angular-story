@@ -5,12 +5,12 @@ import { Observable, of } from 'rxjs';
 import { catchError, map, tap, finalize } from 'rxjs/operators';
 
 // data
-import { COMMENT_DATA } from '../data/mock-data';
-import { MOCK_STORY_DATA } from '../data/mock-story-data';
+import { COMMENT_DATA } from '../references/mock-data';
+import { MOCK_STORY_DATA } from '../references/mock-story-data';
 
 // class and interface
-import { MockStoryStructure } from '../data/mock-story-structure';
-import { Comment } from '../data/Comment';
+import { MockStoryStructure } from '../references/mock-story-structure';
+import { Comment } from '../references/Comment';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +32,7 @@ export class UserCommentsService {
     this.messageService.add(`${message}`);
   }
 
-  getLocalComments(): Observable<Comment[]> {
+  getLocalComments(): Observable<Partial<Comment[]>> {
     return of(COMMENT_DATA);
     // return this.httpService.get<Comment[]>(this.commentUrl).pipe(
     //   tap(_ => this.log(`got comment`)),

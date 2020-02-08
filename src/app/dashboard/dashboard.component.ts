@@ -3,7 +3,7 @@ import 'hammerjs';
 
 /* data */
 // TODO: replace with *API
-import { DETAILS } from '../data/story-dialogue';
+import { DETAILS } from '../references/story-dialogue';
 
 @Component({
   selector: 'app-dashboard',

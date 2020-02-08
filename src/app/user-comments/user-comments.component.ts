@@ -5,7 +5,7 @@ import { of, interval, Subscription, Observable, } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { MessageService } from '../services/message.service';
 import { map } from 'rxjs/operators';
-import { Comment } from '../data/Comment';
+import { Comment } from '../references/Comment';
 
 @Component({
   selector: 'app-user-comments',

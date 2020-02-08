@@ -1,4 +1,3 @@
-// tslint:disable: max-line-length
 export const COMMENT_DATA = [
   {
     postId: 1,

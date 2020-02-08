@@ -5,10 +5,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
 // structure
-import { MockStoryStructure } from '../data/mock-story-structure';
+import { MockStoryStructure } from '../references/mock-story-structure';
 
 // data
-import { MOCK_STORY_DATA } from '../data/mock-story-data';
+import { MOCK_STORY_DATA } from '../references/mock-story-data';
 
 // components
 import { MockStoryDashboardComponent } from '../mock-story-dashboard/mock-story-dashboard.component';

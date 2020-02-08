@@ -3,7 +3,7 @@ import { map, concatAll, filter } from 'rxjs/operators';
 import { Observable, of, Subscription } from 'rxjs';
 
 // class and interface
-import { MockStoryStructure } from '../data/mock-story-structure';
+import { MockStoryStructure } from '../references/mock-story-structure';
 
 // service
 import { StoryService } from '../services/story.service';

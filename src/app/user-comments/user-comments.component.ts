@@ -22,6 +22,8 @@ export class UserCommentsComponent implements OnInit {
   pageTitle = 'Collection of Comments';
   private commentUrl = 'https://jsonplaceholder.typicode.com/comments';
 
+  arrayOfDisplayNumbers: number; 
+
   results: any;
   itemsOnDisplay = 3;
 

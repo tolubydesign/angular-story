@@ -1,7 +1,8 @@
 <mat-card-content>{{ pageTitle }}</mat-card-content>
 
 <mat-card-actions>
-  <button appValue *ngFor="let item of buttonValues" mat-button (click)="onButton($event)" value="{{ item + 1}}">{{ item }}</button>
+  <button appValue *ngFor="let item of buttonValues" mat-button (click)="onButton($event)"
+    value="{{ item + 1}}">{{ item }}</button>
 </mat-card-actions>
 
 <mat-card *ngFor="let user of usersOnDisplay" style="margin: 1em;">
@@ -10,11 +11,3 @@
   <mat-card-content *ngIf="user"> {{ user.body }} </mat-card-content>
 </mat-card>
 <button mat-button>{{ arrayOfDisplayNumbers }}</button>
-
-<!-- <mat-card *ngFor="let comment of results">
-  <div *ngIf="comment">
-    <mat-card-content> {{ comment.id }} id </mat-card-content>
-    <mat-card-title> {{ comment.email }} email</mat-card-title>
-    <mat-card-content> {{ comment.body }} body </mat-card-content>
-  </div>
-</mat-card> -->

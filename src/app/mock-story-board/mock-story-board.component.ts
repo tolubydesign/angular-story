@@ -23,10 +23,10 @@ export class MockStoryBoardComponent implements OnInit {
 
   getStory() {
     this.storyService.componentData().pipe(
-      map( res => res )
+      map(res => res)
     ).subscribe(
       data => {
-        console.log('--', {data});
+        console.log('--', { data });
       },
       error => {
         console.log(error);

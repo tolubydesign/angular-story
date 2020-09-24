@@ -86,9 +86,6 @@ export class UserCommentsComponent implements OnInit {
       map(data => {
         this.results = [
           data[this.firstDisplayValue],
-          // data[this.secondDisplayValue],
-          // data[this.thirdDisplayValue],
-          // data[this.fourthDisplayValue],
         ];
       })
     )

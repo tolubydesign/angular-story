@@ -34,21 +34,12 @@ export class UserCommentsService {
 
   getLocalComments(): Observable<Partial<Comment[]>> {
     return of(COMMENT_DATA);
-    // return this.httpService.get<Comment[]>(this.commentUrl).pipe(
-    //   tap(_ => this.log(`got comment`)),
-    //   catchError(this.handleError('something went wrong', []))
-    // );
   }
-
-  // getLocalStoryLayout(): Observable<MockStoryStructure[]> {
-  //   return of(MOCK_STORY_DATA);
-  // }
 
   getServerComments() {
     return this.httpService.get(this.commentUrl).pipe(
       map((res) => {
         this.data = res;
-        // console.log(this.data);
       }))
       .subscribe(() => { });
   }

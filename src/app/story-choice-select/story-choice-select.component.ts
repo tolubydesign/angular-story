@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { StoryService } from '../services/story.service';
 
 @Component({
   selector: 'app-story-choice-select',

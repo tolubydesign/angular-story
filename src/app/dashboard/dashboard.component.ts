@@ -14,11 +14,6 @@ import { DETAILS } from '../references/story-dialogue';
 export class DashboardComponent implements OnInit {
 
   details = DETAILS;
-
-  // props -- responses
-  // optionOne = 'YES';
-  // optionTwo = 'NO';
-
   optionSetOne = 'yes';
   optionSetTwo = 'no';
 

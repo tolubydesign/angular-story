@@ -7,12 +7,6 @@ import { map } from 'rxjs/operators';
 // structure
 import { MockStoryStructure } from '../references/mock-story-structure';
 
-// data
-import { MOCK_STORY_DATA } from '../references/mock-story-data';
-
-// components
-import { MockStoryDashboardComponent } from '../mock-story-dashboard/mock-story-dashboard.component';
-
 @Injectable({
   providedIn: 'root'
 })

@@ -3,11 +3,11 @@ import { StoryService } from '../services/story.service';
 import { map } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-mock-story-board',
-  templateUrl: './mock-story-board.component.html',
-  styleUrls: ['./mock-story-board.component.scss']
+  selector: 'app-narrative',
+  templateUrl: './narrative.component.html',
+  styleUrls: ['./narrative.component.scss']
 })
-export class MockStoryBoardComponent implements OnInit {
+export class NarrativeComponent implements OnInit {
 
   @Input() narrative: string;
   @Input() title: string;
@@ -38,4 +38,5 @@ export class MockStoryBoardComponent implements OnInit {
   onShowDialogue() {
     this.getStory();
   }
+
 }

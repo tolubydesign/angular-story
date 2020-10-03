@@ -11,32 +11,9 @@ export class NarrativeComponent implements OnInit {
 
   @Input() narrative: string;
   @Input() title: string;
-  localDialogue: string;
 
-  constructor(
-    private storyService: StoryService
-  ) { }
+  constructor() { }
 
   ngOnInit() {
-    this.storyService.currentStoryPosition = 0;
   }
-
-  getStory() {
-    this.storyService.componentData().pipe(
-      map(res => res)
-    ).subscribe(
-      data => {
-        console.log('--', { data });
-      },
-      error => {
-        console.log(error);
-      },
-      () => console.log('got information')
-    );
-  }
-
-  onShowDialogue() {
-    this.getStory();
-  }
-
 }

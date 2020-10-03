@@ -1,7 +1,6 @@
 import { MockStoryStructure } from './mock-story-structure';
 
 export const MOCK_STORY_DATA: MockStoryStructure[] = [
-// export const MOCK_STORY_DATA = [
   {
     id: 1,
     summary: '[1] Magna sint quis sunt dolor irure est eu.',

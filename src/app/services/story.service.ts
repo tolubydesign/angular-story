@@ -1,82 +1,80 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable, of, Subscription, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { map, tap, retry } from 'rxjs/operators';
 
 // structure
 import { MockStoryStructure } from '../references/mock-story-structure';
+import { computeMsgId } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StoryService {
 
-  currentStoryPosition = 0;
+  currentStoryPosition = new BehaviorSubject<number>(0);
+  currentStoryPosition$ = this.currentStoryPosition.asObservable();
+
+
   completeStoryUrl = './assets/data/story.json';
-  // TODO: update and compress code
-  completeStory$: Subscription = null;
-  fullNarrative: object[] = null;
-  narrativeData$: object = [];
+  storyScript$: Subscription = null;
+
+  fullNarrative = new BehaviorSubject<MockStoryStructure[]>(null);
+  fullNarrative$ = this.fullNarrative.asObservable();
+
+  // fullNarrative: object[] = null;
 
   constructor(
-    private httpClient: HttpClient,
+    private http: HttpClient,
   ) { }
 
-  // getLocalDialogue(): Observable<MockStoryStructure[]> {
-  //   return of(MOCK_STORY_DATA);
-  // }
-
   navigateNarrative(event: string) {
+    let position = this.currentStoryPosition.getValue();
+    let narrative = this.fullNarrative.getValue();
+
     if (event === 'previous') {
-      if (this.currentStoryPosition > 0) {
-        console.log(this.currentStoryPosition);
-        this.currentStoryPosition = this.currentStoryPosition - 1;
+      if (position > 0) {
+        console.log('position', position);
+        this.updateCurrentPosition(position - 1)
       } else {
-        // console.log('reached limit: smallest');
         return;
       }
+
     } else if (event === 'next') {
-      if (this.currentStoryPosition < this.fullNarrative.length - 1) {
-        console.log(this.currentStoryPosition);
-        this.currentStoryPosition = this.currentStoryPosition + 1;
+      if (position < narrative.length - 1) {
+        console.log('', position);
+        this.updateCurrentPosition(position + 1)
       } else {
-        // console.log('reached limit: largest');
         return;
       }
+
     } else {
       console.log('no more text to pass');
     }
   }
 
-  completeStory() {
-    this.currentStoryPosition = 0;
-    this.completeStory$ = this.httpClient.get<MockStoryStructure[]>(this.completeStoryUrl)
-      .pipe(
-        map(res => res)
-      )
-      .subscribe(
-        (data: any[]) => {
-          this.fullNarrative = data;
-          console.log('full narrative', this.fullNarrative);
-          return data;
-        },
-        (error: any) => {
-          console.log('an error has occurred', error);
-        },
-        () => {
-          this.completeStory$.unsubscribe();
-          console.log('(service) narrative colleted');
-        }
-      );
+  getStory() {
+    return this.http.get<MockStoryStructure[]>(this.completeStoryUrl).pipe(
+      tap((res: MockStoryStructure[]) => {
+        this.fullNarrative.next(res);
+        console.log(this.fullNarrative.getValue());
+        return res;
+      })
+    )
   }
 
   componentData(): Observable<MockStoryStructure[]> {
-    return this.narrativeData$ = this.httpClient.get<MockStoryStructure[]>(this.completeStoryUrl);
+    return this.http.get<MockStoryStructure[]>(this.completeStoryUrl);
   }
 
-  updateNarrative(a: number) {
-    console.log('new narrative position', {a});
-    this.currentStoryPosition = a - 1;
+  updateNarrative(position: number) {
+    console.log('updateNarrative', position);
+    // this.currentStoryPosition = a - 1;
+    this.updateCurrentPosition(position - 1)
+  }
+
+  updateCurrentPosition(position: number) {
+    this.currentStoryPosition.next(position)
   }
 }

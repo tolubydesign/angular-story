@@ -17,9 +17,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ButtonComponent } from './button/button.component';
-import { UserCommentsComponent } from './user-comments/user-comments.component';
 import { NavButtonComponent } from './nav-button/nav-button.component';
-import { StoryChoiceSelectComponent } from './story-choice-select/story-choice-select.component';
 import { CharacterPortraitComponent } from './character-portrait/character-portrait.component';
 import { NarrativeComponent } from './narrative/narrative.component';
 
@@ -28,9 +26,7 @@ import { NarrativeComponent } from './narrative/narrative.component';
     AppComponent,
     DashboardComponent,
     ButtonComponent,
-    UserCommentsComponent,
     NavButtonComponent,
-    StoryChoiceSelectComponent,
     CharacterPortraitComponent,
     NarrativeComponent
   ],

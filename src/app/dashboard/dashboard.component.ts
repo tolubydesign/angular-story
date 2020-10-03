@@ -28,7 +28,7 @@ export class DashboardComponent implements OnInit {
     private storyService: StoryService,
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.getStory();
   }
 
@@ -37,7 +37,7 @@ export class DashboardComponent implements OnInit {
     this.narrativeSubscription.unsubscribe();
   }
 
-  getStory() {
+  getStory(): void {
     this.getStorySubscription = this.storyService.getStory().subscribe(
       (story: MockStoryStructure[]) => {
         console.log('story', story);
@@ -62,19 +62,19 @@ export class DashboardComponent implements OnInit {
     )
   }
 
-  updateDialogue() {
+  updateDialogue(): void {
     this.updateStory();
   }
 
   /* an action a reader has decide to pick */
-  makeChoice(action: number) {
+  makeChoice(action: number): void {
     this.storyService.updateNarrative(action);
     this.updateDialogue();
     this.setDialogue();
   }
 
   /* set or update the current story options the reader can decide on picking */
-  updateStory() {
+  updateStory(): void {
     let narrative = this.storyService.fullNarrative.getValue();
     this.decisions = narrative[this.narrativePosition].options.decisions;
     this.summaries = narrative[this.narrativePosition].options.summary;
@@ -83,8 +83,6 @@ export class DashboardComponent implements OnInit {
 
   setDialogue(): void {
     let narrative = this.storyService.fullNarrative.getValue();
-    console.log('setDialogue.narrative', narrative);
-
     this.narrative = narrative[this.narrativePosition].story;
     this.title = narrative[this.narrativePosition].title;
   }
@@ -94,8 +92,6 @@ export class DashboardComponent implements OnInit {
     decisions.forEach((decisionsValue: number, index: string) => {
       this.choices.push({ decision: decisionsValue, summary: summary[index] });
     });
-
-    console.log('choices', this.choices);
   }
 
 }

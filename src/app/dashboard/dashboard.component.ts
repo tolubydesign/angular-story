@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { map, tap } from 'rxjs/operators';
 import { Subscription, Observable } from 'rxjs';
 import { StoryService } from '../services/story.service';
-import 'hammerjs';
 import { MockStoryStructure } from '../references/mock-story-structure';
 
 @Component({

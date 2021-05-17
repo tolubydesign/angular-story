@@ -1,5 +1,23 @@
 <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
   <mat-card class="story--board-container">
-    <app-mock-story-dashboard></app-mock-story-dashboard>
+    <div class="mock-story-board">
+
+      <div class="story-board--char-images">
+        <app-character-portrait class="character-image" *ngFor="let image of loopingCount(2)">
+        </app-character-portrait>
+      </div>
+
+      <div class="story--text">
+        <app-narrative class="story--text-container" [title]="title" [narrative]="narrative">
+        </app-narrative>
+      </div>
+
+      <!-- choices: reader choices -->
+      <div class="story--choices--container">
+        <button *ngFor="let choice of choices" value="{{ choice.decision }}" (click)="makeChoice(choice.decision)"
+          class="story-choice pointer">{{ choice.summary }}</button>
+      </div>
+
+    </div>
   </mat-card>
 </div>

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { ButtonComponent } from './button.component';
+import { CharacterPortraitComponent } from './character-portrait.component';
 
-describe('ButtonComponent', () => {
-  let component: ButtonComponent;
-  let fixture: ComponentFixture<ButtonComponent>;
+describe('CharacterPortraitComponent', () => {
+  let component: CharacterPortraitComponent;
+  let fixture: ComponentFixture<CharacterPortraitComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ButtonComponent ]
+      declarations: [ CharacterPortraitComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ButtonComponent);
+    fixture = TestBed.createComponent(CharacterPortraitComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

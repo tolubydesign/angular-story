@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import 'hammerjs';
-
-/* data */
-// TODO: replace with *API
-import { DETAILS } from '../references/story-dialogue';
+import { map, tap } from 'rxjs/operators';
+import { Subscription, Observable } from 'rxjs';
+import { StoryService } from '../services/story.service';
+import { MockStoryStructure } from '../references/mock-story-structure';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,35 +11,86 @@ import { DETAILS } from '../references/story-dialogue';
 })
 
 export class DashboardComponent implements OnInit {
+  narrativePosition: number;
+  narrative: string;
+  title: string;
 
-  details = DETAILS;
+  /* reader choices that can be picked */
+  choices;
+  decisions: any[];
+  summaries: any[];
 
-  // props -- responses
-  // optionOne = 'YES';
-  // optionTwo = 'NO';
+  getStorySubscription: Subscription;
+  narrativeSubscription: Subscription;
 
-  optionSetOne = 'yes';
-  optionSetTwo = 'no';
+  constructor(
+    private storyService: StoryService,
+  ) { }
 
-  onOption( value: string) {
-    console.log({value});
-    if (value = 'firstValue') {
-      this.initialFunction();
-    } else if (value = 'secondValue') {
-      this.secondaryFunction();
-    } else { return; }
+  ngOnInit(): void {
+    this.getStory();
   }
 
-  initialFunction() {
-    console.log(' initial function called');
-  }
-  secondaryFunction() {
-    console.log(' secondary function called');
+  ngOnDestroy(): void {
+    this.getStorySubscription.unsubscribe();
+    this.narrativeSubscription.unsubscribe();
   }
 
-  constructor() { }
+  getStory(): void {
+    this.getStorySubscription = this.storyService.getStory().subscribe(
+      (story: MockStoryStructure[]) => {
+        console.log('story', story);
+      }, (error: any) => {
+        console.log('an error has occurred', error);
+      }, () => {
+        this.setCurrentStoryPosition();
+        this.setDialogue();
+        this.updateStory();
+      }
+    );
+  }
 
-  ngOnInit() {
+  loopingCount(total: number) {
+    return new Array(total);
+  }
+
+  setCurrentStoryPosition() {
+    this.narrativeSubscription = this.storyService.currentStoryPosition$.subscribe(
+      (res: number) => { this.narrativePosition = res },
+      (error: Error) => { console.warn(error) },
+    )
+  }
+
+  updateDialogue(): void {
+    this.updateStory();
+  }
+
+  /* an action a reader has decide to pick */
+  makeChoice(action: number): void {
+    this.storyService.updateNarrative(action);
+    this.updateDialogue();
+    this.setDialogue();
+  }
+
+  /* set or update the current story options the reader can decide on picking */
+  updateStory(): void {
+    let narrative = this.storyService.fullNarrative.getValue();
+    this.decisions = narrative[this.narrativePosition].options.decisions;
+    this.summaries = narrative[this.narrativePosition].options.summary;
+    this.assignReaderOptions(this.decisions, this.summaries);
+  }
+
+  setDialogue(): void {
+    let narrative = this.storyService.fullNarrative.getValue();
+    this.narrative = narrative[this.narrativePosition].story;
+    this.title = narrative[this.narrativePosition].title;
+  }
+
+  assignReaderOptions(decisions: any, summary: any) {
+    this.choices = [];
+    decisions.forEach((decisionsValue: number, index: string) => {
+      this.choices.push({ decision: decisionsValue, summary: summary[index] });
+    });
   }
 
 }

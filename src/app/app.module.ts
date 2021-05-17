@@ -17,26 +17,18 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ButtonComponent } from './button/button.component';
-import { UserCommentsComponent } from './user-comments/user-comments.component';
-import { DummyComponentComponent } from './dummy-component/dummy-component.component';
-import { MockStoryDashboardComponent } from './mock-story-dashboard/mock-story-dashboard.component';
-import { MockStoryCharactersComponent } from './mock-story-characters/mock-story-characters.component';
-import { MockStoryBoardComponent } from './mock-story-board/mock-story-board.component';
 import { NavButtonComponent } from './nav-button/nav-button.component';
-import { StoryChoiceSelectComponent } from './story-choice-select/story-choice-select.component';
+import { CharacterPortraitComponent } from './character-portrait/character-portrait.component';
+import { NarrativeComponent } from './narrative/narrative.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
     ButtonComponent,
-    UserCommentsComponent,
-    DummyComponentComponent,
-    MockStoryDashboardComponent,
-    MockStoryCharactersComponent,
-    MockStoryBoardComponent,
     NavButtonComponent,
-    StoryChoiceSelectComponent
+    CharacterPortraitComponent,
+    NarrativeComponent
   ],
   imports: [
     BrowserModule,

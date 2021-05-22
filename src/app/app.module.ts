@@ -20,6 +20,9 @@ import { ButtonComponent } from './button/button.component';
 import { NavButtonComponent } from './nav-button/nav-button.component';
 import { CharacterPortraitComponent } from './character-portrait/character-portrait.component';
 import { NarrativeComponent } from './narrative/narrative.component';
+import { StartScreenComponent } from './shared/components/start-screen/start-screen.component';
+import { InteractionComponent } from './shared/components/interaction/interaction.component';
+import { EditorComponent } from './shared/components/editor/editor.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +31,10 @@ import { NarrativeComponent } from './narrative/narrative.component';
     ButtonComponent,
     NavButtonComponent,
     CharacterPortraitComponent,
-    NarrativeComponent
+    NarrativeComponent,
+    StartScreenComponent,
+    InteractionComponent,
+    EditorComponent
   ],
   imports: [
     BrowserModule,

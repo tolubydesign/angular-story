@@ -6,6 +6,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import {MatListModule} from '@angular/material/list';
 
 /* router */
 import { AppRoutingModule } from './app-routing.module';
@@ -43,6 +44,7 @@ import { EditorComponent } from './shared/components/editor/editor.component';
     MatButtonModule,
     MatCheckboxModule,
     MatCardModule,
+    MatListModule,
     HttpClientModule,
   ],
   providers: [],

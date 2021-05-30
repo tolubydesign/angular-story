@@ -1,0 +1,7 @@
+version: '3.3'
+services:
+  angular-story-docker:
+    container_name: angular-docker-container
+    build: ./app-to-run-inside-docker
+    ports:
+      - '8080:80'

@@ -1,7 +1,6 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "downlevelIteration": true,
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
@@ -18,6 +17,12 @@
       "es2018",
       "dom"
     ],
+    "baseUrl": "./",
+    "paths": {
+      "@data/*": [ "./src/assets/data/*" ],
+      "@services/*": [ "./src/app/services/*" ],
+      "@models/*": [ "./src/app/shared/models/*" ],
+    },
   },
   "angularCompilerOptions": {
     "strictTemplates": true,

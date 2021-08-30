@@ -16,7 +16,6 @@ export class StoryService {
   currentStoryPosition = new BehaviorSubject<number>(0);
   currentStoryPosition$ = this.currentStoryPosition.asObservable();
 
-
   completeStoryUrl = './assets/data/story.json';
   storyScript$: Subscription = null;
 

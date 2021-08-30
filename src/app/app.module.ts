@@ -2,11 +2,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 /* angular material */
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import {MatListModule} from '@angular/material/list';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
 
 /* router */
 import { AppRoutingModule } from './app-routing.module';
@@ -46,6 +47,7 @@ import { EditorComponent } from './shared/components/editor/editor.component';
     MatCardModule,
     MatListModule,
     HttpClientModule,
+    MatIconModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

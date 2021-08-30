@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { PlotService } from '@services/plot/plot.service';
+import { Subscription, Observable } from 'rxjs';
+import { Plot } from '@models/plot';
 
 @Component({
   selector: 'app-editor',
@@ -7,9 +10,42 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EditorComponent implements OnInit {
 
-  constructor() { }
+  plotSubscription: Subscription;
+  storyEdits: Plot[]|null = null;
+
+  constructor(
+    private plotService: PlotService,
+  ) { }
 
   ngOnInit(): void {
+    this.getPlot();
+  }
+
+  ngOnDestroy(): void {
+    this.plotSubscription.unsubscribe();
+  }
+
+  getPlot(): void {
+    this.plotSubscription = this.plotService
+      .getPlot().subscribe(
+        (plot: any) => {
+          console.log('plot', plot);
+          this.storyEdits = plot;
+        }, (error: Error) => {
+          console.error(error);
+        }, () => {
+          // action completed
+        }
+      )
+
+  }
+
+  deletePlot(editID: string) {
+    console.log('delete');
+  }
+
+  editPlot(editID: string) {
+    console.log('edit');
   }
 
 }

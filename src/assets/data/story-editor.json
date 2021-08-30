@@ -1,0 +1,40 @@
+[
+  {
+    "id": "74f84ede-020f-42fa-b071-99e86678120e",
+    "title": "lorem - 74f84ede",
+    "description": "lorem",
+    "nextDialogue": [
+      {
+        "id": "f583f098-5de8-487e-b050-b1fa09e9997b",
+        "title": "lorem - f583f098",
+        "description": "lorem",
+        "nextDialogue": []
+      },
+      {
+        "id": "41121ef3-335d-43ec-bb39-29d14d63f040",
+        "title": "lorem - 41121ef3",
+        "description": "lorem",
+        "nextDialogue": []
+      }
+    ]
+  },
+  {
+    "id": "adb02efd-c3d1-453f-9569-26ab6876047c",
+    "title": "lorem - 99e1c5d2",
+    "description": "lorem",
+    "nextDialogue": [
+      {
+        "id": "99e1c5d2-a0e0-462e-9587-be123428fa3e",
+        "title": "lorem - a0e0",
+        "description": "lorem",
+        "nextDialogue": []
+      },
+      {
+        "id": "48a67c00-f6c9-480f-b078-1bfa6eb94600",
+        "title": "lorem - 48a67c00",
+        "description": "lorem",
+        "nextDialogue": []
+      }
+    ]
+  }
+]

@@ -12,4 +12,7 @@ export class InteractionComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  interact() {
+    console.log('interactive')
+  }
 }

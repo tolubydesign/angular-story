@@ -1,0 +1,34 @@
+.editor--component--section {
+  width: 100%;
+  height: 100%;
+}
+
+.return-home--link {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.subtitle {
+  margin: 0;
+}
+
+.subtitle-paragraph {
+  font-size: 14px;
+  margin: 0;
+}
+
+.card-description {
+  margin: 0;
+}
+
+.editor-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  width: 80vw;
+}
+
+.card-actions--group {
+  padding: 0;
+}

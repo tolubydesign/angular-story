@@ -26,6 +26,9 @@ import { StartScreenComponent } from './shared/components/start-screen/start-scr
 import { InteractionComponent } from './shared/components/interaction/interaction.component';
 import { EditorComponent } from './shared/components/editor/editor.component';
 
+/* graph component */
+import { NgxEchartsModule } from 'ngx-echarts';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -48,6 +51,9 @@ import { EditorComponent } from './shared/components/editor/editor.component';
     MatListModule,
     HttpClientModule,
     MatIconModule,
+    NgxEchartsModule.forRoot({
+      echarts: () => import('echarts')
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

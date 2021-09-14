@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, Subscription, BehaviorSubject } from 'rxjs';
+import { Observable, of, Subscription, BehaviorSubject, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 import { map, tap, retry } from 'rxjs/operators';
@@ -18,6 +18,8 @@ export class PlotService {
   plotData = new BehaviorSubject<Plot[]>(null);
   plotData$ = this.plotData.asObservable();
 
+  subject = new Subject();
+
   constructor(
     private http: HttpClient,
   ) { }
@@ -32,5 +34,14 @@ export class PlotService {
     )
   }
 
-
+  selectPlot(plotID) {
+    // loop though plot to find selected plot 
+    const values = this.plotData.getValue();
+    values.forEach(value => {
+      if (value.id === plotID) {
+        this.subject.next(value)
+        console.log('subject object value is updated')
+      }
+    })
+  }
 }

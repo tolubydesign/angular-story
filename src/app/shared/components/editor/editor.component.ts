@@ -11,7 +11,10 @@ import { Plot } from '@models/plot';
 export class EditorComponent implements OnInit {
 
   plotSubscription: Subscription;
-  storyEdits: Plot[]|null = null;
+  storyEdits: Plot[] | null = null;
+  
+  plotSelectionSubscription: Subscription;
+  selectedPlot: string = null;
 
   constructor(
     private plotService: PlotService,
@@ -19,10 +22,14 @@ export class EditorComponent implements OnInit {
 
   ngOnInit(): void {
     this.getPlot();
+    // subscribe to values in service
+    this.plotSelectionSubscription = this.plotService.subject
+      .subscribe((selection: string) => this.selectedPlot = selection)
   }
 
   ngOnDestroy(): void {
     this.plotSubscription.unsubscribe();
+    this.plotSelectionSubscription.unsubscribe();
   }
 
   getPlot(): void {
@@ -41,11 +48,11 @@ export class EditorComponent implements OnInit {
   }
 
   deletePlot(editID: string) {
-    console.log('delete');
+    console.log('delete', editID);
   }
 
   editPlot(editID: string) {
-    console.log('edit');
+    this.plotService.selectPlot(editID);
   }
 
 }

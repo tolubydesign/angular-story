@@ -3,9 +3,7 @@ import { Observable, of, Subscription, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 import { map, tap, retry } from 'rxjs/operators';
-
-// structure
-import { MockStoryStructure } from '../references/mock-story-structure';
+import { MockStoryStructure } from '@models/mock-story-structure';
 import { computeMsgId } from '@angular/compiler';
 
 @Injectable({

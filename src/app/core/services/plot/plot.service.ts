@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, Subscription, BehaviorSubject, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { HttpErrorResponse } from '@angular/common/http';
+// import { HttpErrorResponse } from '@angular/common/http';
 import { map, tap, retry } from 'rxjs/operators';
 import { Plot } from '@models/plot';
 // import { uuid } from 'uuidv4'; 
@@ -24,6 +24,7 @@ export class PlotService {
     private http: HttpClient,
   ) { }
 
+  // get plot form mock api. Will be 
   getPlot() {
     return this.http.get<Plot[]>(this.fullPlot).pipe(
       tap((res: Plot[]) => {

@@ -17,11 +17,11 @@ import { HttpClientModule } from '@angular/common/http';
 
 /* components */
 import { AppComponent } from './app.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { ButtonComponent } from './button/button.component';
-import { NavButtonComponent } from './nav-button/nav-button.component';
-import { CharacterPortraitComponent } from './character-portrait/character-portrait.component';
-import { NarrativeComponent } from './narrative/narrative.component';
+import { DashboardComponent } from './shared/components/dashboard/dashboard.component';
+import { ButtonComponent } from './shared/components/button/button.component';
+import { NavButtonComponent } from './shared/components/nav-button/nav-button.component';
+import { CharacterPortraitComponent } from './shared/components/character-portrait/character-portrait.component';
+import { NarrativeComponent } from './shared/components/narrative/narrative.component';
 import { StartScreenComponent } from './shared/components/start-screen/start-screen.component';
 import { InteractionComponent } from './shared/components/interaction/interaction.component';
 import { EditorComponent } from './shared/components/editor/editor.component';

@@ -1,4 +1,4 @@
-import { Dialogue } from './dialogue';
+import { Dialogue } from '@models/dialogue';
 
 export const DETAILS: Dialogue[] = [
   { title: 'Delta', text: 'Something with a twist' },

@@ -1,4 +1,4 @@
-import { MockStoryStructure } from './mock-story-structure';
+import { MockStoryStructure } from '@models/mock-story-structure';
 
 export const MOCK_STORY_DATA: MockStoryStructure[] = [
   {

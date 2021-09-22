@@ -28,6 +28,7 @@ import { EditorComponent } from './shared/components/editor/editor.component';
 
 /* graph component */
 import { NgxEchartsModule } from 'ngx-echarts';
+import { PanelComponent } from './shared/components/panel/panel.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { NgxEchartsModule } from 'ngx-echarts';
     NarrativeComponent,
     StartScreenComponent,
     InteractionComponent,
-    EditorComponent
+    EditorComponent,
+    PanelComponent
   ],
   imports: [
     BrowserModule,

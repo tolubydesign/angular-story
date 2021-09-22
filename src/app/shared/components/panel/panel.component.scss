@@ -1,0 +1,21 @@
+.panel--component {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  z-index: 2;
+  background: {
+    color: rgba(92, 92, 92, 0.5);
+  }
+}
+
+.mat-mini--button {
+  margin-bottom: 1.2rem;
+}

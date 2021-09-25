@@ -3,38 +3,62 @@
     "id": "74f84ede-020f-42fa-b071-99e86678120e",
     "title": "lorem - 74f84ede",
     "description": "lorem",
-    "nextDialogue": [
-      {
-        "id": "f583f098-5de8-487e-b050-b1fa09e9997b",
-        "title": "lorem - f583f098",
-        "description": "lorem",
-        "nextDialogue": []
-      },
-      {
-        "id": "41121ef3-335d-43ec-bb39-29d14d63f040",
-        "title": "lorem - 41121ef3",
-        "description": "lorem",
-        "nextDialogue": []
-      }
-    ]
+    "content": {
+      "id": "f583f098-5de8-487e-b050-b1fa09e9997b",
+      "name": "lorem - f583f098",
+      "description": "lorem level 1",
+      "children": [
+        {
+          "id": "f3f28bf0-e6d9-4b82-b4da-c4f187aefa32",
+          "name": "lorem - f3f28bf0",
+          "description": "lorem level 2",
+          "children": []
+        },
+        {
+          "id": "7e37ebba-90ac-4597-81c9-958dd7e2e3b2",
+          "name": "lorem - 7e37ebba",
+          "description": "lorem level 2",
+          "children": [
+            {
+              "id": "41121ef3-335d-43ec-bb39-29d14d63f040",
+              "name": "lorem - 41121ef3",
+              "description": "lorem level 3",
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
   },
   {
     "id": "adb02efd-c3d1-453f-9569-26ab6876047c",
     "title": "lorem - 99e1c5d2",
     "description": "lorem",
-    "nextDialogue": [
-      {
-        "id": "99e1c5d2-a0e0-462e-9587-be123428fa3e",
-        "title": "lorem - a0e0",
-        "description": "lorem",
-        "nextDialogue": []
-      },
-      {
-        "id": "48a67c00-f6c9-480f-b078-1bfa6eb94600",
-        "title": "lorem - 48a67c00",
-        "description": "lorem",
-        "nextDialogue": []
-      }
-    ]
+    "content": {
+      "id": "99e1c5d2-a0e0-462e-9587-be123428fa3e",
+      "name": "lorem - a0e0",
+      "description": "lorem level 1",
+      "children": [
+        {
+          "id": "82760da2-c7c1-4b4f-9188-756bd93a0c19",
+          "name": "lorem - f583f098",
+          "description": "lorem level 2",
+          "children": [
+            {
+              "id": "2e793952-fc79-4840-a807-c06b985bb07d",
+              "name": "lorem - f583f098",
+              "description": "lorem level 3",
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "48a67c00-f6c9-480f-b078-1bfa6eb94600",
+          "name": "lorem - 48a67c00",
+          "description": "lorem level 1",
+          "children": []
+        }
+      ]
+    }
   }
 ]

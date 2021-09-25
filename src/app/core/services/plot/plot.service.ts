@@ -3,7 +3,7 @@ import { Observable, of, Subscription, BehaviorSubject, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 // import { HttpErrorResponse } from '@angular/common/http';
 import { map, tap, retry } from 'rxjs/operators';
-import { Plot } from '@models/plot';
+import { Plot, PlotContent } from '@models/plot';
 // import { uuid } from 'uuidv4'; 
 // import { atob } from 'atob';
 

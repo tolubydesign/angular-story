@@ -1,7 +1,14 @@
 
-export class Plot {
+export interface Plot {
   id: string;
   title: string;
   description: string;
-  nextDialogue: Plot[]
+  content: PlotContent
+}
+
+export interface PlotContent {
+  id: string;
+  name: string;
+  description: string;
+  children: PlotContent[]
 }

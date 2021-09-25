@@ -1,25 +1,12 @@
-<article data-component="app panel component" [ngClass]="{'panel--component': true, 'second': false, 'third': false}">
+<article *ngIf="this.display" data-component="app panel component" [ngClass]="{'panel--component': true}">
   <button mat-mini-fab color="primary" aria-label="close icon" class="mat-mini--button">
-    <mat-icon aria-hidden="false" aria-label="close panel icon">close</mat-icon>
+    <mat-icon aria-hidden="false" aria-label="close panel icon" (click)="closePanel()">close</mat-icon>
   </button>
   <mat-card>
     <p>panel works!</p>
-    <!-- <mat-card-header>
-      <div mat-card-avatar class="example-header-image"></div>
-      <mat-card-title>Shiba Inu</mat-card-title>
-      <mat-card-subtitle>Dog Breed</mat-card-subtitle>
-    </mat-card-header>
-    <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
-    <mat-card-content>
-      <p>
-        The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
-        A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
-        bred for hunting.
-      </p>
-    </mat-card-content>
-    <mat-card-actions>
-      <button mat-button>LIKE</button>
-      <button mat-button>SHARE</button>
-    </mat-card-actions> -->
+    <p class="" style="text-align: center; max-width: 600px;">{{selectedPlot | json }}</p>
+    <br /><br /><br />
+    <div echarts [options]="treeOptions" class="demo-chart"></div>
+
   </mat-card>
 </article>

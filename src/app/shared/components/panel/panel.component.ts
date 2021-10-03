@@ -51,6 +51,10 @@ export class PanelComponent implements OnInit {
       `color: gray; font-weight: bold;`)
   }
 
+  onChartClick(ev): void {
+    console.log("(onChartClick)", ev)
+  }
+
   runTreeOption() {
     const content: PlotContent = this.selectedPlot.content
 

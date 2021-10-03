@@ -3,10 +3,10 @@
     <mat-icon aria-hidden="false" aria-label="close panel icon" (click)="closePanel()">close</mat-icon>
   </button>
   <mat-card>
-    <p>panel works!</p>
-    <p class="" style="text-align: center; max-width: 600px;">{{selectedPlot | json }}</p>
+    <p style="font-size: 10px; color: rgb(201, 201, 201);">panel works!</p>
+    <p class="" style="font-size: 9px; color: rgb(201, 201, 201); text-align: center; max-width: 600px;">{{selectedPlot | json }}</p>
     <br /><br /><br />
-    <div echarts [options]="treeOptions" class="demo-chart"></div>
+    <div echarts [options]="treeOptions" class="demo-chart" (chartClick)="onChartClick($event)"></div>
 
   </mat-card>
 </article>

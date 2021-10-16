@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import * as util from 'zrender/lib/core/util';
 import { Plot, PlotContent } from '@models/plot';
+// import { promise } from 'selenium-webdriver';
 
 @Component({
   selector: 'app-panel',
@@ -14,8 +15,9 @@ import { Plot, PlotContent } from '@models/plot';
 })
 export class PanelComponent implements OnInit {
 
-  selectedPlot: Plot = null;
+  // SUBSCRIPTIONS
   plotSelectionSubscription: Subscription;
+  selectedPlot: Plot = null;
   display: boolean = false;
   treeOptions: any;
 
@@ -24,16 +26,17 @@ export class PanelComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.showPanel()
     // subscribe to values in service
     this.plotSelectionSubscription = this.plotService.subject
       .subscribe((selection: Plot) => {
         this.selectedPlot = selection;
+        this.setNodesAndLinks(this.selectedPlot);
         this.showPanel();
         // make sure selectedPlot has a value before crating graph
         this.selectedPlot ? this.runTreeOption() : null;
       });
 
+    this.showPanel()
   }
 
   ngOnDestroy(): void {
@@ -41,25 +44,38 @@ export class PanelComponent implements OnInit {
   }
 
   showPanel(): void {
-    console.log(`%c checking if panel can be enabled`,
+    console.log("(showPanel)");
+    console.log(`%c-checking if panel can be enabled`,
       `color: gray; font-weight: bold;`)
     this.selectedPlot ? this.display = true : this.display = false;
   }
 
-  closePanel(): void {
-    console.log(`%c (closePanel)`,
-      `color: gray; font-weight: bold;`)
+  setNodesAndLinks (selection: Plot) {
+    if (selection) {
+      return this.plotService.setNodesAndLinks();
+    }
+    console.log("Selected plot can't be found");
   }
 
-  onChartClick(ev): void {
-    console.log("(onChartClick)", ev)
+  /**
+   * Function closes and clear selected plot and panel 
+   */
+  async closePanel() {
+    console.log(`%c-(closePanel)`,
+      `color: gray; font-weight: bold;`);
+    return this.plotService.closePanel()
+    .then(() => this.display = false);
+  }
+
+  onChartClick(ev: any): void {
+    console.log("(onChartClick)", typeof ev /** HTMLDivElement */)
   }
 
   runTreeOption() {
-    const content: PlotContent = this.selectedPlot.content
+    const content: PlotContent[] = this.selectedPlot.content
 
     util.each(
-      content.children,
+      content[0].children,
       (datum: any, index: number) => index % 2 === 0 && (datum.collapsed = true),
     );
 
@@ -71,7 +87,7 @@ export class PanelComponent implements OnInit {
       series: [
         {
           type: 'tree',
-          data: [content],
+          data: [content[0]],
           top: '1%',
           left: '7%',
           bottom: '1%',

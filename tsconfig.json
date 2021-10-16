@@ -10,6 +10,7 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "es2015",
+    "resolveJsonModule": true,
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -19,15 +20,10 @@
     ],
     "baseUrl": "./",
     "paths": {
-      "@data/*": [
-        "src/assets/data/*"
-      ],
-      "@services/*": [
-        "src/app/core/services/*"
-      ],
-      "@models/*": [
-        "src/app/shared/models/*"
-      ],
+      "@data/*": ["src/assets/data/*"],
+      "@services/*": ["src/app/core/services/*"],
+      "@models/*": ["src/app/shared/models/*"],
+      "@assets/*": ["src/assets/*"]
     },
   },
   "angularCompilerOptions": {

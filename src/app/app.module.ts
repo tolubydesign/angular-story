@@ -15,6 +15,9 @@ import { AppRoutingModule } from './app-routing.module';
 /* requests */
 import { HttpClientModule } from '@angular/common/http';
 
+/* graph component */
+import { NgxEchartsModule } from 'ngx-echarts';
+
 /* components */
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './shared/components/dashboard/dashboard.component';
@@ -25,10 +28,8 @@ import { NarrativeComponent } from './shared/components/narrative/narrative.comp
 import { StartScreenComponent } from './shared/components/start-screen/start-screen.component';
 import { InteractionComponent } from './shared/components/interaction/interaction.component';
 import { EditorComponent } from './shared/components/editor/editor.component';
-
-/* graph component */
-import { NgxEchartsModule } from 'ngx-echarts';
 import { PanelComponent } from './shared/components/panel/panel.component';
+
 
 @NgModule({
   declarations: [
@@ -55,7 +56,7 @@ import { PanelComponent } from './shared/components/panel/panel.component';
     MatIconModule,
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts')
-    })
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent]

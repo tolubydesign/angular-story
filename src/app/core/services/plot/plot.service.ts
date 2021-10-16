@@ -1,48 +1,66 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, Subscription, BehaviorSubject, Subject } from 'rxjs';
+import { Observable, of, Subscription, BehaviorSubject, Subject, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 // import { HttpErrorResponse } from '@angular/common/http';
-import { map, tap, retry } from 'rxjs/operators';
+import { map, tap, retry, catchError } from 'rxjs/operators';
 import { Plot, PlotContent } from '@models/plot';
-// import { uuid } from 'uuidv4'; 
-// import { atob } from 'atob';
-
+import { PlotModel } from "@models/plot.model";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlotService {
 
-  fullPlot = './../../../assets/data/story-editor.json';
+  Plot: PlotModel;
 
+  // BEHAVIOUR SUBJECT
   plotData = new BehaviorSubject<Plot[]>(null);
   plotData$ = this.plotData.asObservable();
 
-  subject = new Subject();
+  // SUBJECT
+  subject = new Subject(); // Plot 
 
   constructor(
     private http: HttpClient,
   ) { }
 
-  // get plot form mock api. Will be 
+  /** getPlot is created by outside component. Should only be called once. */
+  // get plot form mock api. Will be converted to live when ready. API and all
   getPlot() {
-    return this.http.get<Plot[]>(this.fullPlot).pipe(
-      tap((res: Plot[]) => {
-        this.plotData.next(res);
-        console.log('(getPlot)', this.plotData.getValue());
-        return res;
-      })
-    )
+    return this.http.get<Plot[]>("assets/data/story-editor.json")
+      .pipe(
+        catchError((err) => {
+          console.log('error caught in service')
+          console.warn(err);
+          //Handle the error here
+          return throwError(err); // Rethrow it back to component
+        })
+      )
+      .pipe(
+        tap((res: Plot[]) => {
+          console.log("(getPlot)", res);
+
+          this.plotData.next(res);
+          /** set new class to handle data and data manipulation */
+          this.Plot = new PlotModel(res);
+          return res;
+        })
+      )
+  }
+
+  async closePanel() {
+    return this.subject.next(null)
   }
 
   selectPlot(plotID) {
-    // loop though plot to find selected plot 
-    const values = this.plotData.getValue();
-    values.forEach(value => {
-      if (value.id === plotID) {
-        this.subject.next(value)
-        console.log('subject object value is updated')
-      }
-    })
+    /** 
+     * Pass the handling of finding the correct `subject` to the relevant Class.
+     * For cleaner code. */
+    return this.subject.next(this.Plot.selectPlot(plotID));
+  }
+
+  setNodesAndLinks() {
+    const content = this.Plot.selectedPlot.content;
+    return this.Plot.setNodesAndLinks(content);
   }
 }

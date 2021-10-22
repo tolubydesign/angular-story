@@ -29,6 +29,7 @@ import { StartScreenComponent } from './shared/components/start-screen/start-scr
 import { InteractionComponent } from './shared/components/interaction/interaction.component';
 import { EditorComponent } from './shared/components/editor/editor.component';
 import { PanelComponent } from './shared/components/panel/panel.component';
+import { DagreComponent } from './shared/components/d3/dagre/dagre.component';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { PanelComponent } from './shared/components/panel/panel.component';
     StartScreenComponent,
     InteractionComponent,
     EditorComponent,
-    PanelComponent
+    PanelComponent,
+    DagreComponent
   ],
   imports: [
     BrowserModule,

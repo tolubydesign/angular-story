@@ -30,6 +30,8 @@ import { InteractionComponent } from './shared/components/interaction/interactio
 import { EditorComponent } from './shared/components/editor/editor.component';
 import { PanelComponent } from './shared/components/panel/panel.component';
 import { DagreComponent } from './shared/components/d3/dagre/dagre.component';
+import { SankeyComponent } from './shared/components/d3/sankey/sankey.component';
+import { DendrogramComponent } from './shared/components/d3/dendrogram/dendrogram.component';
 
 
 @NgModule({
@@ -44,7 +46,9 @@ import { DagreComponent } from './shared/components/d3/dagre/dagre.component';
     InteractionComponent,
     EditorComponent,
     PanelComponent,
-    DagreComponent
+    DagreComponent,
+    SankeyComponent,
+    DendrogramComponent
   ],
   imports: [
     BrowserModule,

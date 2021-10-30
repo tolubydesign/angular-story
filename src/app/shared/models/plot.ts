@@ -9,6 +9,6 @@ export interface Plot {
 export interface PlotContent {
   id: string;
   name: string;
-  description: string;
-  children: PlotContent[]
+  description?: string;
+  children?: PlotContent[]
 }

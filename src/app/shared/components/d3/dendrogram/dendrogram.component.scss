@@ -19,8 +19,19 @@
   text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
 }
 
-.link {
+.node-link {
   fill: none;
   stroke: rgba(50, 50, 93, 0.5);
   stroke-width: 2px;
+  stroke: #6c5ce7;
+}
+
+.node-link-example {
+  width: 10px;
+  height: 20px;
+  background-color: orange;
+}
+
+.dendrogram-svg {
+  background-color: #d6d2f0;  
 }

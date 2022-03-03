@@ -16,7 +16,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 
 /* graph component */
-import { NgxEchartsModule } from 'ngx-echarts';
+// import { NgxEchartsModule } from 'ngx-echarts';
 
 /* components */
 import { AppComponent } from './app.component';
@@ -60,9 +60,9 @@ import { DendrogramComponent } from './shared/components/d3/dendrogram/dendrogra
     MatListModule,
     HttpClientModule,
     MatIconModule,
-    NgxEchartsModule.forRoot({
-      echarts: () => import('echarts')
-    }),
+    // NgxEchartsModule.forRoot({
+    //   echarts: () => import('echarts')
+    // }),
   ],
   providers: [],
   bootstrap: [AppComponent]

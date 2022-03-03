@@ -2,6 +2,37 @@
 import * as uuid from 'uuid';
 import { PlotContent } from './plot';
 
+export interface DendrogramData {
+  data: {
+    id: string;
+    name: string
+  };
+  depth: number;
+  height: number;
+  parent: DendrogramDataParent;
+  x: number;
+  y: number;
+}
+
+export interface DendrogramDataParent {
+  children: DendrogramData[]
+  data: {
+    id: string;
+    name: string;
+    children: DendrogramData[];
+  };
+  depth: 3;
+  height: 1;
+  parent: {
+    height: 4;
+    depth: 2;
+    x: 122.80701754385966
+  };
+  x: 184.21052631578948
+  y: 480
+}
+
+
 export const treeData: PlotContent = {
   id: generateID(),
   name: "Application",
@@ -397,5 +428,5 @@ export const treeData: PlotContent = {
 
 
 function generateID() {
-    return uuid.v4();
+  return uuid.v4();
 }

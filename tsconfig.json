@@ -1,3 +1,4 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
@@ -21,9 +22,6 @@
       "es2020",
       "dom"
     ],
-    "typeRoots": [
-      "node_modules/@types"
-    ],
     "paths": {
       "@data/*": ["src/assets/data/*"],
       "@services/*": ["src/app/core/services/*"],
@@ -32,6 +30,9 @@
     },
   },
   "angularCompilerOptions": {
-    "strictTemplates": true,
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
   }
 }

@@ -1,5 +1,4 @@
 import { uuid } from 'uuidv4';
-// import { atob } from 'atob';
 import { Plot, PlotContent } from "@models/plot";
 import { GraphNode, GraphLink } from "@models/nodes-links";
 
@@ -9,7 +8,7 @@ export class PlotModel {
   private nodes: GraphNode[] = [];
   private links: GraphLink[] = [];
 
-  public selectedPlot: Plot | null;
+  public selectedPlot: Plot | null = null;
 
   constructor(data: Plot[]) {
     this.originalValue = data;

@@ -15,11 +15,11 @@ export class SankeyComponent implements OnInit {
     this.drawBars();
   }
 
-  private svg;
-  link;
-  graph;
-  path;
-  sankey;
+  private svg: any;
+  link: any;
+  graph: any;
+  path: any;
+  sankey: any;
   units = "Widgets";
 
   // set the dimensions and margins of the graph
@@ -29,7 +29,7 @@ export class SankeyComponent implements OnInit {
 
   // format variables
   formatNumber = d3.format(",.0f");    // zero decimal places
-  format = function (d) { return this.formatNumber(d) + " " + this.units; };
+  format = (d: any) => { return this.formatNumber(d) + " " + this.units; };
   color = d3.scaleOrdinal(d3.schemeCategory10);
 
   /** FUNCTIONS */

@@ -1,4 +1,3 @@
-import { uuid } from 'uuidv4';
 import { Plot, PlotContent } from "@models/plot";
 import { GraphNode, GraphLink } from "@models/nodes-links";
 

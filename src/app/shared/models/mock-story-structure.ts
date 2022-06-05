@@ -1,10 +1,10 @@
 export class MockStoryStructure {
-  id: number;
-  summary: string;
-  title: string;
-  story: string;
+  id!: number;
+  summary: string | undefined;
+  title: string | undefined;
+  story: string | undefined;
   options: {
     decisions: number[],
     summary: string[],
-  };
+  } | undefined;
 }

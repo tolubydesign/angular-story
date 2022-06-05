@@ -23,8 +23,8 @@ export class DendrogramComponent implements OnInit {
     this.initSvg();
   }
 
-  private svg;
-  private tree;
+  private svg: any;
+  private tree: any;
   private elementName = "svg#dendrogram"
   // data: any = (dataJson as any).default;
   margin = { top: 50, bottom: 50, right: 10, left: 20 };
@@ -152,7 +152,7 @@ export class DendrogramComponent implements OnInit {
     // adds the circle to the node
     node.append("circle")
       .attr("r", 5)
-      .on("click", (element, val, index) => this.handleClickOnEntity(element, val, index));
+      .on("click", (element: unknown, val: unknown, index: number) => this.handleClickOnEntity(element, val, index));
 
     // adds the text to the node
     node

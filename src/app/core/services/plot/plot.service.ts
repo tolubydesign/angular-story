@@ -11,10 +11,10 @@ import { PlotModel } from "@models/plot.model";
 })
 export class PlotService {
 
-  Plot: PlotModel;
+  Plot: PlotModel | null = null;
 
   // BEHAVIOUR SUBJECT
-  plotData = new BehaviorSubject<Plot[]>(null);
+  plotData = new BehaviorSubject<Plot[] | undefined>(undefined);
   plotData$ = this.plotData.asObservable();
 
   // SUBJECT
@@ -52,15 +52,17 @@ export class PlotService {
     return this.subject.next(null)
   }
 
-  selectPlot(plotID) {
+  selectPlot(plotID: string) {
     /** 
      * Pass the handling of finding the correct `subject` to the relevant Class.
      * For cleaner code. */
-    return this.subject.next(this.Plot.selectPlot(plotID));
+    return this.subject.next(this.Plot?.selectPlot(plotID));
   }
 
   setNodesAndLinks() {
-    const content = this.Plot.selectedPlot.content;
-    return this.Plot.setNodesAndLinks(content);
+    const content = this.Plot?.selectedPlot?.content;
+    if (content) {
+      this.Plot?.setNodesAndLinks(content);
+    }
   }
 }

@@ -15,9 +15,9 @@ export class StoryService {
   currentStoryPosition$ = this.currentStoryPosition.asObservable();
 
   completeStoryUrl = './assets/data/story.json';
-  storyScript$: Subscription = null;
+  storyScript$: Subscription | null = null;
 
-  fullNarrative = new BehaviorSubject<MockStoryStructure[]>(null);
+  fullNarrative = new BehaviorSubject<MockStoryStructure[] | null>(null);
   fullNarrative$ = this.fullNarrative.asObservable();
 
   // fullNarrative: object[] = null;
@@ -28,7 +28,7 @@ export class StoryService {
 
   navigateNarrative(event: string) {
     let position = this.currentStoryPosition.getValue();
-    let narrative = this.fullNarrative.getValue();
+    let narrative: MockStoryStructure[] | null = this.fullNarrative.getValue() as MockStoryStructure[];
 
     if (event === 'previous') {
       if (position > 0) {

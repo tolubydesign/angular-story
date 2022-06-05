@@ -11,17 +11,17 @@ import { MockStoryStructure } from '@models/mock-story-structure';
 })
 
 export class DashboardComponent implements OnInit {
-  narrativePosition: number;
-  narrative: string;
-  title: string;
+  narrativePosition: number | null = null;
+  narrative: string | undefined;
+  title: string | undefined;
 
   /* reader choices that can be picked */
-  choices;
-  decisions: any[];
-  summaries: any[];
+  choices: any;
+  decisions: any[] | null = null;
+  summaries: any[] | null = null;
 
-  getStorySubscription: Subscription;
-  narrativeSubscription: Subscription;
+  getStorySubscription: Subscription | null = null;
+  narrativeSubscription: Subscription | null = null;
 
   constructor(
     private storyService: StoryService,
@@ -32,8 +32,13 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.getStorySubscription.unsubscribe();
-    this.narrativeSubscription.unsubscribe();
+    if (this.getStorySubscription) {
+      this.getStorySubscription.unsubscribe();
+    }
+
+    if (this.narrativeSubscription) {
+      this.narrativeSubscription.unsubscribe();
+    }
   }
 
   getStory(): void {
@@ -61,29 +66,35 @@ export class DashboardComponent implements OnInit {
     )
   }
 
-  updateDialogue(): void {
-    this.updateStory();
-  }
+  // updateDialogue(): void {
+  //   this.updateStory();
+  // }
 
   /* an action a reader has decide to pick */
   makeChoice(action: number): void {
     this.storyService.updateNarrative(action);
-    this.updateDialogue();
+    // this.updateDialogue();
+    this.updateStory();
     this.setDialogue();
   }
 
   /* set or update the current story options the reader can decide on picking */
   updateStory(): void {
-    let narrative = this.storyService.fullNarrative.getValue();
-    this.decisions = narrative[this.narrativePosition].options.decisions;
-    this.summaries = narrative[this.narrativePosition].options.summary;
+    let narrative: MockStoryStructure[] | null = this.storyService.fullNarrative.getValue();
+    if (this.narrativePosition && narrative) {
+      // this.decisions = narrative[this.narrativePosition].options.decisions;
+      // this.summaries = narrative[this.narrativePosition].options.summary;
+    }
+    
     this.assignReaderOptions(this.decisions, this.summaries);
   }
 
   setDialogue(): void {
-    let narrative = this.storyService.fullNarrative.getValue();
-    this.narrative = narrative[this.narrativePosition].story;
-    this.title = narrative[this.narrativePosition].title;
+    let narrative: MockStoryStructure[] | null = this.storyService.fullNarrative.getValue();
+    if (this.narrativePosition && narrative) {
+      this.narrative = narrative[this.narrativePosition].story;
+      this.title = narrative[this.narrativePosition].title;
+    }
   }
 
   assignReaderOptions(decisions: any, summary: any) {

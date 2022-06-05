@@ -8,8 +8,8 @@ import { map } from 'rxjs/operators';
 })
 export class NarrativeComponent implements OnInit {
 
-  @Input() narrative: string;
-  @Input() title: string;
+  @Input() narrative: string | undefined;
+  @Input() title: string | undefined;
 
   constructor() { }
 

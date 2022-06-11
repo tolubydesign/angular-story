@@ -7,6 +7,7 @@ import { treeData } from "@models/tree-data.model";
 // import {geoPath} from "d3-geo";
 import { visualizationData } from "@models/tangled-tree-visualization-data";
 import { svg } from 'd3';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-dendrogram',
@@ -19,10 +20,11 @@ export class DendrogramComponent implements OnInit {
    *  https://codesandbox.io/s/treemap-developer-forked-zrzcm?file=/src/Treemap/Treemap.tsx:3649-3652 && 
    *  https://codesandbox.io/examples/package/@types/d3
    */
-  constructor() { }
+  constructor(private sanitizer: DomSanitizer) { }
 
   ngOnInit() {
     this.initSvg();
+    this.renderChart();
   }
 
   private svg: any;
@@ -36,8 +38,7 @@ export class DendrogramComponent implements OnInit {
   // private D3Transition = d3.transition().duration(750).ease(d3.easeLinear);
 
   treeVisualizationData = visualizationData
-
-  treeVisualizationHTMLDiagram: Promise<Document> | undefined;
+  treeVisualizationHTMLDiagram: SafeHtml | Promise<Document> | undefined;
 
   /**
    * Function creates svg graph
@@ -189,73 +190,69 @@ export class DendrogramComponent implements OnInit {
   color = d3.scaleOrdinal(d3.schemeDark2);
   background_color = 'white';
 
-  renderChart (options: any = {}) {
+  renderChart(options: any = {}) {
     options.color ||= (d: any, i: any) => this.color(i)
-    
     const tangleLayout = this.constructTangleLayout(JSON.parse(JSON.stringify(this.treeVisualizationData)), options);
-  
-    const diagram =  svg(
-      `<svg width="${tangleLayout.layout.width}" height="${
-        tangleLayout.layout.height
+
+    const diagram = `<svg width="${tangleLayout.layout.width}" height="${tangleLayout.layout.height
       }" style="background-color: ${this.background_color}">
-      <style>
-        text {
-          font-family: sans-serif;
-          font-size: 10px;
-        }
-        .node {
-          stroke-linecap: round;
-        }
-        .link {
-          fill: none;
-        }
-      </style>
-    
-      ${tangleLayout.bundles.map((b: any, i: number) => {
+    <style>
+      text {
+        font-family: sans-serif;
+        font-size: 10px;
+      }
+      .node {
+        stroke-linecap: round;
+      }
+      .link {
+        fill: none;
+      }
+    </style>
+  
+    ${tangleLayout.bundles.map((b: any, i: number) => {
+        console.log("tangleLayout.bundles.map", b)
         let d = b.links
           .map(
             (l: any) => `
-          M${l.xt} ${l.yt}
-          L${l.xb - l.c1} ${l.yt}
-          A${l.c1} ${l.c1} 90 0 1 ${l.xb} ${l.yt + l.c1}
-          L${l.xb} ${l.ys - l.c2}
-          A${l.c2} ${l.c2} 90 0 0 ${l.xb + l.c2} ${l.ys}
-          L${l.xs} ${l.ys}`
+        M${l.xt} ${l.yt}
+        L${l.xb - l.c1} ${l.yt}
+        A${l.c1} ${l.c1} 90 0 1 ${l.xb} ${l.yt + l.c1}
+        L${l.xb} ${l.ys - l.c2}
+        A${l.c2} ${l.c2} 90 0 0 ${l.xb + l.c2} ${l.ys}
+        L${l.xs} ${l.ys}`
           )
           .join("");
         return `
-          <path class="link" d="${d}" stroke="${this.background_color}" stroke-width="5"/>
-          <path class="link" d="${d}" stroke="${options.color(b, i)}" stroke-width="2"/>
-        `;
+        <path class="link" d="${d}" stroke="${this.background_color}" stroke-width="5"/>
+        <path class="link" d="${d}" stroke="${options.color(b, i)}" stroke-width="2"/>
+      `;
       })}
-    
-      ${tangleLayout.nodes.map(
+  
+    ${tangleLayout.nodes.map(
         (n: any) => `
-        <path class="selectable node" data-id="${
-          n.id
-        }" stroke="black" stroke-width="8" d="M${n.x} ${n.y - n.height / 2} L${
-          n.x
-        } ${n.y + n.height / 2}"/>
-        <path class="node" stroke="white" stroke-width="4" d="M${n.x} ${n.y -
+      <path class="selectable node" data-id="${n.id
+          }" stroke="black" stroke-width="8" d="M${n.x} ${n.y - n.height / 2} L${n.x
+          } ${n.y + n.height / 2}"/>
+      <path class="node" stroke="white" stroke-width="4" d="M${n.x} ${n.y -
           n.height / 2} L${n.x} ${n.y + n.height / 2}"/>
-    
-        <text class="selectable" data-id="${n.id}" x="${n.x + 4}" y="${n.y -
+  
+      <text class="selectable" data-id="${n.id}" x="${n.x + 4}" y="${n.y -
           n.height / 2 -
           4}" stroke="${this.background_color}" stroke-width="2">${n.id}</text>
-        <text x="${n.x + 4}" y="${n.y -
+      <text x="${n.x + 4}" y="${n.y -
           n.height / 2 -
           4}" style="pointer-events: none;">${n.id}</text>
-      `
+    `
       )}
-    
-      </svg>`
-    );
+  
+    </svg>`
 
-    this.treeVisualizationHTMLDiagram = diagram;
+    this.treeVisualizationHTMLDiagram = this.sanitizer.bypassSecurityTrustHtml(`${diagram}`);
     return diagram
   }
 
   constructTangleLayout(levels: any, options: any = {}) {
+
     // precompute level depth
     levels.forEach((l: any, i: any) => l.forEach((n: any, index: number) => (n.level = i)));
 
@@ -274,7 +271,7 @@ export class DendrogramComponent implements OnInit {
     levels.forEach((l: any, i: number) => {
       var index: any = {};
       l.forEach((n: any) => {
-        if (n.parents.length == 0) {
+        if (n.parents.length == 0 || !n) {
           return;
         }
 
@@ -282,38 +279,44 @@ export class DendrogramComponent implements OnInit {
           .map((d: any) => d.id)
           .sort()
           .join('-X-');
+
         if (id in index) {
           index[id].parents = index[id].parents.concat(n.parents);
         } else {
+
           const minValue: any = d3.min(n.parents, (p: any) => p.level)
+
           if (minValue) {
             index[id] = { id: id, parents: n.parents.slice(), level: i, span: i - minValue };
           }
         }
+
         n.bundle = index[id];
       });
       l.bundles = Object.keys(index).map((k: any) => index[k]);
       l.bundles.forEach((b: any, i: number) => (b.i = i));
     });
 
-    var links: any = [];
+    let links: any = [];
+
     nodes.forEach((d: any) => {
-      d.parents.forEach((p: any) =>
-        links.push({ source: d, bundle: d.bundle, target: p })
-      );
+      d.parents.forEach((p: any) => links.push({ source: d, bundle: d.bundle, target: p }));
     });
 
-    var bundles = levels.reduce((a: any, x: any) => a.concat(x.bundles), []);
+    let bundles = levels.reduce((a: any, x: any) => a.concat(x.bundles), []);
 
     // reverse pointer from parent to bundles
     bundles.forEach((b: any) =>
+
       b.parents.forEach((p: any) => {
         if (p.bundles_index === undefined) {
           p.bundles_index = {};
         }
+
         if (!(b.id in p.bundles_index)) {
           p.bundles_index[b.id] = [];
         }
+
         p.bundles_index[b.id].push(b);
       })
     );
@@ -325,15 +328,20 @@ export class DendrogramComponent implements OnInit {
         n.bundles_index = {};
         n.bundles = [];
       }
+
       n.bundles.sort((a: any, b: any) => d3.descending(d3.max(a, (d: any) => d.span), d3.max(b, (d: any) => d.span)))
       n.bundles.forEach((b: any, i: any) => (b.i = i));
     });
 
+
     links.forEach((l: any) => {
-      if (l.bundle.links === undefined) {
+      if (!l.bundle) {
+        l.bundle = { links: [] };
+      };
+
+      if (l.bundle.links === undefined || !l.bundle.links) {
         l.bundle.links = [];
       }
-      l.bundle.links.push(l);
     });
 
     // layout
@@ -345,7 +353,11 @@ export class DendrogramComponent implements OnInit {
     const metro_d = 4;
     const min_family_height = 22;
 
-    options.c ||= 16;
+    // ORIGINAL: options.c ||= 16;
+    if ((options || !options) && (!options.c || options.c === "")) {
+      options.c = 16;
+    }
+
     const c = options.c;
     options.bigc ||= node_width + c;
 
@@ -382,39 +394,60 @@ export class DendrogramComponent implements OnInit {
 
     links.forEach((l: any) => {
       l.xt = l.target.x;
-      l.yt =
-        l.target.y +
-        l.target.bundles_index[l.bundle.id].i * metro_d -
-        (l.target.bundles.length * metro_d) / 2 +
-        metro_d / 2;
-      l.xb = l.bundle.x;
-      l.yb = l.bundle.y;
+
+      if (l.bundle && l.bundle.id) {
+        l.yt = l.target.y + l.target.bundles_index[l.bundle.id].i * metro_d - (l.target.bundles.length * metro_d) / 2 + metro_d / 2;
+      }
+
+      if (l.bundle && l.bundle.x) {
+        l.xb = l.bundle.x;
+      }
+
+      if (l.bundle && l.bundle.x) {
+        l.yb = l.bundle.y;
+      }
+
       l.xs = l.source.x;
       l.ys = l.source.y;
     });
 
+
+
     // compress vertical space
     var y_negative_offset = 0;
     levels.forEach((l: any) => {
-      const minValue = d3.min(l.bundles, (b: any) => d3.min(b.links, (link: any) => link.ys - 2 * c - (link.yt + c))) 
+
+      const minValue = d3.min(l.bundles, (b: any) => {
+        if (!b || !b.links) {
+          return null;
+        }
+
+        return d3.min(
+          b.links, (link: any) => {
+            if (!links || !links.ys || !link.yt) {
+              return null;
+            }
+
+            return link.ys - 2 * c - (link.yt + c)
+          }
+        )
+
+      })
 
       if (minValue) {
-        y_negative_offset +=
-        -min_family_height +
-        minValue || 0;
+        y_negative_offset += - min_family_height + minValue || 0;
       }
-
 
       l.forEach((n: any) => (n.y -= y_negative_offset));
     });
 
     // very ugly, I know
     links.forEach((l: any) => {
-      l.yt =
-        l.target.y +
-        l.target.bundles_index[l.bundle.id].i * metro_d -
-        (l.target.bundles.length * metro_d) / 2 +
-        metro_d / 2;
+      if (!l || !l.bundle || !l.bundle.id) {
+        return l
+      }
+
+      l.yt = l.target.y + l.target.bundles_index[l.bundle.id].i * metro_d - (l.target.bundles.length * metro_d) / 2 + metro_d / 2;
       l.ys = l.source.y;
       l.c1 = l.source.level - l.target.level > 1 ? Math.min(options.bigc, l.xb - l.xt, l.yb - l.yt) - c : c;
       l.c2 = c;

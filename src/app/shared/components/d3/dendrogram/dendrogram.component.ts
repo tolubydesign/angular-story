@@ -1,9 +1,11 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { PlotContent } from '@models/plot';
 import * as d3 from "d3";
-import { treeData } from "@models/tree-data.model";
-import { svg } from 'd3';
+import { HierarchyNode, Selection, svg } from 'd3';
+// import { treeData, flare } from "@models/tree-data.model";
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ThisReceiver } from '@angular/compiler';
+// import * as flextree from 'd3-flextree';
 
 @Component({
   selector: 'app-dendrogram',
@@ -13,23 +15,86 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 export class DendrogramComponent implements OnInit {
   /**
    * Example gathered and modified from: 
-   *  https://codesandbox.io/s/treemap-developer-forked-zrzcm?file=/src/Treemap/Treemap.tsx:3649-3652 && 
-   *  https://codesandbox.io/examples/package/@types/d3
+   * https://codesandbox.io/s/treemap-developer-forked-zrzcm?file=/src/Treemap/Treemap.tsx:3649-3652 && 
+   * https://codesandbox.io/examples/package/@types/d3
+   * 
+   * https://bl.ocks.org/d3noob/8326869
+   * https://observablehq.com/@bumbeishvili/vertical-collapsible-d3-flextree
+   * 
+   * https://codepen.io/VividD/pen/AbZbdx
+   * 
+   * https://typescript.hotexamples.com/examples/d3/-/tree/typescript-tree-function-examples.html
+   * 
    */
   constructor(private sanitizer: DomSanitizer) { }
 
-  ngOnInit() {
-    this.initSvg();
+  treeData: any = ({
+    "name": "A",
+    "size": [100, 100],
+    "children": [
+      {
+        "name": "BA",
+        "size": [100, 50],
+        "children": [
+          { "name": "BAA", "size": [100, 50] },
+          {
+            "name": "BAB",
+            "size": [100, 50],
+            "children": [
+              { "name": "BABA", "size": [100, 50] },
+              { "name": "BABB", "size": [100, 50] }
+            ]
+          },
+          { "name": "BAC", "size": [200, 50] },
+        ]
+      },
+      {
+        "name": "BB",
+        "size": [100, 75],
+        "children": [
+          { "name": "BBA", "size": [50, 50] },
+          { "name": "BBB", "size": [50, 50] }
+        ]
+      }
+    ]
+  })
+
+  name = "d3-graph"
+  d3Element = `svg#${this.name}`;
+
+  // ************** Generate the tree diagram	 *****************
+  width = 960;
+  height = 500;
+  createSvg: any = svg;
+
+  margin = { top: 20, right: 40, bottom: 50, left: 75 };
+  viewerWidth = this.width - this.margin.left - this.margin.right;
+  viewerHeight = this.height - this.margin.top - this.margin.bottom;
+
+  // append the svg object to the body of the page
+  svg: Selection<any, any, HTMLElement, any> | undefined = undefined;
+  // svg: Selection<Element, any, HTMLElement, any> = undefined;
+  graph: Selection<any, any, HTMLElement, any> | undefined = undefined;
+
+  duration = 750;
+  i = 0;
+  // root = this.treeData[0]
+  root: HierarchyNode<any> | any = d3.hierarchy(this.treeData, (d) => {
+    return d.children;
+  });
+
+
+  ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+
+    this.createCanvas().then(() => this.initialize());
   }
 
-  private svg: any;
-  private tree: any;
-  private elementName = "svg#dendrogram"
-  // data: any = (dataJson as any).default;
-  margin = { top: 50, bottom: 50, right: 10, left: 20 };
-  barHeight = 20;
-  width = 960;
-  private height = Math.max(500, this.barHeight + this.margin.top + this.margin.bottom);
+  // flexLayout = flextree.flextree();
+
+  // declares a tree layout and assigns the size
+  treeMap = d3.tree().size([this.height, this.width]);
 
   /**
    * Function creates svg graph
@@ -37,148 +102,376 @@ export class DendrogramComponent implements OnInit {
    */
   async createCanvas() {
     // append the svg object to the body of the page
-    return this.svg = d3.select(this.elementName)
+    this.svg = d3.select(this.d3Element)
       .append("svg")
-      .attr("width", this.width)
-      .attr("height", this.height)
+      .attr("width", this.width + this.margin.right + this.margin.left)
+      .attr("height", this.height + this.margin.top + this.margin.bottom)
       .append("g")
-      .attr("transform", "translate(40,0)")
-  }
-
-  /**
-   * Initalise and call functions to fraw graph
-   * @returns null;
-   */
-  initSvg() {
-    this.tree = this.buildTreeMap(this.width, this.height);
-    this.drawTree(treeData);
-    d3.select(this.elementName).on("click", (el) => {
-      // console.log("d3 selection:", el);
-      const outside = d3.select(this.elementName).selectAll("*")
-        .empty();
-
-      if (outside) {
-        this.resetAllCircleStyle();
-      }
-    });
-  }
-
-  /**
-   * Function to reset circles. To be done when the state of the graph changes.
-   * Changes occurs when click or visual changes are requried
-   * @returns d3-circle-change
-   */
-  resetAllCircleStyle() {
-    return d3.selectAll("circle").transition().style("stroke", "unset");
-  };
-
-  drawTree(treeData: PlotContent) {
-    const nodes = this.tree(this.buildNodesHierarchy(treeData));
-
-    this.svg = this.buildSvgContainer(this.width, this.height);
-
-    const group = this.buildGroup();
-    this.buildLinksBetweenNodes(group, nodes);
-    this.buildNode(group, nodes);
-  };
-
-  buildTreeMap(width: number, height: number) {
-    console.log("(buildTreeMap)", width, height)
-    return d3.tree().size([height, width]);
-  };
-
-  buildNodesHierarchy(nodes: any): any {
-    //  assigns the data to a hierarchy using parent-child relationships
-    return d3.hierarchy(nodes, (d: any) => {
-      if (d && d.children) {
-        return d.children;
-      }
-    });
-  };
-
-  buildSvgContainer = (width: number, height: number) => {
-    return d3.select(this.elementName)
-      .attr("width", width + this.margin.left + this.margin.right)
-      .attr("height", height + this.margin.top + this.margin.bottom)
-      .append("g")
-      .attr("transform", "translate(40,0)")
-  };
-
-  buildGroup = () => {
-    return this.svg.append("g")
       .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
-  };
 
-  /**
-   * Set/Build the links, lines, connecting the node.
-   * Set stlying of links here. Issues with svg
-   * @param group 
-   * @param nodes 
-   * @returns 
-   */
-  buildLinksBetweenNodes(group: any, nodes: any) {
-
-    return group.selectAll(".node-link")
-      .data(nodes.descendants().slice(1))
-      .enter()
-      .append("path")
-      .attr("class", "node-link")
-      .attr("style", `fill: none;
-      stroke: rgba(50, 50, 93, 0.5);
-      stroke-width: 2px;`)
-      .attr("d", (d: any) => {
-        return "M" + d.y + "," + d.x + "C" + (d.y + d.parent.y) / 2 + "," + d.x +
-          " " + (d.y + d.parent.y) / 2 + "," + d.parent.x + " " + d.parent.y +
-          "," + d.parent.x
-      });
-  };
-
-  buildNode(group: any, nodes: any) {
-    // adds each node as a group
-    let node = group
-      .selectAll(".node")
-      .data(nodes.descendants())
-      .enter()
-      .append("g")
-      .attr("class", function (d: any) {
-        return "node" + (d.children ? " node--internal" : " node--leaf");
-      })
-      .attr("transform", function (d: any) {
-        return "translate(" + d.y + "," + d.x + ")";
-      });
-
-    // adds the circle to the node
-    node.append("circle")
-      .attr("r", 5)
-      .on("click", (element: unknown, val: unknown, index: number) => this.handleClickOnEntity(element, val, index));
-
-    // adds the text to the node
-    node
-      .append("text")
-      .attr("dy", ".25em")
-      .attr("x", function (d: any) {
-        return d.children ? -13 : 13;
-      })
-      .style("text-anchor", function (d: any) {
-        return d.children ? "end" : "start";
-      })
-      .text((d: any) => (d.data && d.data.name) ? d.data.name : null)
-  };
-
-  handleClickOnEntity(element: any, val: any, i: number) {
-    console.log("handleClickOnEntity", element, val, i)
-    this.resetAllCircleStyle();
-    d3.select(element)
-      .transition()
-      .delay((d, i) => i * 50)
-      .style("stroke", "green");
-    // .style("stroke", "#d63031")
-    // .attr("r", 5 * 1.2)
-    // .transition()
-    // .attr("r", 5);
+    return
   }
 
-  color = d3.scaleOrdinal(d3.schemeDark2);
-  background_color = 'white';
+  initialize() {
+    if (!this.root) {
+      // Collapse after second level
+      this.root.children.forEach(this.collapse);
+      this.root.x0 = 0;
+      this.root.y0 = 0;
+    }
 
+    if (this.root) this.update(this.root);
+  }
+
+  // Collapse the node and all it's children
+  collapse(d: any) {
+    if (d.children) {
+      d._children = d.children
+      d._children.forEach(this.collapse)
+      d.children = null
+    }
+  }
+
+  // (function) Toggle children on click.
+  click(event: any, d: any) {
+    if (d.children) {
+      d._children = d.children;
+      d.children = null;
+    } else {
+      d.children = d._children;
+      d._children = null;
+    }
+
+    console.log("click", d);
+    // this.update(d);
+  }
+
+  update(source: any) {
+    // Assigns the x and y position for the nodes
+    // var treeData = this.flexLayout(this.root);
+
+    // Assigns the x and y position for the nodes
+    const treeData = this.treeMap(this.root);
+
+    // Compute the new tree layout.
+    let nodes = treeData.descendants();
+    let links = treeData.descendants().slice(1);
+    /** INITIAL ATTEMPT START */
+    // Compute the new tree layout.
+    // let nodes = this.treeMap.nodes(this.root).reverse()
+    // let links = this.treeMap.links(nodes);
+    /** END */
+
+    // ****************** Nodes section ***************************
+
+    // Update the nodes...
+    if (!this.svg) {
+      console.warn("Error occurred. this.svg = unknown");
+      new Error('(this) Graph')
+      return;
+    }
+
+    // Normalize for fixed-depth.
+    nodes.forEach(function (d) { d.y = d.depth * 100; });
+
+
+    // Declare the nodes…
+    // var node = this.svg.selectAll(`#${this.name} g.node`).data(nodes, (d: any) => { return d.id || (d.id = ++this.i); });
+    let node: any = this.svg.selectAll(`#${this.name} g.node`).data(nodes, (d: any) => { return d.id || (d.id = ++this.i) });
+
+    // Enter any new modes at the parent's previous position.
+    let nodeEnter = node.enter().append('g')
+      .attr('class', 'node')
+      .attr("transform", (d: any) => {
+        return "translate(" + d.x + "," + d.y + ")";
+        // return "translate(" + source.x + "," + source.y + ")";
+      })
+      .on('click', this.click);
+
+    // Add Circle for the nodes
+    nodeEnter.append("circle")
+      .attr("r", 10)
+      .style("fill", (d: any) => {
+        return d.children ? "lightsteelblue" : "#fff";
+      });
+
+    nodeEnter.append("text")
+      .attr("y", (d: any) => {
+        return d.children || d._children ? -18 : 18;
+      })
+      .attr("dy", ".35em")
+      .attr("text-anchor", "middle")
+      .text((d: any) => { return d.name; })
+      .style("fill-opacity", 1);
+
+    /** NEW */
+    // Add labels for the nodes
+    nodeEnter.append('text')
+      .attr('pointer-events', 'none')
+      .attr('dy', '0.35em')
+      .text((d: any) => {
+        return d.data.name;
+      })
+      .attr('text-anchor', 'middle')
+
+
+
+    /** UPDATE (DON'T REALLY KNOW WHAT) */
+    // 
+    let nodeUpdate = nodeEnter.merge(node)
+      .attr("fill", "#fff")
+      .attr("stroke", "steelblue")
+      .attr("stroke-width", "3px;")
+      .style('font', '12px sans-serif')
+
+    // // Transition to the proper position for the node
+    // // Transition (animation) that will condense the list of nodes
+    // nodeUpdate.transition()
+    //   .duration(this.duration)
+    //   .attr("transform", (event: any, i: any, arr: any) => {
+    //     const d: any = d3.select(this.d3Element).datum();
+    //     return "translate(" + source.x + "," + source.y + ")";
+    //   });
+
+    console.log("node update ", nodeUpdate)
+    // Update the node attributes and style
+    // NOT CRITICAL
+    nodeUpdate.select('circle.node')
+      .attr('r', 20)
+      .style("fill", (d: any) => {
+        console.log("node update ", d)
+        return d.children ? "lightsteelblue" : "#fff";
+      })
+      .attr('cursor', 'pointer');
+
+    // // Remove any exiting nodes
+    // var nodeExit = node.exit().transition()
+    //   .duration(this.duration)
+    //   .attr("transform", (event: any, i: any, arr: any) => {
+    //     const d = d3.select(this.d3Element).datum();
+    //     return "translate(" + source.x + "," + source.y + ")";
+    //   })
+    //   .remove();
+
+    // // On exit reduce the node circles size to 0
+    // nodeExit.select('circle').attr('r', 1e-6);
+
+    // // On exit reduce the opacity of text labels
+    // nodeExit.select('text').style('fill-opacity', 1e-6)
+
+    // // ****************** links section ***************************
+
+    // Update the links...
+    // Declare the links…
+    let link = this.svg.selectAll("path.link")
+      // .data(links, (d: any) => {
+      //   return d.id ? d.id : d.target.id;
+      // });
+      .data(links, (d: any) => {
+        return d.id ? d.id : d.target.id;
+      });
+
+
+    // Enter the links.
+    link.enter()
+      .insert("path", "g")
+      .attr("class", "link")
+      .attr('stroke', 'black')
+      .attr('fill', 'transparent')
+
+      // .attr('d', this.diagonal)
+      // .attr('d', d3.linkVertical())
+      .attr('d', (d: any, al: any) => {
+        // console.log("link.enter():(d|al|le)", {d}, {al});
+        return this.diagonal( d.parent ? d.parent : source, d) as any
+      })
+
+      // .attr("d", (d: any) => {
+      //   let o = {
+      //     x: source.x0,
+      //     y: source.y0
+      //   }
+      //   console.log("link.enter():(d|source)", { d }, { source });
+      //   return this.diagonal(o, source)
+      // });
+
+
+    // Enter any new links at the parent's previous position.
+    // var linkEnter = link.enter()
+    //   .insert('path', "g")
+    //   .attr("class", "link")
+    //   .attr('d', (d: any) => {
+    //     var o = {
+    //       x: source.x0,
+    //       y: source.y0
+    //     }
+    //     return this.diagonal(o, o)
+    //   });
+
+    // // UPDATE
+    // var linkUpdate = link.merge(link)
+    //   .attr("fill", "none")
+    //   .attr("stroke", "#ccc")
+    //   .attr("stroke-width", "2px")
+
+    // // Transition back to the parent element position
+    // linkUpdate.transition()
+    //   .duration(this.duration)
+    //   .attr('d', (d: any) => {
+
+    //     return this.diagonal(d, d.parent)
+    //   });
+
+    // Store the old positions for transition.
+    // nodes.forEach(function (d: any) {
+    //   d.x0 = d.x;
+    //   d.y0 = d.y;
+    // });
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // // Add labels for the nodes
+    // nodeEnter.append('text')
+    //   .attr('pointer-events', 'none')
+    //   .attr('dy', '0.35em')
+    //   .text((d: any) => {
+    //     return d.data.name;
+    //   })
+    //   .attr('text-anchor', 'middle')
+
+
+
+    /** --- */
+
+    // // UPDATE
+    // let nodeUpdate = nodeEnter.merge(node)
+    //   .attr("fill", "#fff")
+    //   .attr("stroke", "steelblue")
+    //   .attr("stroke-width", "3px;")
+    //   .style('font', '12px sans-serif')
+
+    // // Transition to the proper position for the node
+    // nodeUpdate.transition()
+    //   .duration(this.duration)
+    //   .attr("transform", (event: any, i: any, arr: any) => {
+    //     const d: any = d3.select(this.d3Element).datum();
+    //     console.log("node update:d", { d });
+
+    //     // const d: any = this.svg;
+    //     // console.log("node update:d", d);
+
+    //     // return "translate(" + d.x + "," + d.y + ")";
+    //     return "translate(" + source.x + "," + source.y + ")";
+    //   });
+
+    // // Update the node attributes and style
+    // nodeUpdate.select('circle.node')
+    //   .attr('r', 20)
+    //   .style("fill", function (d: any) {
+    //     return d.children ? "lightsteelblue" : "#fff";
+    //   })
+    //   .attr('cursor', 'pointer');
+
+
+    // // Remove any exiting nodes
+    // var nodeExit = node.exit().transition()
+    //   .duration(this.duration)
+    //   .attr("transform", (event: any, i: any, arr: any) => {
+    //     const d = d3.select(this.d3Element).datum();
+    //     return "translate(" + source.x + "," + source.y + ")";
+    //   })
+    //   .remove();
+
+    // // On exit reduce the node circles size to 0
+    // nodeExit.select('circle')
+    //   .attr('r', 1e-6);
+
+    // // On exit reduce the opacity of text labels
+    // nodeExit.select('text')
+    //   .style('fill-opacity', 1e-6)
+
+
+
+    // // ****************** links section ***************************
+
+    // // Update the links...
+    // var link: any = this.svg.selectAll('path.link')
+    //   .data(links, (d: any) => {
+    //     return d.id;
+    //   });
+
+    // // Enter any new links at the parent's previous position.
+    // var linkEnter = link.enter()
+    //   .insert('path', "g")
+    //   .attr("class", "link")
+    //   .attr('d', (d: any) => {
+    //     var o = {
+    //       x: source.x0,
+    //       y: source.y0
+    //     }
+    //     return this.diagonal(o, o)
+    //   });
+
+    // // UPDATE
+    // var linkUpdate = linkEnter.merge(link)
+    //   .attr("fill", "none")
+    //   .attr("stroke", "#ccc")
+    //   .attr("stroke-width", "2px")
+
+    // // Transition back to the parent element position
+    // linkUpdate.transition()
+    //   .duration(this.duration)
+    //   .attr('d', (d: any) => {
+    //     return this.diagonal(d, d.parent)
+    //   });
+
+    // // Remove any exiting links
+    // let linkExit = link.exit().transition()
+    //   .duration(this.duration)
+    //   .attr('d', (event: any, i: any, arr: any) => {
+    //     const d = d3.select(this.d3Element).datum();
+    //     var o = {
+    //       x: source.x,
+    //       y: source.y
+    //     }
+    //     return this.diagonal(o, o)
+    //   })
+    //   .remove();
+
+    // // Store the old positions for transition.
+    // nodes.forEach(function (d: any) {
+    //   d.x0 = d.x;
+    //   d.y0 = d.y;
+    // });
+  }
+
+  // Creates a curved (diagonal) path from parent to the child nodes
+  diagonal(s: any, d: any) {
+    console.log("FN:diagonal:(s|d)", `M${s.x} ${s.y}  C${ d ? (s.x + d.x) : ''} ${s.y}, ${ d ? (s.x + d.x) / 2 : ''} ${d ?d.y : ''}, ${d ? d.x : ''} ${d ? d.y : ''}`)
+    console.log("FN:diagonal:(s|d)", {s}, {d}, "\n");
+
+    const path = `M ${s.x} ${s.y}     C ${(s.x + d.x) / 2} ${s.y}, ${(s.x + d.x) / 2} ${d.y}, ${d.x} ${d.y}`
+    return path
+
+    return d3.link(d3.curveBumpY)
+    .x(d => d[0])
+    .y(d => d[0]);
+
+    return "M" + d.y + "," + d.x
+    + "C" + (d.y + d.parent.y) / 2 + "," + d.x
+    + " " + (d.y + d.parent.y) / 2 + "," + d.parent.x
+    + " " + d.parent.y + "," + d.parent.x;
+
+    
+  }
 }

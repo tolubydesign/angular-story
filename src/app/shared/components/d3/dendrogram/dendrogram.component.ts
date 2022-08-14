@@ -5,7 +5,6 @@ import { HierarchyNode, Selection, svg } from 'd3';
 // import { treeData, flare } from "@models/tree-data.model";
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ThisReceiver } from '@angular/compiler';
-// import * as flextree from 'd3-flextree';
 
 @Component({
   selector: 'app-dendrogram',
@@ -78,7 +77,6 @@ export class DendrogramComponent implements OnInit {
 
   duration = 750;
   i = 0;
-  // root = this.treeData[0]
   root: HierarchyNode<any> | any = d3.hierarchy(this.treeData, (d) => {
     return d.children;
   });
@@ -224,15 +222,6 @@ export class DendrogramComponent implements OnInit {
       .attr("stroke-width", "3px;")
       .style('font', '12px sans-serif')
 
-    // // Transition to the proper position for the node
-    // // Transition (animation) that will condense the list of nodes
-    // nodeUpdate.transition()
-    //   .duration(this.duration)
-    //   .attr("transform", (event: any, i: any, arr: any) => {
-    //     const d: any = d3.select(this.d3Element).datum();
-    //     return "translate(" + source.x + "," + source.y + ")";
-    //   });
-
     console.log("node update ", nodeUpdate)
     // Update the node attributes and style
     // NOT CRITICAL
@@ -243,21 +232,6 @@ export class DendrogramComponent implements OnInit {
         return d.children ? "lightsteelblue" : "#fff";
       })
       .attr('cursor', 'pointer');
-
-    // // Remove any exiting nodes
-    // var nodeExit = node.exit().transition()
-    //   .duration(this.duration)
-    //   .attr("transform", (event: any, i: any, arr: any) => {
-    //     const d = d3.select(this.d3Element).datum();
-    //     return "translate(" + source.x + "," + source.y + ")";
-    //   })
-    //   .remove();
-
-    // // On exit reduce the node circles size to 0
-    // nodeExit.select('circle').attr('r', 1e-6);
-
-    // // On exit reduce the opacity of text labels
-    // nodeExit.select('text').style('fill-opacity', 1e-6)
 
     // // ****************** links section ***************************
 
@@ -283,195 +257,27 @@ export class DendrogramComponent implements OnInit {
       // .attr('d', d3.linkVertical())
       .attr('d', (d: any, al: any) => {
         // console.log("link.enter():(d|al|le)", {d}, {al});
-        return this.diagonal( d.parent ? d.parent : source, d) as any
+        return this.diagonal(d.parent ? d.parent : source, d) as any
       })
-
-      // .attr("d", (d: any) => {
-      //   let o = {
-      //     x: source.x0,
-      //     y: source.y0
-      //   }
-      //   console.log("link.enter():(d|source)", { d }, { source });
-      //   return this.diagonal(o, source)
-      // });
-
-
-    // Enter any new links at the parent's previous position.
-    // var linkEnter = link.enter()
-    //   .insert('path', "g")
-    //   .attr("class", "link")
-    //   .attr('d', (d: any) => {
-    //     var o = {
-    //       x: source.x0,
-    //       y: source.y0
-    //     }
-    //     return this.diagonal(o, o)
-    //   });
-
-    // // UPDATE
-    // var linkUpdate = link.merge(link)
-    //   .attr("fill", "none")
-    //   .attr("stroke", "#ccc")
-    //   .attr("stroke-width", "2px")
-
-    // // Transition back to the parent element position
-    // linkUpdate.transition()
-    //   .duration(this.duration)
-    //   .attr('d', (d: any) => {
-
-    //     return this.diagonal(d, d.parent)
-    //   });
-
-    // Store the old positions for transition.
-    // nodes.forEach(function (d: any) {
-    //   d.x0 = d.x;
-    //   d.y0 = d.y;
-    // });
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // // Add labels for the nodes
-    // nodeEnter.append('text')
-    //   .attr('pointer-events', 'none')
-    //   .attr('dy', '0.35em')
-    //   .text((d: any) => {
-    //     return d.data.name;
-    //   })
-    //   .attr('text-anchor', 'middle')
-
-
-
-    /** --- */
-
-    // // UPDATE
-    // let nodeUpdate = nodeEnter.merge(node)
-    //   .attr("fill", "#fff")
-    //   .attr("stroke", "steelblue")
-    //   .attr("stroke-width", "3px;")
-    //   .style('font', '12px sans-serif')
-
-    // // Transition to the proper position for the node
-    // nodeUpdate.transition()
-    //   .duration(this.duration)
-    //   .attr("transform", (event: any, i: any, arr: any) => {
-    //     const d: any = d3.select(this.d3Element).datum();
-    //     console.log("node update:d", { d });
-
-    //     // const d: any = this.svg;
-    //     // console.log("node update:d", d);
-
-    //     // return "translate(" + d.x + "," + d.y + ")";
-    //     return "translate(" + source.x + "," + source.y + ")";
-    //   });
-
-    // // Update the node attributes and style
-    // nodeUpdate.select('circle.node')
-    //   .attr('r', 20)
-    //   .style("fill", function (d: any) {
-    //     return d.children ? "lightsteelblue" : "#fff";
-    //   })
-    //   .attr('cursor', 'pointer');
-
-
-    // // Remove any exiting nodes
-    // var nodeExit = node.exit().transition()
-    //   .duration(this.duration)
-    //   .attr("transform", (event: any, i: any, arr: any) => {
-    //     const d = d3.select(this.d3Element).datum();
-    //     return "translate(" + source.x + "," + source.y + ")";
-    //   })
-    //   .remove();
-
-    // // On exit reduce the node circles size to 0
-    // nodeExit.select('circle')
-    //   .attr('r', 1e-6);
-
-    // // On exit reduce the opacity of text labels
-    // nodeExit.select('text')
-    //   .style('fill-opacity', 1e-6)
-
-
-
-    // // ****************** links section ***************************
-
-    // // Update the links...
-    // var link: any = this.svg.selectAll('path.link')
-    //   .data(links, (d: any) => {
-    //     return d.id;
-    //   });
-
-    // // Enter any new links at the parent's previous position.
-    // var linkEnter = link.enter()
-    //   .insert('path', "g")
-    //   .attr("class", "link")
-    //   .attr('d', (d: any) => {
-    //     var o = {
-    //       x: source.x0,
-    //       y: source.y0
-    //     }
-    //     return this.diagonal(o, o)
-    //   });
-
-    // // UPDATE
-    // var linkUpdate = linkEnter.merge(link)
-    //   .attr("fill", "none")
-    //   .attr("stroke", "#ccc")
-    //   .attr("stroke-width", "2px")
-
-    // // Transition back to the parent element position
-    // linkUpdate.transition()
-    //   .duration(this.duration)
-    //   .attr('d', (d: any) => {
-    //     return this.diagonal(d, d.parent)
-    //   });
-
-    // // Remove any exiting links
-    // let linkExit = link.exit().transition()
-    //   .duration(this.duration)
-    //   .attr('d', (event: any, i: any, arr: any) => {
-    //     const d = d3.select(this.d3Element).datum();
-    //     var o = {
-    //       x: source.x,
-    //       y: source.y
-    //     }
-    //     return this.diagonal(o, o)
-    //   })
-    //   .remove();
-
-    // // Store the old positions for transition.
-    // nodes.forEach(function (d: any) {
-    //   d.x0 = d.x;
-    //   d.y0 = d.y;
-    // });
   }
 
   // Creates a curved (diagonal) path from parent to the child nodes
   diagonal(s: any, d: any) {
-    console.log("FN:diagonal:(s|d)", `M${s.x} ${s.y}  C${ d ? (s.x + d.x) : ''} ${s.y}, ${ d ? (s.x + d.x) / 2 : ''} ${d ?d.y : ''}, ${d ? d.x : ''} ${d ? d.y : ''}`)
-    console.log("FN:diagonal:(s|d)", {s}, {d}, "\n");
+    console.log("FN:diagonal:(s|d)", `M${s.x} ${s.y}  C${d ? (s.x + d.x) : ''} ${s.y}, ${d ? (s.x + d.x) / 2 : ''} ${d ? d.y : ''}, ${d ? d.x : ''} ${d ? d.y : ''}`)
+    console.log("FN:diagonal:(s|d)", { s }, { d }, "\n");
 
     const path = `M ${s.x} ${s.y}     C ${(s.x + d.x) / 2} ${s.y}, ${(s.x + d.x) / 2} ${d.y}, ${d.x} ${d.y}`
     return path
 
     return d3.link(d3.curveBumpY)
-    .x(d => d[0])
-    .y(d => d[0]);
+      .x(d => d[0])
+      .y(d => d[0]);
 
     return "M" + d.y + "," + d.x
-    + "C" + (d.y + d.parent.y) / 2 + "," + d.x
-    + " " + (d.y + d.parent.y) / 2 + "," + d.parent.x
-    + " " + d.parent.y + "," + d.parent.x;
+      + "C" + (d.y + d.parent.y) / 2 + "," + d.x
+      + " " + (d.y + d.parent.y) / 2 + "," + d.parent.x
+      + " " + d.parent.y + "," + d.parent.x;
 
-    
+
   }
 }

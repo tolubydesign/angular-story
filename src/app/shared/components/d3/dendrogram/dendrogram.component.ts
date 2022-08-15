@@ -59,7 +59,7 @@ export class DendrogramComponent implements OnInit {
   })
 
   name = "d3-graph"
-  d3Element = `svg#${this.name}`;
+  d3Element = `div#${this.name}`;
 
   // ************** Generate the tree diagram	 *****************
   width = 960;
@@ -77,9 +77,7 @@ export class DendrogramComponent implements OnInit {
 
   duration = 750;
   i = 0;
-  root: HierarchyNode<any> | any = d3.hierarchy(this.treeData, (d) => {
-    return d.children;
-  });
+  root: HierarchyNode<any> | any = d3.hierarchy(this.treeData, (d) => d.children);
 
 
   ngOnInit(): void {
@@ -105,7 +103,7 @@ export class DendrogramComponent implements OnInit {
       .attr("width", this.width + this.margin.right + this.margin.left)
       .attr("height", this.height + this.margin.top + this.margin.bottom)
       .append("g")
-      .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+      .attr("transform", "translate(" + this.margin.left + "," + (this.margin.top + 20) + ")");
 
     return
   }
@@ -140,8 +138,7 @@ export class DendrogramComponent implements OnInit {
       d._children = null;
     }
 
-    console.log("click", d);
-    // this.update(d);
+    console.log("function click", d);
   }
 
   update(source: any) {
@@ -154,14 +151,8 @@ export class DendrogramComponent implements OnInit {
     // Compute the new tree layout.
     let nodes = treeData.descendants();
     let links = treeData.descendants().slice(1);
-    /** INITIAL ATTEMPT START */
-    // Compute the new tree layout.
-    // let nodes = this.treeMap.nodes(this.root).reverse()
-    // let links = this.treeMap.links(nodes);
-    /** END */
 
     // ****************** Nodes section ***************************
-
     // Update the nodes...
     if (!this.svg) {
       console.warn("Error occurred. this.svg = unknown");
@@ -170,11 +161,10 @@ export class DendrogramComponent implements OnInit {
     }
 
     // Normalize for fixed-depth.
-    nodes.forEach(function (d) { d.y = d.depth * 100; });
+    nodes.forEach((d) => { return d.y = d.depth * 100; });
 
 
     // Declare the nodes…
-    // var node = this.svg.selectAll(`#${this.name} g.node`).data(nodes, (d: any) => { return d.id || (d.id = ++this.i); });
     let node: any = this.svg.selectAll(`#${this.name} g.node`).data(nodes, (d: any) => { return d.id || (d.id = ++this.i) });
 
     // Enter any new modes at the parent's previous position.
@@ -188,50 +178,44 @@ export class DendrogramComponent implements OnInit {
 
     // Add Circle for the nodes
     nodeEnter.append("circle")
-      .attr("r", 10)
+      .attr("r", 20)
+      .attr("stroke", "steelblue")
       .style("fill", (d: any) => {
         return d.children ? "lightsteelblue" : "#fff";
-      });
-
-    nodeEnter.append("text")
-      .attr("y", (d: any) => {
-        return d.children || d._children ? -18 : 18;
       })
+      .attr("stroke-width", "3px;");
+
+    // Add labels to nodes
+    nodeEnter.append("text")
+      .attr('pointer-events', 'none')
+      // .attr("y", (d: any) => {
+      //   return d.children || d._children ? -18 : 18;
+      // })
       .attr("dy", ".35em")
       .attr("text-anchor", "middle")
-      .text((d: any) => { return d.name; })
-      .style("fill-opacity", 1);
-
-    /** NEW */
-    // Add labels for the nodes
-    nodeEnter.append('text')
-      .attr('pointer-events', 'none')
-      .attr('dy', '0.35em')
-      .text((d: any) => {
-        return d.data.name;
-      })
+      .text((d: any) => { return d.data.name; })
+      .style("fill-opacity", 1)
       .attr('text-anchor', 'middle')
-
-
+      .attr("fill", "#000")
+      .style('font', '12px sans-serif')
 
     /** UPDATE (DON'T REALLY KNOW WHAT) */
     // 
-    let nodeUpdate = nodeEnter.merge(node)
-      .attr("fill", "#fff")
-      .attr("stroke", "steelblue")
-      .attr("stroke-width", "3px;")
-      .style('font', '12px sans-serif')
+    // let nodeUpdate = nodeEnter.merge(node)
+    //   .attr("fill", "#fff")
+    //   .attr("stroke", "steelblue")
+    //   .attr("stroke-width", "3px;")
+    //   .style('font', '12px sans-serif')
 
-    console.log("node update ", nodeUpdate)
     // Update the node attributes and style
     // NOT CRITICAL
-    nodeUpdate.select('circle.node')
-      .attr('r', 20)
-      .style("fill", (d: any) => {
-        console.log("node update ", d)
-        return d.children ? "lightsteelblue" : "#fff";
-      })
-      .attr('cursor', 'pointer');
+    // nodeUpdate.select('circle.node')
+    //   .attr('r', 20)
+    //   .style("fill", (d: any) => {
+    //     console.log("node update ", d)
+    //     return d.children ? "lightsteelblue" : "#fff";
+    //   })
+    //   .attr('cursor', 'pointer');
 
     // // ****************** links section ***************************
 

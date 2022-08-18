@@ -1,16 +1,15 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 
-import { NavButtonComponent } from './nav-button.component';
+import { NavButtonComponent } from "./nav-button.component";
 
-describe('NavButtonComponent', () => {
+describe("NavButtonComponent", () => {
   let component: NavButtonComponent;
   let fixture: ComponentFixture<NavButtonComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NavButtonComponent ]
-    })
-    .compileComponents();
+      declarations: [NavButtonComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('NavButtonComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

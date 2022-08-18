@@ -1,16 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { StartScreenComponent } from './start-screen.component';
+import { StartScreenComponent } from "./start-screen.component";
 
-describe('StartScreenComponent', () => {
+describe("StartScreenComponent", () => {
   let component: StartScreenComponent;
   let fixture: ComponentFixture<StartScreenComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ StartScreenComponent ]
-    })
-    .compileComponents();
+      declarations: [StartScreenComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('StartScreenComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

@@ -1,16 +1,15 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 
-import { CharacterPortraitComponent } from './character-portrait.component';
+import { CharacterPortraitComponent } from "./character-portrait.component";
 
-describe('CharacterPortraitComponent', () => {
+describe("CharacterPortraitComponent", () => {
   let component: CharacterPortraitComponent;
   let fixture: ComponentFixture<CharacterPortraitComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CharacterPortraitComponent ]
-    })
-    .compileComponents();
+      declarations: [CharacterPortraitComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('CharacterPortraitComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

@@ -1,16 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { InteractionComponent } from './interaction.component';
+import { InteractionComponent } from "./interaction.component";
 
-describe('InteractionComponent', () => {
+describe("InteractionComponent", () => {
   let component: InteractionComponent;
   let fixture: ComponentFixture<InteractionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ InteractionComponent ]
-    })
-    .compileComponents();
+      declarations: [InteractionComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('InteractionComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

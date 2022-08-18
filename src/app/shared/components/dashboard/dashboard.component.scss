@@ -1,10 +1,8 @@
-
 .story--board-container {
-  width: 70vw;  
+  width: 70vw;
   min-width: 600px;
   background-color: #343434;
 }
-
 
 .mock-story-board {
   .story-board--char-images {
@@ -36,16 +34,16 @@
   margin: 0 1em;
   flex-wrap: wrap;
   align-content: center;
-  
+
   .story-choice {
     max-width: 200px;
     border: none;
     padding: 1em;
     border-radius: 3px;
-    margin: .5em;
+    margin: 0.5em;
     color: #ddd;
     background-color: #545454;
-    
+
     &:hover {
       // background-color: rgb(235, 235, 235);
       // animation: move-up .5s;

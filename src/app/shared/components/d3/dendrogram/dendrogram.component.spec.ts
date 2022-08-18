@@ -1,16 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { DendrogramComponent } from './dendrogram.component';
+import { DendrogramComponent } from "./dendrogram.component";
 
-describe('DendrogramComponent', () => {
+describe("DendrogramComponent", () => {
   let component: DendrogramComponent;
   let fixture: ComponentFixture<DendrogramComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DendrogramComponent ]
-    })
-    .compileComponents();
+      declarations: [DendrogramComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('DendrogramComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

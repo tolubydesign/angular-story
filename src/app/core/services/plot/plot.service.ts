@@ -20,6 +20,7 @@ export class PlotService {
   // SUBJECT
   subject = new Subject(); // Plot 
 
+
   constructor(
     private http: HttpClient,
   ) { }
@@ -28,13 +29,13 @@ export class PlotService {
   // get plot form mock api. Will be converted to live when ready. API and all
   getPlot() {
     return this.http.get<Plot[]>("assets/data/story-editor.json")
-      .pipe(
-        catchError((err) => {
-          console.log('error caught in service')
-          console.warn(err);
-          //Handle the error here
-          return throwError(err); // Rethrow it back to component
-        })
+      .pipe(catchError((err) => {
+        console.log('error caught in service')
+        console.warn(err);
+        //Handle the error here
+        throw new Error(err);
+        return throwError(err); // Rethrow it back to component
+      })
       )
       .pipe(
         tap((res: Plot[]) => {

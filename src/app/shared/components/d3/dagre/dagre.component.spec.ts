@@ -1,16 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { DagreComponent } from './dagre.component';
+import { DagreComponent } from "./dagre.component";
 
-describe('DagreComponent', () => {
+describe("DagreComponent", () => {
   let component: DagreComponent;
   let fixture: ComponentFixture<DagreComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DagreComponent ]
-    })
-    .compileComponents();
+      declarations: [DagreComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('DagreComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

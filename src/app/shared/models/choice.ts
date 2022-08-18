@@ -1,4 +1,4 @@
 export interface Choice {
-    decision: number;
-    summary: string;
+  decision: number;
+  summary: string;
 }

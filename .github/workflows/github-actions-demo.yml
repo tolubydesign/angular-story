@@ -3,7 +3,7 @@ name: Angular Story Build
 on:
   push:
     branches:
-      - 'master'
+      - "master"
 
 jobs:
   docker:
@@ -23,8 +23,7 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}." 
-
+      - run: echo "🍏 This job's status is ${{ job.status }}."
 # on: [push]
 # jobs:
 #   Explore-GitHub-Actions:

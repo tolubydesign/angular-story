@@ -1,16 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { SankeyComponent } from './sankey.component';
+import { SankeyComponent } from "./sankey.component";
 
-describe('SankeyComponent', () => {
+describe("SankeyComponent", () => {
   let component: SankeyComponent;
   let fixture: ComponentFixture<SankeyComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SankeyComponent ]
-    })
-    .compileComponents();
+      declarations: [SankeyComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('SankeyComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

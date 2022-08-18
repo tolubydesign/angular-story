@@ -1,16 +1,15 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 
-import { NarrativeComponent } from './narrative.component';
+import { NarrativeComponent } from "./narrative.component";
 
-describe('NarrativeComponent', () => {
+describe("NarrativeComponent", () => {
   let component: NarrativeComponent;
   let fixture: ComponentFixture<NarrativeComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NarrativeComponent ]
-    })
-    .compileComponents();
+      declarations: [NarrativeComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('NarrativeComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

@@ -4,6 +4,13 @@
   display: inline-block;
 }
 
+.d3-tree-graph {
+  max-width: 100vw;
+  max-height: 100vw;
+  width: 100%;
+  height: auto;
+}
+
 .node circle {
   fill: #fff;
   stroke: #6c5ce7;
@@ -33,5 +40,5 @@
 }
 
 .dendrogram-svg {
-  background-color: #d6d2f0;  
+  background-color: #d6d2f0;
 }

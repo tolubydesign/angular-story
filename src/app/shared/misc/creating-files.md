@@ -11,3 +11,5 @@ Following is a map of a few simple commands you can use in your application.
     ng g s serv-name or ng generate service serv-name to create a service with the name 'serv-name'
     ng g m mod-name or ng generate module mod-name to create a module with the name 'mod-name'
     ng g m mod-name --routing or ng generate module mod-name --routing to create a module with the name 'mod-name' with angular routing
+
+ng g c /shared/components/not-found/not-found --flat || ng g c /shared/components/dashboard-panel/

@@ -5,21 +5,28 @@ import { HttpClient } from '@angular/common/http';
 import { map, tap, retry, catchError } from 'rxjs/operators';
 import { Plot, PlotContent } from '@models/plot';
 import { PlotModel } from "@models/plot.model";
+import { data } from '@models/tree-data.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlotService {
 
-  Plot: PlotModel | null = null;
+  dummyTree = JSON.stringify(data);
 
-  // BEHAVIOUR SUBJECT
+  Plot: PlotModel | null = null;
+  Story: PlotContent | undefined = undefined;
+
+  // BEHAVIOR SUBJECT
   plotData = new BehaviorSubject<Plot[] | undefined>(undefined);
   plotData$ = this.plotData.asObservable();
 
-  // SUBJECT
-  subject = new Subject(); // Plot 
+  storyBehavior = new BehaviorSubject<PlotContent | undefined>(undefined);
+  storyBehavior$ = this.storyBehavior.asObservable();
 
+  // SUBJECT
+  // 
+  subject = new Subject(); // Plot 
 
   constructor(
     private http: HttpClient,
@@ -45,6 +52,30 @@ export class PlotService {
           /** set new class to handle data and data manipulation */
           this.Plot = new PlotModel(res);
           return res;
+        })
+      )
+  }
+
+  GetStory() {
+    return this.http.get<PlotContent>("")
+      .pipe(
+        map((res: any) => {
+          // (!) For later use.
+          // if (!res.response) {
+          //   throw new Error('No value provided.');
+          // }
+          
+          // Using dummy data for the time
+          this.dummyTree;
+
+          console.log("Get Story:res", res)
+          this.storyBehavior.next(res);
+
+          return res;
+        }),
+
+        catchError((error: Error) => {
+          return of([])
         })
       )
   }

@@ -3,13 +3,14 @@
   "tabWidth": 2,
   "useTabs": false,
   "singleQuote": true,
-  "printWidth": 300,
+  "printWidth": 160,
   "bracketSpacing": true,
   "overrides": [
     {
       "files": "src/**/*.html", 
       "options": {
-        "printWidth": 140
+        "printWidth": 180,
+        "html.format.wrapAttributes": "aligned-multiple"
       }
     }
   ]

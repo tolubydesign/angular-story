@@ -18,7 +18,7 @@ export class EditorComponent implements OnInit {
   constructor(private plotService: PlotService) {}
 
   ngOnInit(): void {
-    this.getPlot();
+    this.populateList();
     // subscribe to values in service
     this.plotSelectionSubscription = this.plotService.subject.subscribe(
       (selection: string | unknown | undefined) =>
@@ -33,7 +33,7 @@ export class EditorComponent implements OnInit {
       : undefined;
   }
 
-  getPlot(): void {
+  populateList(): void {
     this.plotSubscription = this.plotService.getPlot().subscribe(
       (plot: any) => {
         // console.info('plot', plot);

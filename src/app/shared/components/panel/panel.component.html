@@ -1,8 +1,15 @@
 <article *ngIf="this.display" data-component="app panel component" [ngClass]="{ 'panel--component': true }">
-  <button mat-mini-fab color="primary" aria-label="close icon" class="mat-mini--button">
-    <mat-icon aria-hidden="false" aria-label="close panel icon" (click)="closePanel()">close</mat-icon>
+  <button mat-mini-fab color="primary" aria-label="close icon" class="mat-mini--button" (click)="closePanel()">
+    <mat-icon svgIcon="close" aria-hidden="false" aria-label="Example thumbs up SVG icon" style="width: 18px; height: auto; margin: auto"></mat-icon>
   </button>
+
   <mat-card>
+    <app-dendrogram>
+      <!-- This component is in /components/d3/ -->
+    </app-dendrogram>
+
+    <br /><br />
+
     <br /><br />
     <p style="font-size: 10px; color: rgb(201, 201, 201)">panel works!</p>
     <p class="" style="font-size: 9px; color: rgb(201, 201, 201); text-align: center; max-width: 600px">

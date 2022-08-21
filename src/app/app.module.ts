@@ -32,9 +32,12 @@ import { PanelComponent } from "./shared/components/panel/panel.component";
 import { DagreComponent } from "./shared/components/d3/dagre/dagre.component";
 import { SankeyComponent } from "./shared/components/d3/sankey/sankey.component";
 import { DendrogramComponent } from "./shared/components/d3/dendrogram/dendrogram.component";
+import { NotFoundComponent } from './shared/components/not-found/not-found.component';
+import { DashboardPanelComponent } from './shared/components/dashboard-panel/dashboard-panel.component';
 
 @NgModule({
   declarations: [
+    // Components
     AppComponent,
     DashboardComponent,
     ButtonComponent,
@@ -48,6 +51,8 @@ import { DendrogramComponent } from "./shared/components/d3/dendrogram/dendrogra
     DagreComponent,
     SankeyComponent,
     DendrogramComponent,
+    NotFoundComponent,
+    DashboardPanelComponent,
   ],
   imports: [
     BrowserModule,
@@ -66,7 +71,7 @@ import { DendrogramComponent } from "./shared/components/d3/dendrogram/dendrogra
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }
 
 /* angular material */
-export class PizzaPartyAppModule {}
+export class PizzaPartyAppModule { }

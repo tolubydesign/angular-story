@@ -1,1 +1,11 @@
-<p>dashboard-panel works!</p>
+<section data-component="Panel Dashboard Component">
+  <!-- Alternative method -->
+  <!-- <a routerLink="..">Go Back</a> -->
+  <a class="back--link" mat-stroked-button (click)="back()" routerLinkActive="active">Go Back</a>
+
+  <p class="text">dashboard-panel works!</p>
+
+  <div>
+    <app-panel></app-panel>
+  </div>
+</section>

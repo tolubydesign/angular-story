@@ -1,21 +1,3 @@
-.panel--component {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-
-  z-index: 2;
-  background: {
-    color: rgba(92, 92, 92, 0.5);
-  }
-}
-
 .mat-mini--button {
   margin-bottom: 1.2rem;
 }
@@ -23,3 +5,23 @@
 .demo-chart {
   height: 400px;
 }
+
+.loader--group {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.loader {
+  border: 10px solid #e3e3e3; /* Light grey */
+  border-top: 10px solid #5cbccd; /* Blue */
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+} 

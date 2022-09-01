@@ -4,7 +4,9 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { PlotService } from "@services/plot/plot.service";
 import { Observable, Observer, Subscription } from "rxjs";
 import { Plot, PlotContent } from "@models/plot";
+import { ActivatedRoute, NavigationStart, Router, ParamMap } from '@angular/router';
 
+// Create Mat Icons.
 const CloseIcon = `
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="121.31px" height="122.876px" viewBox="0 0 121.31 122.876" enable-background="new 0 0 121.31 122.876" xml:space="preserve">
   <g>
@@ -30,16 +32,24 @@ const THUMBUP_ICON =
   styleUrls: ["./panel.component.scss"],
 })
 export class PanelComponent implements OnInit {
+  // VARIABLES
+  parameterID: string | unknown;
+
   // SUBSCRIPTIONS
   plotSelectionSubscription: Subscription | undefined = undefined;
   selectedPlot: Plot | undefined = undefined;
-  display: boolean = false;
+  displayDendrogram: boolean = false;
 
   // SUBSCRIPTIONS
   storyTreeSubscription: Subscription | undefined = undefined;
   storyTree: PlotContent | undefined = undefined;
 
-  constructor(private plotService: PlotService, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+  constructor(
+    private plotService: PlotService,
+    private iconRegistry: MatIconRegistry,
+    private sanitizer: DomSanitizer,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,) {
     // Note that we provide the icon here as a string literal here due to a limitation in
     // Stackblitz. If you want to provide the icon from a URL, you can use:
     // `iconRegistry.addSvgIcon('thumbs-up', sanitizer.bypassSecurityTrustResourceUrl('icon.svg'));`
@@ -48,17 +58,42 @@ export class PanelComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initializeComponent();
+    this.getParameterID()
   }
 
-  initializeComponent() {
-    console.log('fn:initializeComponent');
+  ngOnDestroy(): void {
+    if (this.plotSelectionSubscription) {
+      this.plotSelectionSubscription.unsubscribe();
+    }
+
+    // UNSUBSCRIBE
+    this.plotService.storyBehavior.unsubscribe();
+    this.storyTreeSubscription?.unsubscribe();
+  }
+
+  // Get id from url.
+  getParameterID() {
+    this.activatedRoute.paramMap.subscribe((value: ParamMap | { params: { id: string } } | any) => {
+      if (value && value.params && value.params.id) {
+        this.parameterID = value.params.id;
+
+        // We have the relevant parameter id. Make a request to back-end.
+        this.initializeComponent();
+      }
+    });
+
+    // const state = this.router.routerState;
+    // const currentNavigation = this.router.getCurrentNavigation();
+  }
+
+  initializeComponent(): void {
     const request = this.plotService.GetStory()
+
     this.storyTreeSubscription = request.subscribe(
-      (response) => { 
+      (response) => {
         console.log("SUB:response", response);
         return response
-      } 
+      }
     );
 
     this.plotService.storyBehavior.subscribe((response: PlotContent | undefined) => {
@@ -72,50 +107,19 @@ export class PanelComponent implements OnInit {
       (selection: Plot | unknown | undefined) => {
         this.selectedPlot = selection as Plot;
         this.setNodesAndLinks(selection as Plot);
-        this.showPanel();
+        // this.showPanel();
         // make sure selectedPlot has a value before crating graph
         this.selectedPlot ? this.runTreeOption() : null;
       }
     );
 
-    this.showPanel();
-  }
-
-  ngOnDestroy(): void {
-    if (this.plotSelectionSubscription) {
-      this.plotSelectionSubscription.unsubscribe();
-    }
-
-    // UNSUBSCRIBE
-    this.plotService.storyBehavior.unsubscribe();
-    this.storyTreeSubscription?.unsubscribe();
-  }
-
-  showPanel(): void {
-    console.log("(showPanel)");
-    console.log(
-      `%c-checking if panel can be enabled`,
-      `color: gray; font-weight: bold;`
-    );
-    this.selectedPlot ? (this.display = true) : (this.display = false);
+    // this.showPanel();
   }
 
   setNodesAndLinks(selection: Plot) {
     if (selection) return this.plotService.setNodesAndLinks();
 
     console.log("Selected plot can't be found");
-  }
-
-  /**
-   * Function closes and clear selected plot and panel
-   */
-  async closePanel(): Promise<any> {
-    console.log(`%c-(closePanel)`, `color: gray; font-weight: bold;`);
-    return this.plotService.closePanel().then(() => (this.display = false));
-  }
-
-  onChartClick(ev: any): void {
-    console.log("(onChartClick)", typeof ev /** HTMLDivElement */);
   }
 
   runTreeOption(): void {

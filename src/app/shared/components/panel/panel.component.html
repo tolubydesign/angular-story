@@ -1,13 +1,22 @@
-<article *ngIf="this.display" data-component="app panel component" [ngClass]="{ 'panel--component': true }">
-  <button mat-mini-fab color="primary" aria-label="close icon" class="mat-mini--button" (click)="closePanel()">
+<section data-component="Panel Component" [ngClass]="{ 'panel--component': true }">
+  <!-- <button mat-mini-fab color="primary" aria-label="close icon" class="mat-mini--button" (click)="closePanel()">
     <mat-icon svgIcon="close" aria-hidden="false" aria-label="Example thumbs up SVG icon" style="width: 18px; height: auto; margin: auto"></mat-icon>
-  </button>
+  </button> -->
 
-  <mat-card>
+  {{parameterID}}
+
+  <div class="loader--group">
+    <div class="loader" *ngIf="!this.displayDendrogram">
+      <!-- loading icon -->
+    </div>
+  </div>
+
+  <mat-card *ngIf="this.displayDendrogram">
     <app-dendrogram>
       <!-- This component is in /components/d3/ -->
     </app-dendrogram>
 
+    
     <br /><br />
 
     <br /><br />
@@ -17,4 +26,4 @@
     </p>
     <br />
   </mat-card>
-</article>
+</section>

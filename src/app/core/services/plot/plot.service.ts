@@ -6,6 +6,16 @@ import { map, tap, retry, catchError } from 'rxjs/operators';
 import { Plot, PlotContent } from '@models/plot';
 import { PlotModel } from "@models/plot.model";
 import { data } from '@models/tree-data.model';
+import * as JSON5 from 'json5'
+
+// import json5 from "json5";
+// import { readFile } from "fs/promises";
+
+// (async () => {
+//     const text = await fs.readFile("./path/to/config.json5"); // path to config.json5 from entry point
+
+//     const config = json5.parse(text);
+// })();
 
 @Injectable({
   providedIn: 'root'
@@ -75,6 +85,7 @@ export class PlotService {
         }),
 
         catchError((error: Error) => {
+          console.warn("Getting Stories Error:", error);
           return of([])
         })
       )

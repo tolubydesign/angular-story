@@ -34,6 +34,7 @@ import { SankeyComponent } from "./shared/components/d3/sankey/sankey.component"
 import { DendrogramComponent } from "./shared/components/d3/dendrogram/dendrogram.component";
 import { NotFoundComponent } from './shared/components/not-found/not-found.component';
 import { DashboardPanelComponent } from './shared/components/dashboard-panel/dashboard-panel.component';
+import { LoaderComponent } from './shared/components/loader/loader.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { DashboardPanelComponent } from './shared/components/dashboard-panel/das
     DendrogramComponent,
     NotFoundComponent,
     DashboardPanelComponent,
+    LoaderComponent,
   ],
   imports: [
     BrowserModule,

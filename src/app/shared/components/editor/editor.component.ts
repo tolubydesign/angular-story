@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { PlotService } from "@services/plot/plot.service";
 import { Subscription, Observable } from "rxjs";
 import { Plot } from "@models/plot";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-editor",
@@ -12,47 +13,30 @@ export class EditorComponent implements OnInit {
   plotSubscription: Subscription | undefined;
   storyEdits: Plot[] | null = null;
 
-  plotSelectionSubscription: Subscription | undefined;
   selectedPlot: string | undefined;
 
-  constructor(private plotService: PlotService) {}
+  constructor(private plotService: PlotService, private router: Router) { }
 
   ngOnInit(): void {
     this.populateList();
-    // subscribe to values in service
-    this.plotSelectionSubscription = this.plotService.subject.subscribe(
-      (selection: string | unknown | undefined) =>
-        (this.selectedPlot = selection as string)
-    );
   }
 
   ngOnDestroy(): void {
     this.plotSubscription ? this.plotSubscription.unsubscribe() : undefined;
-    this.plotSelectionSubscription
-      ? this.plotSelectionSubscription.unsubscribe()
-      : undefined;
   }
 
   populateList(): void {
-    this.plotSubscription = this.plotService.getPlot().subscribe(
-      (plot: any) => {
-        // console.info('plot', plot);
-        this.storyEdits = plot;
-      },
-      (error: Error) => {
-        console.error(error);
-      },
-      () => {
-        // action completed
-      }
-    );
+    this.plotSubscription = this.plotService.GetStory().subscribe((plot: any) => {
+      this.storyEdits = plot;
+    });
   }
 
   deletePlot(editID: string) {
     console.log("delete", editID);
   }
 
-  editPlot(editID: string) {
-    this.plotService.selectPlot(editID);
+  editPlot(id: string) {
+    // direct user to panel dashboard.
+    this.router.navigate([`/panel/${id}`])
   }
 }

@@ -5,6 +5,8 @@ import { PlotService } from "@services/plot/plot.service";
 import { Observable, Observer, Subscription } from "rxjs";
 import { Plot, PlotContent } from "@models/plot";
 import { ActivatedRoute, NavigationStart, Router, ParamMap } from '@angular/router';
+import { data } from "../../models/tree-data.model";
+import { falsy } from "../../models/tree.model";
 
 // Create Mat Icons.
 const CloseIcon = `
@@ -33,16 +35,17 @@ const THUMBUP_ICON =
 })
 export class PanelComponent implements OnInit {
   // VARIABLES
+  requestSubscription: Subscription | falsy = undefined;
   parameterID: string | unknown;
+  panelError: { type: 'unknown error' | 'not found' | falsy, error: boolean } = {
+    type: undefined,
+    error: false,
+  };
 
   // SUBSCRIPTIONS
   plotSelectionSubscription: Subscription | undefined = undefined;
   selectedPlot: Plot | undefined = undefined;
   displayDendrogram: boolean = false;
-
-  // SUBSCRIPTIONS
-  storyTreeSubscription: Subscription | undefined = undefined;
-  storyTree: PlotContent | undefined = undefined;
 
   constructor(
     private plotService: PlotService,
@@ -50,6 +53,7 @@ export class PanelComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private router: Router,
     private activatedRoute: ActivatedRoute,) {
+
     // Note that we provide the icon here as a string literal here due to a limitation in
     // Stackblitz. If you want to provide the icon from a URL, you can use:
     // `iconRegistry.addSvgIcon('thumbs-up', sanitizer.bypassSecurityTrustResourceUrl('icon.svg'));`
@@ -58,17 +62,14 @@ export class PanelComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getParameterID()
+    this.getParameterID();
+    console.log("Generated:", data)
   }
 
   ngOnDestroy(): void {
-    if (this.plotSelectionSubscription) {
-      this.plotSelectionSubscription.unsubscribe();
-    }
-
     // UNSUBSCRIBE
     this.plotService.storyBehavior.unsubscribe();
-    this.storyTreeSubscription?.unsubscribe();
+    if (this.requestSubscription) this.requestSubscription.unsubscribe();
   }
 
   // Get id from url.
@@ -79,6 +80,8 @@ export class PanelComponent implements OnInit {
 
         // We have the relevant parameter id. Make a request to back-end.
         this.initializeComponent();
+      } else {
+
       }
     });
 
@@ -87,46 +90,25 @@ export class PanelComponent implements OnInit {
   }
 
   initializeComponent(): void {
-    const request = this.plotService.GetStory()
+    this.requestSubscription = this.plotService.GetStory().subscribe((response: Plot[]) => {
+      console.log("SUB:response", response);
+      if (response && response.length) {
+        this.selectedPlot = response.find((ob: Plot) => ob.id === this.parameterID);
 
-    this.storyTreeSubscription = request.subscribe(
-      (response) => {
-        console.log("SUB:response", response);
-        return response
+        if (this.selectedPlot) {
+          this.displayDendrogram = true;
+        } else {
+          this.displayDendrogram = false;
+        };
       }
-    );
 
-    this.plotService.storyBehavior.subscribe((response: PlotContent | undefined) => {
-      console.log("this.plotService.storyBehavior.subscribe", response);
       return response
     });
 
-
     // subscribe to values in service
-    this.plotSelectionSubscription = this.plotService.subject.subscribe(
-      (selection: Plot | unknown | undefined) => {
-        this.selectedPlot = selection as Plot;
-        this.setNodesAndLinks(selection as Plot);
-        // this.showPanel();
-        // make sure selectedPlot has a value before crating graph
-        this.selectedPlot ? this.runTreeOption() : null;
-      }
-    );
-
-    // this.showPanel();
-  }
-
-  setNodesAndLinks(selection: Plot) {
-    if (selection) return this.plotService.setNodesAndLinks();
-
-    console.log("Selected plot can't be found");
-  }
-
-  runTreeOption(): void {
-    const content: PlotContent[] | undefined = this.selectedPlot?.content;
-
-    if (!content) {
-      return;
-    }
+    // this.plotService.storyBehavior.subscribe((response: PlotContent | undefined) => {
+    //   console.log("this.plotService.storyBehavior.subscribe", response);
+    //   return response
+    // });
   }
 }

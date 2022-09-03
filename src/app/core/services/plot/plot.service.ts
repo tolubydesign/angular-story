@@ -67,20 +67,15 @@ export class PlotService {
   }
 
   GetStory() {
-    return this.http.get<PlotContent>("")
+    return this.http.get<PlotContent>("/assets/data/stories.json")
       .pipe(
         map((res: any) => {
+          // Error handling
           // (!) For later use.
           // if (!res.response) {
           //   throw new Error('No value provided.');
           // }
-          
-          // Using dummy data for the time
-          this.dummyTree;
-
-          console.log("Get Story:res", res)
           this.storyBehavior.next(res);
-
           return res;
         }),
 
@@ -102,10 +97,10 @@ export class PlotService {
     return this.subject.next(this.Plot?.selectPlot(plotID));
   }
 
-  setNodesAndLinks() {
-    const content = this.Plot?.selectedPlot?.content;
-    if (content) {
-      this.Plot?.setNodesAndLinks(content);
-    }
-  }
+  // setNodesAndLinks() {
+  //   const content = this.Plot?.selectedPlot?.content;
+  //   if (content) {
+  //     this.Plot?.setNodesAndLinks(content);
+  //   }
+  // }
 }

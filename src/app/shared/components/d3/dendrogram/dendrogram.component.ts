@@ -1,8 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { PlotContent } from "@models/plot";
+import { Plot, PlotContent } from "@models/plot";
 import * as d3 from "d3";
 import { HierarchyNode, Selection, svg } from "d3";
-import { data, flare } from "@models/tree-data.model";
+import { formerData } from "@models/tree-data.model";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { ThisReceiver } from "@angular/compiler";
 
@@ -46,7 +46,7 @@ export class DendrogramComponent implements OnInit {
 
   duration = 750;
   i = 0;
-  root: HierarchyNode<any> | any = d3.hierarchy(data, (d) => d.children);
+  root: HierarchyNode<any> | any = d3.hierarchy(formerData, (d) => d.children);
 
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
@@ -59,7 +59,7 @@ export class DendrogramComponent implements OnInit {
 
   /**
    * Function creates svg graph
-   * @returns svg ; the graph and attching it to a local value
+   * @returns svg ; the graph and attaching it to a local value
    */
   async createCanvas() {
     // append the svg object to the body of the page

@@ -1,6 +1,6 @@
 // import { uuid } from 'uuidv4';
 import * as uuid from "uuid";
-import { PlotContent } from "./plot";
+import { Plot, PlotContent } from "./plot";
 
 export interface DendrogramData {
   data: {
@@ -34,6 +34,44 @@ export interface DendrogramDataParent {
 
 function generateID() {
   return uuid.v4();
+}
+
+function GenerateText(type: 'title' | 'description'): string {
+  const titles: string[] = [
+    "Fringilla hendrerit ex eget", 'Consectetur posuere enim', 'Nam blandit magna vel lacinia', 'Porttitor quis ultrices tortor',
+    'Quisque hendrerit ex eget risus', 'Ullamcorper pulvinar libero', 'Bibendum metus viverra arcu', 'Cras eget porttitor nibh',
+    'Quisque', 'Euismod amet sapien malesuada', 'sodales eu pulvinar lectus',
+  ];
+
+  const descriptions: string[] = [
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eget congue neque. Nullam scelerisque arcu in felis molestie, eget malesuada ex efficitur. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Curabitur ornare suscipit arcu vitae malesuada. Curabitur et dapibus lectus. Suspendisse accumsan mi libero, at pretium diam volutpat mollis. Curabitur eget metus in dui fermentum malesuada ac quis quam. Nulla mattis mollis nulla non pharetra. Vestibulum venenatis risus at lectus feugiat varius. Integer eu dolor vulputate, ornare eros vitae, imperdiet leo. Aliquam auctor justo in eleifend placerat. Etiam erat lacus, cursus ac faucibus eget, eleifend sit amet diam. Nulla molestie ex sapien, in consequat purus facilisis vitae. Nam bibendum, sapien vitae pretium lacinia, quam nisi posuere odio, eget ullamcorper enim est et enim. Nam a felis molestie, iaculis odio eget, molestie mauris.",
+    "Donec sodales leo et pellentesque dictum. Aliquam semper luctus sollicitudin. Donec placerat justo nec interdum condimentum. Aenean tempor tellus id hendrerit pellentesque. Sed semper ligula sed elit dictum aliquet. Ut fermentum enim in lectus iaculis, eget convallis nisl vulputate. Sed sodales sem eu tincidunt vestibulum. Sed pulvinar semper tellus, nec interdum justo mattis non. Fusce dolor massa, ullamcorper eu tincidunt auctor, condimentum ut tellus. Curabitur dolor arcu, vulputate id faucibus ac, rutrum non odio.",
+    "Etiam eu sollicitudin nisi. Nunc condimentum vel arcu vel sagittis. Maecenas vestibulum volutpat ultricies. Nunc eget purus sapien. Nam sollicitudin nisi sit amet finibus euismod. Suspendisse pretium sapien sit amet mauris vestibulum porttitor. Vivamus vitae purus porttitor, ultrices orci pretium, fringilla orci. Proin facilisis rhoncus mi, eget ullamcorper nibh. Vestibulum condimentum mauris sit amet enim tincidunt, nec vestibulum metus vulputate. Phasellus dui nibh, consequat ut risus ac, facilisis feugiat felis. Donec fermentum, diam in sollicitudin rhoncus, velit arcu volutpat leo, quis lacinia elit metus vitae orci.",
+    "Maecenas auctor aliquam tincidunt. Suspendisse ullamcorper lectus dui. Vivamus eget enim mollis arcu pretium tincidunt eu a neque. Proin imperdiet eros a odio sollicitudin, in faucibus metus porta. Integer egestas ligula vitae convallis luctus. Maecenas ut scelerisque urna. Interdum et malesuada fames ac ante ipsum primis in faucibus. In vel sapien a neque lacinia tempor.",
+    "Nullam non tempor nisi, ut porta ex. Aenean non mi et nibh feugiat congue id et lacus. Nunc sit amet justo eget felis bibendum interdum. Sed a augue vel mi tempor rhoncus quis ut est. Nulla facilisi. Aliquam et vehicula est. Duis quis dapibus turpis. Sed pulvinar sollicitudin pretium.",
+    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. In sit amet tellus tincidunt, mollis diam sit amet, suscipit ligula. Nam molestie tincidunt ex, non pulvinar lectus interdum sed. In tincidunt aliquet est, eu aliquam nisl placerat quis. Aliquam vitae nibh massa. Praesent nulla nisl, varius sollicitudin blandit et, pretium quis lorem. Nam bibendum semper urna, id cursus dui euismod vitae. Duis hendrerit at enim vel eleifend. Sed sapien ipsum, egestas ac consequat vitae, rutrum non quam. Ut at nibh justo. In a justo pellentesque, imperdiet urna quis, cursus lectus. Sed tristique tortor ac massa dictum suscipit.`,
+    `Vestibulum nec lacus fringilla, tempus mauris ac, bibendum sapien. Pellentesque vitae erat eget dui finibus ultricies in vel libero. Vivamus eget ultricies felis. Nullam et gravida lorem. Mauris at pharetra justo. Vivamus lectus massa, fringilla sed vehicula et, tempor vel dui. Praesent ut lobortis enim, nec porta lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Mauris eget ligula dolor. Proin maximus lorem in diam blandit, vitae hendrerit sapien tincidunt. Cras nunc nibh, venenatis id sollicitudin a, condimentum in est. In luctus consectetur egestas. Sed nec tellus magna. Praesent ac odio sit amet turpis volutpat feugiat. Nullam diam mauris, sagittis a enim id, mollis feugiat nisl.`,
+    `Nunc fringilla libero in metus pharetra, a ultrices ipsum pretium. Aliquam hendrerit ex eget risus posuere faucibus. Cras tristique, mauris id vestibulum pulvinar, justo metus luctus urna, id pellentesque mi ligula quis nulla. Fusce ac est justo. Cras eget tempor lectus. Aenean bibendum purus egestas egestas efficitur. Praesent eget tortor non turpis euismod euismod. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Maecenas porttitor vulputate risus et rutrum. Phasellus nec elit lobortis, mollis elit vel, efficitur est. Mauris et pellentesque magna, vitae fermentum urna. Integer tincidunt magna dolor, vitae posuere nunc iaculis et. Aliquam ut sem eu magna gravida imperdiet. Proin sit amet nunc lectus. Duis tristique vulputate elementum.`,
+    `Maecenas lacinia quam eu quam varius semper. Nullam fringilla dapibus ligula, eget porttitor nibh vulputate ut. In hac habitasse platea dictumst. Sed lectus metus, lobortis a ultrices non, malesuada et mauris. Etiam ut facilisis sapien. Praesent iaculis rutrum arcu, at dapibus arcu venenatis a. Mauris ut velit vitae magna commodo convallis ac nec nibh.`,
+    `Cras non ullamcorper mi. Nunc euismod, felis eu volutpat lacinia, nibh lorem viverra mauris, et maximus sapien metus sit amet tellus. Etiam non dictum ante. Suspendisse at metus viverra arcu pulvinar fringilla. Integer pulvinar nisl sed nulla bibendum molestie. Nulla malesuada maximus ex, a tempor erat egestas vitae. Mauris viverra tortor eget ante fermentum, a fringilla risus mollis. Nulla viverra, lacus id aliquam gravida, leo ex lobortis metus, dictum fringilla orci enim sit amet lorem. Suspendisse consequat sollicitudin nibh, in tempor diam bibendum a. Nulla finibus convallis est eu lobortis. Cras cursus, tortor sed porttitor auctor, sapien justo mollis nibh, vitae pellentesque neque sapien vel libero. Nam mollis interdum tortor vel pretium. Quisque pretium euismod diam et porttitor. In sit amet accumsan nisl. Suspendisse mattis ullamcorper nisl, pellentesque elementum lorem ultricies ac.`,
+    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc magna sem, lobortis ut dui eu, gravida eleifend nibh. Mauris vulputate ligula vitae pulvinar tincidunt. Aliquam ac mauris lectus. Mauris nisi purus, porttitor nec turpis sit amet, laoreet dapibus lectus. Curabitur et aliquet metus. Nam erat velit, efficitur quis pulvinar non, ultrices ac velit. Curabitur dignissim metus vitae enim hendrerit pellentesque vel vel quam. Aenean metus magna, tempus et orci at, vulputate tincidunt odio. Aliquam et mi ut sem iaculis semper vel vel sem. Aenean laoreet feugiat lorem ac iaculis. Suspendisse id sapien vitae ipsum ornare tincidunt id ornare odio. Sed lacinia ipsum ac massa convallis euismod. Vestibulum at sollicitudin metus, in tempor tortor. Sed in velit nisi. Nulla efficitur tellus imperdiet blandit luctus. Nulla id arcu ut orci porta rhoncus.`,
+    `In aliquet nisi a posuere vulputate. Pellentesque ut leo augue. Morbi ullamcorper ex non tincidunt malesuada. Sed molestie erat urna, non hendrerit lectus ullamcorper ac. Suspendisse dapibus sagittis auctor. Pellentesque mi libero, tincidunt finibus nunc sed, sodales bibendum augue. Nulla tincidunt justo quam, sed finibus nunc tincidunt vitae. In hac habitasse platea dictumst. Maecenas congue ut ex ac porttitor. Praesent lacinia arcu eget viverra bibendum.`,
+    `Sed viverra dui arcu, at posuere enim dictum ac. In interdum mattis molestie. Cras at pulvinar libero, ac ullamcorper enim. Vivamus sagittis non eros at venenatis. Proin consectetur lectus at urna mattis, eu eleifend tellus pretium. In vel enim arcu. Etiam placerat velit vitae rhoncus tempor. Pellentesque a dignissim justo, eu porttitor nisi. Duis pretium malesuada ante et faucibus. Donec mattis rutrum suscipit. Etiam sagittis eget magna id aliquam. Integer placerat ligula quis ligula ullamcorper molestie.`,
+    `Quisque blandit magna vel lacinia fringilla. Mauris sit amet gravida tellus. Ut sagittis convallis bibendum. Sed dapibus velit sit amet sapien malesuada, a sagittis turpis ornare. Cras finibus arcu vel rutrum euismod. Nam fringilla tellus et nibh accumsan viverra. Vestibulum vestibulum mauris nec massa efficitur, quis sagittis velit volutpat. Donec porttitor aliquet arcu eleifend sagittis. Pellentesque viverra ac metus a pharetra. Etiam dolor justo, convallis id pellentesque non, vehicula eget risus. Donec vel dictum leo. Vestibulum commodo iaculis libero, sit amet faucibus sem dictum ac. Vestibulum rhoncus, diam sed convallis laoreet, turpis ante fringilla tortor, eu consequat sem nulla eu ipsum. Vivamus eleifend semper placerat. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus finibus nulla eu odio iaculis elementum.`,
+    `Aenean sed nisi nibh. Quisque molestie euismod hendrerit. Donec eu pulvinar lectus, quis ultrices tortor. Proin posuere felis non leo euismod, sed rutrum ligula sagittis. Morbi sagittis felis rutrum augue sollicitudin tincidunt. Aliquam imperdiet aliquam metus ac ultrices. In elit massa, accumsan id tempor sed, tincidunt et neque.`
+  ]
+
+  let max: number = 0;
+  (type === 'title') ? max = titles.length : max = descriptions.length;
+
+  const min = 0;
+
+  // Generate a number between 0 and 10, including 10
+  // // Math.floor(Math.random() * max) + 1;
+  // Generate a random number between 2 and 10, including both 2 and 10
+  const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+
+  return (type === 'title') ? titles[randomNumber] : descriptions[randomNumber];
 }
 
 export const formerData: PlotContent = {
@@ -429,127 +467,171 @@ export const formerData: PlotContent = {
   ],
 };
 
-export const data: PlotContent = {
-  id: generateID(),
-  name: "Application",
-  children: [
-    {
+export const data: Plot[] = [
+  {
+    id: generateID(),
+    title: GenerateText('title'),
+    description: GenerateText('description'),
+    content: {
       id: generateID(),
-      name: "Front-end",
+      name: GenerateText('title'),
+      description: GenerateText('description'),
       children: [
         {
           id: generateID(),
-          name: "Gestures management",
-        },
-        {
-          id: generateID(),
-          name: "Data management",
+          name: GenerateText('title'),
+          description: GenerateText('description'),
           children: [
             {
               id: generateID(),
-              name: "Lodash",
-            },
-          ],
-        },
-        {
-          id: generateID(),
-          name: "Fake API",
-          children: [
-            {
-              id: generateID(),
-              name: "JSON Server",
+              name: GenerateText('title'),
+              description: GenerateText('description'),
             },
             {
               id: generateID(),
-              name: "Casual",
-            },
-          ],
-        },
-        {
-          id: generateID(),
-          name: "TypeScript",
-        },
-        {
-          id: generateID(),
-          name: "React",
-          children: [
-            {
-              id: generateID(),
-              name: "lifecycle",
-            },
-            {
-              id: generateID(),
-              name: "Redux",
+              name: GenerateText('title'),
+              description: GenerateText('description'),
               children: [
                 {
                   id: generateID(),
-                  name: "Ducks",
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+              ],
+            },
+            {
+              id: generateID(),
+              name: "Fake API",
+              children: [
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+              ],
+            },
+            {
+              id: generateID(),
+              name: GenerateText('title'),
+              description: GenerateText('description'),
+            },
+            {
+              id: generateID(),
+              name: GenerateText('title'),
+              description: GenerateText('description'),
+              children: [
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
                   children: [
                     {
                       id: generateID(),
-                      name: "async-thunks",
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                  ],
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                  children: [
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
                       children: [
                         {
                           id: generateID(),
-                          name: "axios",
-                        },
-                      ],
-                    },
-                    {
-                      id: generateID(),
-                      name: "selectors",
-                    },
-                    {
-                      id: generateID(),
-                      name: "actions",
-                    },
-                    {
-                      id: generateID(),
-                      name: "slice",
-                      children: [
-                        {
-                          id: generateID(),
-                          name: "reducers",
-                        },
-                        {
-                          id: generateID(),
-                          name: "extra-reducers",
+                          name: GenerateText('title'),
+                          description: GenerateText('description'),
                         },
                       ],
                     },
                   ],
                 },
-              ],
-            },
-            {
-              id: generateID(),
-              name: "I18n",
-              children: [
                 {
                   id: generateID(),
-                  name: "fr",
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
                 },
                 {
                   id: generateID(),
-                  name: "en",
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
                 },
                 {
                   id: generateID(),
-                  name: "de",
-                },
-              ],
-            },
-            {
-              id: generateID(),
-              name: "Router",
-              children: [
-                {
-                  id: generateID(),
-                  name: "Pages",
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
                   children: [
                     {
                       id: generateID(),
-                      name: "Components",
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                  ],
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                  children: [
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
                     },
                   ],
                 },
@@ -557,216 +639,350 @@ export const data: PlotContent = {
             },
             {
               id: generateID(),
-              name: "TsConfig",
-            },
-            {
-              id: generateID(),
-              name: "Linter",
-            },
-            {
-              id: generateID(),
-              name: "EnvFile",
+              name: GenerateText('title'),
+              description: GenerateText('description'),
               children: [
                 {
                   id: generateID(),
-                  name: "Development",
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
                 },
                 {
                   id: generateID(),
-                  name: "Production",
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
                 },
               ],
             },
             {
               id: generateID(),
-              name: "SourceMap",
-            },
-            {
-              id: generateID(),
-              name: "Hooks",
+              name: GenerateText('title'),
+              description: GenerateText('description'),
               children: [
                 {
                   id: generateID(),
-                  name: "UseState",
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
                 },
                 {
                   id: generateID(),
-                  name: "UseEffect",
-                },
-                {
-                  id: generateID(),
-                  name: "UseRef",
-                },
-                {
-                  id: generateID(),
-                  name: "UseCallback",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: generateID(),
-          name: "Design system",
-          children: [
-            {
-              id: generateID(),
-              name: "Libraries",
-              children: [
-                {
-                  id: generateID(),
-                  name: "Reactstrap",
-                },
-                {
-                  id: generateID(),
-                  name: "Material UI",
-                },
-                {
-                  id: generateID(),
-                  name: "Fontawesome",
-                },
-              ],
-            },
-            {
-              id: generateID(),
-              name: "Animation",
-            },
-            {
-              id: generateID(),
-              name: "Sass",
-            },
-            {
-              id: generateID(),
-              name: "Layout",
-              children: [
-                {
-                  id: generateID(),
-                  name: "Grid",
-                },
-                {
-                  id: generateID(),
-                  name: "Flexbox",
-                },
-              ],
-            },
-            {
-              id: generateID(),
-              name: "Components",
-              children: [
-                {
-                  id: generateID(),
-                  name: "Inputs",
-                },
-                {
-                  id: generateID(),
-                  name: "Typography",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: generateID(),
-          name: "Testing",
-          children: [
-            {
-              id: generateID(),
-              name: "Cypress",
-            },
-            {
-              id: generateID(),
-              name: "Jest",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: generateID(),
-      name: "Back-end",
-      children: [
-        {
-          id: generateID(),
-          name: "NodeJS",
-          children: [
-            {
-              id: generateID(),
-              name: "Express",
-              children: [
-                {
-                  id: generateID(),
-                  name: "API",
-                },
-                {
-                  id: generateID(),
-                  name: "Scripts",
-                  children: [
-                    {
-                      id: generateID(),
-                      name: "Cron Job",
-                    },
-                  ],
-                },
-                {
-                  id: generateID(),
-                  name: "Socket-io",
-                },
-              ],
-            },
-            {
-              id: generateID(),
-              name: "Koa",
-              children: [
-                {
-                  id: generateID(),
-                  name: "API",
-                },
-                {
-                  id: generateID(),
-                  name: "Socket-io",
-                },
-              ],
-            },
-            {
-              id: generateID(),
-              name: "Modules",
-              children: [
-                {
-                  id: generateID(),
-                  name: "cors",
-                },
-                {
-                  id: generateID(),
-                  name: "helmet",
-                },
-                {
-                  id: generateID(),
-                  name: "body-parser",
-                },
-                {
-                  id: generateID(),
-                  name: "dotenv",
-                },
-                {
-                  id: generateID(),
-                  name: "pg",
-                },
-                {
-                  id: generateID(),
-                  name: "mongoose",
-                },
-                {
-                  id: generateID(),
-                  name: "typeorm",
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
                 },
               ],
             },
           ],
         },
       ],
-    },
-  ],
-};
+    }
+  },
+  {
+    id: generateID(),
+    title: GenerateText('title'),
+    description: GenerateText('description'),
+    content: {
+      id: generateID(),
+      name: GenerateText('title'),
+      description: GenerateText('description'),
+      children: [
+        {
+          id: generateID(),
+          name: GenerateText('title'),
+          description: GenerateText('description'),
+          children: [
+            {
+              id: generateID(),
+              name: GenerateText('title'),
+              description: GenerateText('description'),
+            },
+            {
+              id: generateID(),
+              name: GenerateText('title'),
+              description: GenerateText('description'),
+              children: [
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+              ],
+            },
+            {
+              id: generateID(),
+              name: "Fake API",
+              children: [
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+              ],
+            },
+            {
+              id: generateID(),
+              name: GenerateText('title'),
+              description: GenerateText('description'),
+            },
+            {
+              id: generateID(),
+              name: GenerateText('title'),
+              description: GenerateText('description'),
+              children: [
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                  children: [
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                  ],
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                  children: [
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                      children: [
+                        {
+                          id: generateID(),
+                          name: GenerateText('title'),
+                          description: GenerateText('description'),
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                  children: [
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                  ],
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                  children: [
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              id: generateID(),
+              name: GenerateText('title'),
+              description: GenerateText('description'),
+              children: [
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+              ],
+            },
+            {
+              id: generateID(),
+              name: GenerateText('title'),
+              description: GenerateText('description'),
+              children: [
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: generateID(),
+          name: GenerateText('title'),
+          description: GenerateText('description'),
+          children: [
+            {
+              id: generateID(),
+              name: GenerateText('title'),
+              description: GenerateText('description'),
+              children: [
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                  children: [
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                  ],
+                },
+                {
+                  id: generateID(),
+                  name: GenerateText('title'),
+                  description: GenerateText('description'),
+                  children: [
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                    {
+                      id: generateID(),
+                      name: GenerateText('title'),
+                      description: GenerateText('description'),
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    }
+  }
+];
 
 export const flare = {
   name: "flare",

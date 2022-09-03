@@ -2,7 +2,7 @@ export interface Plot {
   id: string;
   title: string;
   description: string;
-  content: PlotContent[];
+  content: PlotContent;
 }
 
 export interface PlotContent {

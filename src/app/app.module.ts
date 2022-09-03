@@ -35,6 +35,7 @@ import { DendrogramComponent } from "./shared/components/d3/dendrogram/dendrogra
 import { NotFoundComponent } from './shared/components/not-found/not-found.component';
 import { DashboardPanelComponent } from './shared/components/dashboard-panel/dashboard-panel.component';
 import { LoaderComponent } from './shared/components/loader/loader.component';
+import { HierarchyComponent } from './shared/components/hierarchy/hierarchy.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { LoaderComponent } from './shared/components/loader/loader.component';
     NotFoundComponent,
     DashboardPanelComponent,
     LoaderComponent,
+    HierarchyComponent,
   ],
   imports: [
     BrowserModule,

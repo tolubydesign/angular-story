@@ -5,8 +5,8 @@ import { PlotService } from "@services/plot/plot.service";
 import { Observable, Observer, Subscription } from "rxjs";
 import { Plot, PlotContent } from "@models/plot";
 import { ActivatedRoute, NavigationStart, Router, ParamMap } from '@angular/router';
-import { data } from "../../models/tree-data.model";
-import { falsy } from "../../models/tree.model";
+import { data } from "@models/tree-data.model";
+import { falsy } from "@models/tree.model";
 
 // Create Mat Icons.
 const CloseIcon = `
@@ -80,9 +80,7 @@ export class PanelComponent implements OnInit {
 
         // We have the relevant parameter id. Make a request to back-end.
         this.initializeComponent();
-      } else {
-
-      }
+      } else { }
     });
 
     // const state = this.router.routerState;
@@ -91,18 +89,24 @@ export class PanelComponent implements OnInit {
 
   initializeComponent(): void {
     this.requestSubscription = this.plotService.GetStory().subscribe((response: Plot[]) => {
-      console.log("SUB:response", response);
+
       if (response && response.length) {
         this.selectedPlot = response.find((ob: Plot) => ob.id === this.parameterID);
 
         if (this.selectedPlot) {
+          // Update store.
+          this.plotService.storySubject.next(this.selectedPlot);
+          // Show dendrogram.
           this.displayDendrogram = true;
         } else {
+          // Update store.
+          // this.plotService.storySubject.next(undefined);
+          // Hide dendrogram.
           this.displayDendrogram = false;
         };
       }
 
-      return response
+      console.log("SUB:this.plotService.storySubject", this.plotService.storySubject);
     });
 
     // subscribe to values in service

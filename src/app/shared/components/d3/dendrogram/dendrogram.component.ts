@@ -1,10 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { Plot, PlotContent } from "@models/plot";
+import { PlotContent } from "@models/plot";
 import * as d3 from "d3";
 import { HierarchyNode, Selection, svg } from "d3";
-import { formerData } from "@models/tree-data.model";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { ThisReceiver } from "@angular/compiler";
+import { generateID } from "@models/tree-data.model";
 
 @Component({
   selector: "app-dendrogram",
@@ -20,12 +18,14 @@ export class DendrogramComponent implements OnInit {
    * https://bl.ocks.org/d3noob/8326869
    * https://observablehq.com/@bumbeishvili/vertical-collapsible-d3-flextree
    *
-   * https://codepen.io/VividD/pen/AbZbdx
+   * https://codepen.io/VividD/pen/AbZbdx (!)
    *
    * https://typescript.hotexamples.com/examples/d3/-/tree/typescript-tree-function-examples.html
+   * 
+   * https://observablehq.com/@d3/d3-hierarchy (!)
    *
    */
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor() {}
 
   name = "d3-graph";
   d3Element = `div#${this.name}`;
@@ -46,7 +46,7 @@ export class DendrogramComponent implements OnInit {
 
   duration = 750;
   i = 0;
-  root: HierarchyNode<any> | any = d3.hierarchy(formerData, (d) => d.children);
+  root: HierarchyNode<any> | any = d3.hierarchy(treeDatabase, (d) => d.children);
 
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
@@ -242,3 +242,188 @@ export class DendrogramComponent implements OnInit {
     );
   }
 }
+
+const treeDatabase: PlotContent = {
+  id: generateID(),
+  name: "Some Application",
+  children: [
+    {
+      id: generateID(),
+      name: "Front-end",
+      children: [
+        {
+          id: generateID(),
+          name: "Gestures management",
+        },
+        {
+          id: generateID(),
+          name: "Data management",
+          children: [
+            {
+              id: generateID(),
+              name: "Lodash",
+            },
+          ],
+        },
+        {
+          id: generateID(),
+          name: "Fake API",
+          children: [
+            {
+              id: generateID(),
+              name: "JSON Server",
+            },
+            {
+              id: generateID(),
+              name: "Casual",
+            },
+          ],
+        },
+        {
+          id: generateID(),
+          name: "TypeScript",
+        },
+        {
+          id: generateID(),
+          name: "React",
+        },
+        {
+          id: generateID(),
+          name: "Design system",
+          children: [
+            {
+              id: generateID(),
+              name: "Libraries",
+            },
+            {
+              id: generateID(),
+              name: "Animation",
+            },
+            {
+              id: generateID(),
+              name: "Sass",
+            },
+          ],
+        },
+        {
+          id: generateID(),
+          name: "Testing",
+          children: [
+            {
+              id: generateID(),
+              name: "Cypress",
+            },
+            {
+              id: generateID(),
+              name: "Jest",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: generateID(),
+      name: "Back-end",
+      children: [
+        {
+          id: generateID(),
+          name: "NodeJS",
+          children: [
+            {
+              id: generateID(),
+              name: "Express",
+            },
+            {
+              id: generateID(),
+              name: "Koa",
+              children: [
+                {
+                  id: generateID(),
+                  name: "API",
+                },
+                {
+                  id: generateID(),
+                  name: "Socket-io",
+                },
+              ],
+            },
+            {
+              id: generateID(),
+              name: "Modules",
+              children: [
+                {
+                  id: generateID(),
+                  name: "cors",
+                },
+                {
+                  id: generateID(),
+                  name: "helmet",
+                },
+                {
+                  id: generateID(),
+                  name: "body-parser",
+                },
+                {
+                  id: generateID(),
+                  name: "dotenv",
+                },
+                {
+                  id: generateID(),
+                  name: "pg",
+                },
+                {
+                  id: generateID(),
+                  name: "mongoose",
+                },
+                {
+                  id: generateID(),
+                  name: "typeorm",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: generateID(),
+      name: "Database",
+      children: [
+        {
+          id: generateID(),
+          name: "MongoDB",
+          children: [
+            {
+              id: generateID(),
+              name: "Mongoose",
+            },
+          ],
+        },
+        {
+          id: generateID(),
+          name: "Postgres",
+          children: [
+            {
+              id: generateID(),
+              name: "DB-migrate",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: generateID(),
+      name: "Docker",
+      children: [
+        {
+          id: generateID(),
+          name: "Docker-compose",
+        },
+        {
+          id: generateID(),
+          name: "Dockerfile",
+        },
+      ],
+    },
+  ],
+};

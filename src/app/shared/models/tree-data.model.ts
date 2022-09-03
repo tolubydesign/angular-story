@@ -32,11 +32,11 @@ export interface DendrogramDataParent {
   y: 480;
 }
 
-function generateID() {
+export function generateID() {
   return uuid.v4();
 }
 
-function GenerateText(type: 'title' | 'description'): string {
+export function GenerateText(type: 'title' | 'description'): string {
   const titles: string[] = [
     "Fringilla hendrerit ex eget", 'Consectetur posuere enim', 'Nam blandit magna vel lacinia', 'Porttitor quis ultrices tortor',
     'Quisque hendrerit ex eget risus', 'Ullamcorper pulvinar libero', 'Bibendum metus viverra arcu', 'Cras eget porttitor nibh',

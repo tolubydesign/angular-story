@@ -34,9 +34,8 @@ export class PlotService {
   storyBehavior = new BehaviorSubject<PlotContent | undefined>(undefined);
   storyBehavior$ = this.storyBehavior.asObservable();
 
-  // SUBJECT
-  // 
-  subject = new Subject(); // Plot 
+  // SUBJECT(S)
+  storySubject: Subject<Plot | undefined> = new Subject();
 
   constructor(
     private http: HttpClient,
@@ -86,15 +85,8 @@ export class PlotService {
       )
   }
 
-  async closePanel() {
-    return this.subject.next(null)
-  }
-
-  selectPlot(plotID: string) {
-    /** 
-     * Pass the handling of finding the correct `subject` to the relevant Class.
-     * For cleaner code. */
-    return this.subject.next(this.Plot?.selectPlot(plotID));
+  UpdateStorySubject() {
+    
   }
 
   // setNodesAndLinks() {

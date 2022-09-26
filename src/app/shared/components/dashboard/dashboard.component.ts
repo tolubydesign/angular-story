@@ -22,20 +22,17 @@ export class DashboardComponent implements OnInit {
   getStorySubscription: Subscription | null = null;
   narrativeSubscription: Subscription | null = null;
 
-  constructor(private storyService: StoryService) {}
+  constructor(private storyService: StoryService) { }
 
   ngOnInit(): void {
     this.getStory();
   }
 
   ngOnDestroy(): void {
-    if (this.getStorySubscription) {
-      this.getStorySubscription.unsubscribe();
-    }
+    // UNSUBSCRIBE
+    this.getStorySubscription?.unsubscribe();
 
-    if (this.narrativeSubscription) {
-      this.narrativeSubscription.unsubscribe();
-    }
+    this.narrativeSubscription?.unsubscribe();
   }
 
   getStory(): void {

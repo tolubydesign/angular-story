@@ -21,7 +21,6 @@ import * as JSON5 from 'json5'
   providedIn: 'root'
 })
 export class PlotService {
-
   dummyTree = JSON.stringify(data);
 
   Plot: PlotModel | null = null;
@@ -31,7 +30,7 @@ export class PlotService {
   plotData = new BehaviorSubject<Plot[] | undefined>(undefined);
   plotData$ = this.plotData.asObservable();
 
-  storyBehavior = new BehaviorSubject<PlotContent | undefined>(undefined);
+  storyBehavior = new BehaviorSubject<Plot[]>([]);
   storyBehavior$ = this.storyBehavior.asObservable();
 
   // SUBJECT(S)
@@ -65,30 +64,50 @@ export class PlotService {
       )
   }
 
-  GetStory() {
-    return this.http.get<PlotContent>("/assets/data/stories.json")
+  GetStory(): Observable<Plot[]> {
+    return this.http.get<PlotContent>("assets/data/stories.json")
+      // Error  
       .pipe(
-        map((res: any) => {
-          // Error handling
-          // (!) For later use.
-          // if (!res.response) {
-          //   throw new Error('No value provided.');
-          // }
-          this.storyBehavior.next(res);
-          return res;
-        }),
-
-        catchError((error: Error) => {
-          console.warn("Getting Stories Error:", error);
-          return of([])
+        catchError((error: Error, caught: Observable<any>) => {
+          console.warn("Getting Stories Error:", error.message);
+          throw new Error(error.message);
+          return ([])
         })
       )
+      // Request 
+      .pipe(
+        tap((res: Plot[]) => {
+          console.log("Getting Stories map", res);
+          return res;
+        })
+      )
+    // return this.http.get<PlotContent>("assets/data/stories.json")
+    //   .pipe(
+    //     map((res: any) => {
+    //       // Error handling
+    //       // (!) For later use.
+    //       // if (!res.response) {
+    //       //   throw new Error('No value provided.');
+    //       // }
+    //       this.storyBehavior.next(res);
+    //       console.log("Getting Stories map", res);
+    //       return res;
+    //     }),
+
+    //     catchError((error: Error, caught: Observable<any>) => {
+    //       console.warn("Getting Stories Error:", error.message);
+    //       return of([])
+    //     })
+    //   )
   }
 
   UpdateStorySubject() {
-    
+
   }
 
+  Initialization() {
+
+  }
   // setNodesAndLinks() {
   //   const content = this.Plot?.selectedPlot?.content;
   //   if (content) {

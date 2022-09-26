@@ -68,8 +68,8 @@ export class PanelComponent implements OnInit {
 
   ngOnDestroy(): void {
     // UNSUBSCRIBE
-    this.plotService.storyBehavior.unsubscribe();
-    if (this.requestSubscription) this.requestSubscription.unsubscribe();
+    // this.plotService.storyBehavior.unsubscribe();
+    this.requestSubscription?.unsubscribe();
   }
 
   // Get id from url.

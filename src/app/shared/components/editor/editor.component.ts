@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { PlotService } from "@services/plot/plot.service";
-import { Subscription, Observable } from "rxjs";
+import { Subscription, Observable, tap, map } from "rxjs";
 import { Plot } from "@models/plot";
 import { Router } from "@angular/router";
 
@@ -10,10 +10,8 @@ import { Router } from "@angular/router";
   styleUrls: ["./editor.component.scss"],
 })
 export class EditorComponent implements OnInit {
-  plotSubscription: Subscription | undefined;
-  storyEdits: Plot[] | null = null;
-
-  selectedPlot: string | undefined;
+  GetStoriesSubscription: Subscription | undefined;
+  storyEdits: Plot[] = [];
 
   constructor(private plotService: PlotService, private router: Router) { }
 
@@ -22,12 +20,13 @@ export class EditorComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.plotSubscription ? this.plotSubscription.unsubscribe() : undefined;
+    // UNSUBSCRIBE
+    this.GetStoriesSubscription?.unsubscribe();
   }
 
   populateList(): void {
-    this.plotSubscription = this.plotService.GetStory().subscribe((plot: any) => {
-      this.storyEdits = plot;
+    this.GetStoriesSubscription = this.plotService.GetStory().subscribe((database: Plot[] | undefined) => {
+      if (database) this.storyEdits = database;
     });
   }
 

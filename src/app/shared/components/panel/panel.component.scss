@@ -12,10 +12,29 @@
   justify-content: center;
 }
 
-
-
 .test-mat-card {
-  max-width: 90vw;
+  position: fixed;
+  overflow: scroll;
+  top: 70%;
+  left: 10px;
+
+  max-height: 20%;
+  max-width: calc(100vw - 80px);
   margin: auto;
+
+  border: 2px solid #9b9999;
+}
+
+.test--mat-card--text {
+  font-size: 11px;
+  color: rgb(148, 147, 147);
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+.test--mat-card--group {
+  max-width: 100%;
   width: 100%;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }

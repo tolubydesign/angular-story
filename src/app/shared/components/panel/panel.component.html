@@ -7,20 +7,18 @@
     <app-loader></app-loader>
   </div>
 
-  <div *ngIf="this.displayDendrogram">
+  <div *ngIf="this.displayDendrogram" class="">
     <!-- TODO: render dendrogram here or pass data into child component -->
-
     <app-hierarchy>
       <!-- src/app/shared/components/hierarchy/hierarchy.component.html -->
       <!-- This component is in /components/d3/ -->
     </app-hierarchy>
 
     <mat-card class="test-mat-card">
-      <p style="font-size: 10px; color: rgb(201, 201, 201)">panel works!</p>
-      <p class="" style="font-size: 9px; color: rgb(201, 201, 201); text-align: center; overflow: scroll; max-height: 150px; height: 100%;">
-        {{ selectedPlot | json }}
-      </p>
+      <div class="test--mat-card--group">
+        <p class="test--mat-card--text"><b>panel works!</b></p>
+        <p class="test--mat-card--text">{{ selectedPlot | json }}</p>
+      </div>
     </mat-card>
-
   </div>
 </section>

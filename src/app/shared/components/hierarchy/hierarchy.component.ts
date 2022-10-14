@@ -58,7 +58,7 @@ export class HierarchyComponent implements OnInit {
     console.log("fn:InitialiseComponent");
     this.root = null
 
-    this.plotService.storySubject.subscribe((v) => {
+    this.plotService.storyBehaviorSubject.subscribe((v) => {
       console.log(`observer: ${v}`);
       if (v && v.content) {
         // Initialise d3 hierarchy graph.
@@ -69,7 +69,7 @@ export class HierarchyComponent implements OnInit {
       }
     })
 
-    // this.hierarchySubscriber = this.plotService.storySubject.subscribe({
+    // this.hierarchySubscriber = this.plotService.storyBehaviorSubject.subscribe({
     //   next: (v: Plot | undefined): void => {
     //   },
     // });

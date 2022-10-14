@@ -35,7 +35,7 @@ const THUMBUP_ICON =
 })
 export class PanelComponent implements OnInit {
   // VARIABLES
-  requestSubscription: Subscription | falsy = undefined;
+  requestSubscription: Subscription | falsy;
   parameterID: string | unknown;
   panelError: { type: 'unknown error' | 'not found' | falsy, error: boolean } = {
     type: undefined,
@@ -63,7 +63,6 @@ export class PanelComponent implements OnInit {
 
   ngOnInit(): void {
     this.getParameterID();
-    console.log("Generated:", data)
   }
 
   ngOnDestroy(): void {
@@ -72,21 +71,32 @@ export class PanelComponent implements OnInit {
     this.requestSubscription?.unsubscribe();
   }
 
-  // Get id from url.
+  /**
+   * 
+   * @param
+   * @description Get id from url. Page route
+   * @return void
+   */
   getParameterID() {
+    // Route
     this.activatedRoute.paramMap.subscribe((value: ParamMap | { params: { id: string } } | any) => {
       if (value && value.params && value.params.id) {
         this.parameterID = value.params.id;
 
         // We have the relevant parameter id. Make a request to back-end.
         this.initializeComponent();
-      } else { }
+      }
     });
 
     // const state = this.router.routerState;
     // const currentNavigation = this.router.getCurrentNavigation();
   }
 
+  /**
+   * @param
+   * @description Initialise component. Get and set the necessary data
+   * @return void
+   */
   initializeComponent(): void {
     this.requestSubscription = this.plotService.GetStory().subscribe((response: Plot[]) => {
 
@@ -95,7 +105,7 @@ export class PanelComponent implements OnInit {
 
         if (this.selectedPlot) {
           // Update store.
-          this.plotService.storySubject.next(this.selectedPlot);
+          this.plotService.storyBehaviorSubject.next(this.selectedPlot);
           // Show dendrogram.
           this.displayDendrogram = true;
         } else {
@@ -106,7 +116,8 @@ export class PanelComponent implements OnInit {
         };
       }
 
-      console.log("SUB:this.plotService.storySubject", this.plotService.storySubject);
+      console.log("Generated:", data)
+      console.log("SUB:storyBehaviorSubject", this.plotService.storyBehaviorSubject.getValue());
     });
 
     // subscribe to values in service

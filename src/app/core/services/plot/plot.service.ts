@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, Subscription, BehaviorSubject, Subject, throwError } from 'rxjs';
+import { Observable, of, Subscription, BehaviorSubject, Subject, throwError, Falsy } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 // import { HttpErrorResponse } from '@angular/common/http';
 import { map, tap, retry, catchError } from 'rxjs/operators';
@@ -29,12 +29,12 @@ export class PlotService {
   // BEHAVIOR SUBJECT
   plotData = new BehaviorSubject<Plot[] | undefined>(undefined);
   plotData$ = this.plotData.asObservable();
-
   storyBehavior = new BehaviorSubject<Plot[]>([]);
   storyBehavior$ = this.storyBehavior.asObservable();
+  storyBehaviorSubject: BehaviorSubject<Plot | Falsy> = new BehaviorSubject<Plot | Falsy>(undefined);
 
   // SUBJECT(S)
-  storySubject: Subject<Plot | undefined> = new Subject();
+  // storySubject: Subject<Plot | undefined> = new Subject();
 
   constructor(
     private http: HttpClient,

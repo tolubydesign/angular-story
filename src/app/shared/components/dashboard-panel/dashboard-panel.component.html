@@ -1,9 +1,9 @@
-<section data-component="Panel Dashboard Component">
+<a class="back--link" mat-raised-button (click)="back()" routerLinkActive="active">Go Back</a>
+
+<section data-component="Panel Dashboard Component" class="dashboard-panel--component">
   <!-- Alternative method -->
   <!-- <a routerLink="..">Go Back</a> -->
-  <a class="back--link" mat-stroked-button (click)="back()" routerLinkActive="active">Go Back</a>
-  
-  <div>
+  <div class="dashboard-panel--component--group">
     <app-panel></app-panel>
   </div>
 </section>

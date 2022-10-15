@@ -1,9 +1,25 @@
 .back--link {
-  position: absolute;
+  position: fixed;
   top: 10px;
   left: 10px;
+  // z-index: 2;
 }
 
 .text {
   text-align: center;
+}
+
+.dashboard-panel--component--group {
+  width: 100%;
+  max-width: 100vw;
+  z-index: -1;
+}
+
+.dashboard-panel--component {
+  width: 100%;
+  height: 100%;
+  max-width: 100vw;
+  max-height: 100vh;
+  min-width: 99vw;
+  min-height: 99vh;
 }

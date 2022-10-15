@@ -7,9 +7,9 @@
     <app-loader></app-loader>
   </div>
 
-  <div *ngIf="this.displayDendrogram" class="">
+  <div class="display-dendrogram--group" >
     <!-- TODO: render dendrogram here or pass data into child component -->
-    <app-hierarchy>
+    <app-hierarchy *ngIf="this.displayDendrogram">
       <!-- src/app/shared/components/hierarchy/hierarchy.component.html -->
       <!-- This component is in /components/d3/ -->
     </app-hierarchy>

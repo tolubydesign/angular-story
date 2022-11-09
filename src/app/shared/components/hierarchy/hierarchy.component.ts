@@ -1,9 +1,10 @@
 import { PlotService } from '@services/plot/plot.service';
 import { Component, OnInit } from '@angular/core';
 import * as d3 from "d3";
-import { HierarchyNode, Selection, svg } from "d3";
+import { HierarchyNode, Selection, svg, drag, ValueFn } from "d3";
+import { BaseType } from 'd3-selection';
 import { BehaviorSubject, Falsy, Subscription } from 'rxjs';
-import { Plot } from '@models/plot';
+import { Plot, PlotContent } from '@models/plot';
 
 @Component({
   selector: 'app-hierarchy',
@@ -15,9 +16,9 @@ export class HierarchyComponent implements OnInit {
   constructor(private plotService: PlotService) { }
   name = "d3-hierarchy";
   HierarchyElement = `div#${this.name}`;
-  // ************** Generate the tree diagram	 *****************
-  width = 1100;
-  height = 500;
+  // ************** Generate the tree diagram	 ***************** //
+  width = 2500;
+  height = 2000;
   createSvg: any = svg;
 
   margin = { top: 100, right: 50, bottom: 100, left: 50 };
@@ -31,12 +32,12 @@ export class HierarchyComponent implements OnInit {
 
   duration = 750;
   i = 0;
-  root: HierarchyNode<any> | undefined | null | { children: any[], x0: any, y0: any } | any = {
+  root: HierarchyNode<Plot | Falsy> | undefined | null | { children: any[], x0: any, y0: any } | any = {
     children: [], x0: 0, y0: 0
   };
 
   // declares a tree layout and assigns the size
-  treeMap = d3.tree().size([this.height, this.width]);
+  treeMap = d3.tree().size([this.width, this.height]);
 
   // SUBSCRIBER.
   hierarchySubscriber: Subscription | undefined = undefined;
@@ -51,15 +52,16 @@ export class HierarchyComponent implements OnInit {
     //Add 'implements OnDestroy' to the class.
 
     // Unsubscribe
-    this.hierarchySubscriber?.unsubscribe
+    this.hierarchySubscriber?.unsubscribe()
   }
 
   InitialiseComponent() {
-    console.log("fn:InitialiseComponent");
+    console.info("fn:InitialiseComponent");
     this.root = null
 
-    this.plotService.storyBehaviorSubject.subscribe((v) => {
-      console.log(`observer: ${v}`);
+    // Assign data
+    this.plotService.storyBehaviorSubject.subscribe((v: Plot | Falsy) => {
+      // console.info(`observer: ${v}`);
       if (v && v.content) {
         // Initialise d3 hierarchy graph.
         this.root = d3.hierarchy(v.content, (d) => d.children);
@@ -69,20 +71,21 @@ export class HierarchyComponent implements OnInit {
       }
     })
 
+
+
     // this.hierarchySubscriber = this.plotService.storyBehaviorSubject.subscribe({
     //   next: (v: Plot | undefined): void => {
     //   },
     // });
   }
 
-
   /**
-   * Function creates svg graph
+   * @description Create svg graph.
    * @returns svg ; the graph and attaching it to a local value
    */
-  async createCanvas() {
+  async createCanvas(): Promise<Selection<SVGGElement, unknown, HTMLElement, any> | undefined> {
     // append the svg object to the body of the page
-    this.svg = d3
+    return this.svg = d3
       .select(this.HierarchyElement)
       .append("svg")
       .attr("width", this.width)
@@ -98,7 +101,11 @@ export class HierarchyComponent implements OnInit {
     return;
   }
 
-  initialize() {
+  /**
+   * @description 
+   * @return void
+   */
+  initialize(): void {
     console.log("fn:initialize")
     // if (this.root) return;
 
@@ -112,7 +119,11 @@ export class HierarchyComponent implements OnInit {
     if (this.root) this.update(this.root);
   }
 
-  // Collapse the node and all it's children
+  /**
+   * Collapse the node and all it's children
+   * @param d 
+   * @return void
+   */
   collapse(d: any) {
     if (d.children) {
       d._children = d.children;
@@ -135,7 +146,6 @@ export class HierarchyComponent implements OnInit {
   }
 
   update(source: any) {
-
     if (!this.root) return;
     // Assigns the x and y position for the nodes
     // var treeData = this.flexLayout(this.root);
@@ -144,8 +154,8 @@ export class HierarchyComponent implements OnInit {
     const treeData = this.treeMap(this.root);
 
     // Compute the new tree layout.
-    let nodes = treeData.descendants();
-    let links = treeData.descendants().slice(1);
+    let nodes: HierarchyNode<unknown>[] = treeData.descendants();
+    let links: d3.HierarchyPointNode<unknown>[] = treeData.descendants().slice(1);
 
     // ****************** Nodes section ***************************
     // Update the nodes...
@@ -157,13 +167,14 @@ export class HierarchyComponent implements OnInit {
 
     // Normalize for fixed-depth.
     // Line below determines the height difference between rows.
-    nodes.forEach((d) => {
+    nodes.forEach((d: any) => {
+      console.log("asdf---- ", d);
       return (d.y = d.depth * 120);
     });
 
     // Declare the nodes…
     // let node: any = this.svg.selectAll(`#${this.name} g.node`).data(nodes, (d: any) => { return d.id || (d.id = ++this.i) });
-    let node: any = this.svg.selectAll(`g.node`).data(nodes, (d: any) => {
+    let node: Selection<any, any, HTMLElement, any> = this.svg.selectAll(`g.node`).data(nodes, (d: any) => {
       return d.id || (d.id = ++this.i);
     });
 
@@ -176,9 +187,13 @@ export class HierarchyComponent implements OnInit {
         return "translate(" + d.x + "," + d.y + ")";
         // return "translate(" + source.x + "," + source.y + ")";
       })
+      // .call(drag)
       .on("click", this.click);
 
-    // Add Circle for the nodes
+    /**
+     * CIRCLE.
+     * Add Circle for the nodes.
+     */
     nodeEnter
       .append("circle")
       .attr("r", 20)
@@ -188,7 +203,10 @@ export class HierarchyComponent implements OnInit {
       })
       .attr("stroke-width", "3px;");
 
-    // Add labels to nodes
+    /**
+     * LABEL
+     * Add labels to nodes
+     */
     nodeEnter
       .append("text")
       .attr("pointer-events", "none")
@@ -197,9 +215,8 @@ export class HierarchyComponent implements OnInit {
       // })
       .attr("dy", ".35em")
       .attr("text-anchor", "middle")
-      .text((d: any) => {
-        return d.data.name;
-      })
+      .attr("class", "node--text")
+      .text((d: { data: PlotContent }) => d.data.name)
       .style("fill-opacity", 1)
       .attr("text-anchor", "middle")
       .attr("fill", "#000")
@@ -207,8 +224,10 @@ export class HierarchyComponent implements OnInit {
 
     /** UPDATE (DON'T REALLY KNOW WHAT) */
     // // ****************** links section ***************************
-    // Update the links...
-    // Declare the links…
+    /**
+     * Update the links...
+     * Declare the links…
+     */
     let link = this.svg
       .selectAll("path.link")
       // .data(links, (d: any) => {
@@ -240,5 +259,24 @@ export class HierarchyComponent implements OnInit {
       } ${d.y}, ${d.x} ${d.y}`;
     return path;
   }
-
 }
+
+// const drag = {
+
+//   function ondragstart() {
+//     d3.select(this).attr("stroke", "black");
+//   }
+
+//   function dragged(event, d) {
+//     d3.select(this).raise().attr("cx", d.x = event.x).attr("cy", d.y = event.y);
+//   }
+
+//   function dragended() {
+//     d3.select(this).attr("stroke", null);
+//   }
+
+//   return d3.drag()
+//       .on("start", dragstarted)
+//       .on("drag", dragged)
+//       .on("end", dragended);
+// }

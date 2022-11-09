@@ -32,6 +32,8 @@ export class PlotService {
   storyBehavior = new BehaviorSubject<Plot[]>([]);
   storyBehavior$ = this.storyBehavior.asObservable();
   storyBehaviorSubject: BehaviorSubject<Plot | Falsy> = new BehaviorSubject<Plot | Falsy>(undefined);
+  selectedPointer: BehaviorSubject<PlotContent | Falsy> = new BehaviorSubject<PlotContent | Falsy>(null);
+  
 
   // SUBJECT(S)
   // storySubject: Subject<Plot | undefined> = new Subject();

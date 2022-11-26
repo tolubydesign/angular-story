@@ -6,6 +6,8 @@ import { BaseType } from 'd3-selection';
 import { BehaviorSubject, Falsy, Subscription } from 'rxjs';
 import { Plot, PlotContent } from '@models/plot';
 
+type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any[], x0: any, y0: any } | any;
+
 @Component({
   selector: 'app-hierarchy',
   templateUrl: './hierarchy.component.html',
@@ -26,13 +28,12 @@ export class HierarchyComponent implements OnInit {
   // viewerHeight = this.height - this.margin.top - this.margin.bottom;
 
   // append the svg object to the body of the page
-  svg: Selection<any, any, HTMLElement, any> | undefined = undefined;
+  svg: Selection<SVGGElement, HierarchyNode<PlotContent> | unknown, HTMLElement, any> | undefined = undefined;
   // svg: Selection<Element, any, HTMLElement, any> = undefined;
-  graph: Selection<any, any, HTMLElement, any> | undefined = undefined;
 
   duration = 750;
   i = 0;
-  root: HierarchyNode<Plot | Falsy> | undefined | null | { children: any[], x0: any, y0: any } | any = {
+  root: RootType = {
     children: [], x0: 0, y0: 0
   };
 
@@ -81,9 +82,9 @@ export class HierarchyComponent implements OnInit {
 
   /**
    * @description Create svg graph.
-   * @returns svg ; the graph and attaching it to a local value
+   * @returns svg ; the graph and attaching it to a local value `Promise<d3.Selection<SVGGElement, PlotContent, HTMLElement, any> | undefined>`
    */
-  async createCanvas(): Promise<Selection<SVGGElement, unknown, HTMLElement, any> | undefined> {
+  async createCanvas() {
     // append the svg object to the body of the page
     return this.svg = d3
       .select(this.HierarchyElement)
@@ -106,9 +107,6 @@ export class HierarchyComponent implements OnInit {
    * @return void
    */
   initialize(): void {
-    console.log("fn:initialize")
-    // if (this.root) return;
-
     if (!this.root) {
       // Collapse after second level
       this.root.children.forEach(this.collapse);
@@ -116,7 +114,7 @@ export class HierarchyComponent implements OnInit {
       this.root.y0 = 0;
     }
 
-    if (this.root) this.update(this.root);
+    this.update(this.root);
   }
 
   /**
@@ -145,7 +143,13 @@ export class HierarchyComponent implements OnInit {
     console.log("function click", d);
   }
 
-  update(source: any) {
+  /**
+   * @description Initialise/Update/Rebuild data graph.
+   * 
+   * @param source RootType
+   * @returns 
+   */
+  update(source: RootType) {
     if (!this.root) return;
     // Assigns the x and y position for the nodes
     // var treeData = this.flexLayout(this.root);
@@ -168,13 +172,12 @@ export class HierarchyComponent implements OnInit {
     // Normalize for fixed-depth.
     // Line below determines the height difference between rows.
     nodes.forEach((d: any) => {
-      console.log("asdf---- ", d);
       return (d.y = d.depth * 120);
     });
 
     // Declare the nodes…
     // let node: any = this.svg.selectAll(`#${this.name} g.node`).data(nodes, (d: any) => { return d.id || (d.id = ++this.i) });
-    let node: Selection<any, any, HTMLElement, any> = this.svg.selectAll(`g.node`).data(nodes, (d: any) => {
+    let node: Selection<BaseType, HierarchyNode<unknown>, SVGGElement, unknown> = this.svg.selectAll(`g.node`).data(nodes, (d: any) => {
       return d.id || (d.id = ++this.i);
     });
 
@@ -216,7 +219,7 @@ export class HierarchyComponent implements OnInit {
       .attr("dy", ".35em")
       .attr("text-anchor", "middle")
       .attr("class", "node--text")
-      .text((d: { data: PlotContent }) => d.data.name)
+      .text((d: any) => d.data.name)
       .style("fill-opacity", 1)
       .attr("text-anchor", "middle")
       .attr("fill", "#000")

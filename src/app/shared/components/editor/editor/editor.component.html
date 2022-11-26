@@ -2,7 +2,11 @@
 
 <section data-component="Editor Component" class="editor--component--section">
   <!-- loop this element. based on data -->
-  <mat-card *ngFor="let edit of storyEdits" class="editor-card">
+  <app-optional-selection-card [listing]="storyEdits" [primaryText]="'DELETE'" 
+    [secondaryText]="'EDIT'" (PrimaryClick)="deletePlot($event)" (SecondaryClick)="editPlot($event)" >
+  </app-optional-selection-card>
+  
+  <!-- <mat-card *ngFor="let edit of storyEdits" class="editor-card">
     <mat-card-header class="card-header">
       <mat-card-subtitle class="subtitle">
         <p class="subtitle-paragraph">{{ edit.title }}</p>
@@ -17,5 +21,5 @@
       <button mat-button (click)="deletePlot(edit.id)">DELETE</button>
       <button mat-button (click)="editPlot(edit.id)">EDIT</button>
     </mat-card-actions>
-  </mat-card>
+  </mat-card> -->
 </section>

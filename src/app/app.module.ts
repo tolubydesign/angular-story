@@ -20,22 +20,23 @@ import { HttpClientModule } from "@angular/common/http";
 
 /* components */
 import { AppComponent } from "./app.component";
-import { DashboardComponent } from "./shared/components/dashboard/dashboard.component";
-import { ButtonComponent } from "./shared/components/button/button.component";
-import { NavButtonComponent } from "./shared/components/nav-button/nav-button.component";
-import { CharacterPortraitComponent } from "./shared/components/character-portrait/character-portrait.component";
-import { NarrativeComponent } from "./shared/components/narrative/narrative.component";
-import { StartScreenComponent } from "./shared/components/start-screen/start-screen.component";
-import { InteractionComponent } from "./shared/components/interaction/interaction.component";
-import { EditorComponent } from "./shared/components/editor/editor.component";
-import { PanelComponent } from "./shared/components/panel/panel.component";
-import { DagreComponent } from "./shared/components/d3/dagre/dagre.component";
-import { SankeyComponent } from "./shared/components/d3/sankey/sankey.component";
-import { DendrogramComponent } from "./shared/components/d3/dendrogram/dendrogram.component";
-import { NotFoundComponent } from './shared/components/not-found/not-found.component';
-import { DashboardPanelComponent } from './shared/components/dashboard-panel/dashboard-panel.component';
-import { LoaderComponent } from './shared/components/loader/loader.component';
-import { HierarchyComponent } from './shared/components/hierarchy/hierarchy.component';
+import { DashboardComponent } from "./shared/components/interaction/dashboard/dashboard.component";
+import { ButtonComponent } from "./shared/components/ui/button/button.component";
+import { NavButtonComponent } from "./shared/components/ui/nav-button/nav-button.component";
+import { CharacterPortraitComponent } from "./shared/components/ui/character-portrait/character-portrait.component";
+import { NarrativeComponent } from "./shared/components/interaction/narrative/narrative.component";
+import { StartScreenComponent } from "./shared/components/pages/start-screen/start-screen.component";
+import { InteractionComponent } from "./shared/components/interaction/interaction/interaction.component";
+import { EditorComponent } from "./shared/components/editor/editor/editor.component";
+import { PanelComponent } from "./shared/components/extra/panel/panel.component";
+import { DagreComponent } from "./shared/components/extra/d3-components/dagre/dagre.component";
+import { SankeyComponent } from "./shared/components/extra/d3-components/sankey/sankey.component";
+import { DendrogramComponent } from "./shared/components/extra/d3-components/dendrogram/dendrogram.component";
+import { NotFoundComponent } from './shared/components/pages/not-found/not-found.component';
+import { DashboardPanelComponent } from './shared/components/extra/dashboard-panel/dashboard-panel.component';
+import { LoaderComponent } from './shared/components/ui/loader/loader.component';
+import { HierarchyComponent } from './shared/components/extra/hierarchy/hierarchy.component';
+import { OptionalSelectionCardComponent } from './shared/components/ui/optional-selection-card/optional-selection-card.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { HierarchyComponent } from './shared/components/hierarchy/hierarchy.comp
     DashboardPanelComponent,
     LoaderComponent,
     HierarchyComponent,
+    OptionalSelectionCardComponent,
   ],
   imports: [
     BrowserModule,

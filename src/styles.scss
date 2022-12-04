@@ -1,10 +1,107 @@
-/* You can add global styles to this file, and also import other style files */
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@use "@angular/material" as mat;
 
-body {
-  // background: url(assets/images/paul-volkmer-qVotvbsuM_c-unsplash.jpg) opacity($color: #00000027) center no-repeat, linear-gradient(140deg, #26292c9c, #47474b91);
+@include mat.core();
+
+@import "./app/style/fonts/fonts";
+
+$defined-font: '"Roboto-Mono", "Helvetica Neue", sans-serif;';
+
+$my-primary: mat.define-palette(mat.$indigo-palette, 500);
+$my-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+// Define light theme
+$light-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $my-primary,
+      accent: $my-accent,
+    ),
+    typography:
+      mat.define-typography-config(
+        $font-family: $defined-font,
+      ),
+  )
+);
+
+// Define dark theme
+$dark-theme: mat.define-dark-theme(
+  (
+    color: (
+      primary: $my-primary,
+      accent: $my-accent,
+    ),
+    typography:
+      mat.define-typography-config(
+        $font-family: $defined-font,
+      ),
+  )
+);
+
+// Generates styles for all systems configured in the theme. In this case, color styles
+// and default density styles are generated. Density is in themes by default.
+@include mat.all-component-themes($light-theme);
+
+.dark-theme {
+  // This mixin only generates the color styles now.
+  @include mat.all-component-colors($dark-theme);
 }
 
-app-dashboard {
+// You can define a typography level with the define-typography-config Sass function.
+// This function accepts, in order, CSS values for font-size, line-height, font-weight,
+// font-family, and letter-spacing. You can also specify the parameters by name,
+// as demonstrated in the example below.
+$my-custom-level: mat.define-typography-level(
+  $font-family: $defined-font,
+  $font-weight: 400,
+  $font-size: 1rem,
+  $line-height: 1,
+  $letter-spacing: normal,
+);
 
+// A typography config is a collection of all typography levels. Angular Material
+// represents this config as a Sass map. This map contains the styles for each level,
+// keyed by name. You can create a typography config with the define-typography-config
+// Sass function. Every parameter for define-typography-config is optional; the styles
+// for a level will default to Material Design's baseline if unspecified.
+$my-custom-typography-config: mat.define-typography-config(
+  $font-family: $defined-font,
+  $display-4:
+    mat.define-typography-level(112px, 112px, 300, $letter-spacing: -0.05em),
+  $display-3:
+    mat.define-typography-level(56px, 56px, 400, $letter-spacing: -0.02em),
+  $display-2:
+    mat.define-typography-level(45px, 48px, 400, $letter-spacing: -0.005em),
+  $display-1: mat.define-typography-level(34px, 40px, 400),
+  $headline: mat.define-typography-level(24px, 32px, 400),
+);
+
+// To customize component typography for your entire application, you can pass your
+// custom typography config to the core mixin described in the theming guide.
+// Created but never used.
+$my-custom-typography: mat.define-typography-config(
+  $headline: mat.define-typography-level(3rem, 1, 700),
+);
+
+@include mat.core($my-custom-typography-config);
+
+// Override typography for all Angular Material, including mat-base-typography and all components.
+// @include angular-material-typography($typography);
+
+// ? added
+
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+// body { margin: 0; font-family: "Roboto-Mono", "Helvetica Neue", sans-serif; }
+
+body {
+  font-family: "Roboto-Mono", "Helvetica Neue", sans-serif;
+  padding: 0;
+  margin: 0;
+  max-width: unset;
+  width: 100%;
+  height: 100%;
 }

@@ -1,5 +1,5 @@
 .fade-in {
-  animation: fade-in 0.3s cubic-bezier(0.390, 0.575, 0.565, 1.000) both
+  animation: fade-in 0.3s cubic-bezier(0.39, 0.575, 0.565, 1) both;
 }
 
 @keyframes fade-in {
@@ -12,7 +12,7 @@
 }
 
 .scale-up-center {
-	animation: scale-up-center 0.3s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+  animation: scale-up-center 0.3s cubic-bezier(0.39, 0.575, 0.565, 1) both;
 }
 
 @keyframes scale-up-center {
@@ -25,7 +25,7 @@
 }
 
 .move-up {
-  animation: move-up .4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+  animation: move-up 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
 }
 
 @keyframes move-up {

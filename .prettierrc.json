@@ -1,0 +1,17 @@
+{
+  "trailingComma": "es5",
+  "tabWidth": 2,
+  "useTabs": false,
+  "singleQuote": true,
+  "printWidth": 160,
+  "bracketSpacing": true,
+  "overrides": [
+    {
+      "files": "src/**/*.html", 
+      "options": {
+        "printWidth": 180,
+        "html.format.wrapAttributes": "aligned-multiple"
+      }
+    }
+  ]
+}

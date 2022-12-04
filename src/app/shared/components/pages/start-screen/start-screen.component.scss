@@ -1,0 +1,15 @@
+.start-screen--navigation--group {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  // grid-template-rows: auto;
+  grid-template-columns: auto auto;
+}
+
+.start-screen--navigation--link {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 0 30px;
+}

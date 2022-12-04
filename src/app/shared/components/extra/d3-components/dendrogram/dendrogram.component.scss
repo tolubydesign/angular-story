@@ -1,0 +1,67 @@
+.toolbar {
+  height: 40px;
+  width: 100%;
+  display: inline-block;
+}
+
+.d3-tree-graph {
+  max-width: 100vw;
+  max-height: 100vw;
+  width: 100%;
+  height: auto;
+}
+
+.node circle {
+  fill: #fff;
+  stroke: #6c5ce7;
+  stroke-width: 2px;
+  cursor: pointer;
+}
+
+.node text {
+  font: 12px sans-serif;
+}
+
+.node--internal text {
+  text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+}
+
+.node-link {
+  fill: none;
+  stroke: rgba(50, 50, 93, 0.5);
+  stroke-width: 2px;
+  stroke: #6c5ce7;
+}
+
+.node-link-example {
+  width: 10px;
+  height: 20px;
+  background-color: orange;
+}
+
+.dendrogram-svg {
+  background-color: #d6d2f0;
+}
+
+
+
+svg {
+  display: block;
+  margin: auto;
+}
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
+.node text {
+  font: 12px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 2px;
+}

@@ -1,0 +1,5 @@
+<a class="return-home--link" mat-stroked-button routerLink="/" routerLinkActive="active">Home</a>
+<section data-component="Interaction" class="editor--component--section">
+  <app-optional-selection-card [listing]="story" [primaryText]="'INTERACT'" [secondaryText]="null" (PrimaryClick)="interact($event)"  >
+  </app-optional-selection-card>
+</section>

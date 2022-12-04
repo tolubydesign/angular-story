@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { map, tap } from "rxjs/operators";
 import { Subscription, Observable } from "rxjs";
-import { StoryService } from "@services/story.service";
+import { StoryService } from "@services/story/story.service";
 import { MockStoryStructure } from "@models/mock-story-structure";
 
 @Component({
@@ -31,7 +30,6 @@ export class DashboardComponent implements OnInit {
   ngOnDestroy(): void {
     // UNSUBSCRIBE
     this.getStorySubscription?.unsubscribe();
-
     this.narrativeSubscription?.unsubscribe();
   }
 

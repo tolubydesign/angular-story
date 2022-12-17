@@ -1,0 +1,28 @@
+<slot data-component="Story Board Component" class="story-board--section">
+  <article *ngIf="fullStory" class="board--base--group">
+
+    <mat-card>
+      <div class="board--header--group">
+        <mat-card-title class="board--title">{{ title }}</mat-card-title>
+        <mat-card-subtitle class="board--description">{{ description }}</mat-card-subtitle>
+      </div>
+
+      <mat-card-content *ngIf="narrative" data-element="Story Board Narrative Details and Optional Choices.">
+        <div class="board--graphics--group"></div>
+
+        <div class="board--description--group">
+          {{ narrative.description }}
+        </div>
+
+        <div class="board--options--group">
+          <!-- loop - optional selections -->
+          <ng-template ngIf="listing" ngFor let-child [ngForOf]="narrative.children" let-i="index">
+            <button mat-stroked-button *ngIf="child.name" data-id="{{ child.id }}" (click)="selectionOption(child)">
+              {{ child.name }}
+            </button>
+          </ng-template>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </article>
+</slot>

@@ -1,5 +1,8 @@
 <slot data-component="Interaction Dashboard Component" class="component">
-  <p style="text-align: center;">parameter: {{ parameterId }}</p>
-  <p style="font-size: 8px; line-height: 7px;">{{ story | json }}</p>
-  
+  <app-story-board *ngIf="story" [fullStory]="story">
+  </app-story-board>
+  <!-- error response -->
+  <article *ngIf="!story">
+    <p>No Story was found</p>
+  </article>
 </slot>

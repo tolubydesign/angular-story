@@ -17,6 +17,7 @@ export class InteractionDashboardComponent implements OnInit {
   parameters = new URLParameters(this.activatedRoute);
   StorySubscription: Subscription | undefined;
   story: Plot | falsy = undefined;
+  
   constructor(
     private activatedRoute: ActivatedRoute,
     private plotService: PlotService,
@@ -50,13 +51,10 @@ export class InteractionDashboardComponent implements OnInit {
   }
 
   async getStory(stories: Plot[]) {
-    console.log("fn:getStory (initial)", stories);
-
     // loop through and find selected id
     if (!stories || stories.length < 1) return new Error("ERROR Stories cant be ");
 
     this.story = stories.find((s, index) => s.id === this.parameterId);
-    console.log("fn:getStory", this.story);
     return null
   }
 

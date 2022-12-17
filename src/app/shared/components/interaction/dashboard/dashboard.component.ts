@@ -24,7 +24,8 @@ export class DashboardComponent implements OnInit {
   constructor(private storyService: StoryService) { }
 
   ngOnInit(): void {
-    this.getStory();
+    // this.getStory();
+    console.log('OnInit Component DashboardComponent');
   }
 
   ngOnDestroy(): void {

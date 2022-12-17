@@ -1,15 +1,11 @@
-<section data-component="Panel Component" [ngClass]="{ 'panel--component': true }">
-  <!-- <button mat-mini-fab color="primary" aria-label="close icon" class="mat-mini--button" (click)="closePanel()">
-    <mat-icon svgIcon="close" aria-hidden="false" aria-label="Example thumbs up SVG icon" style="width: 18px; height: auto; margin: auto"></mat-icon>
-  </button> -->
-
+<slot data-component="Panel Component" [ngClass]="{ 'panel--component': true }">
   <div class="loader--group" *ngIf="!this.displayDendrogram">
     <app-loader></app-loader>
   </div>
 
-  <div class="display-dendrogram--group" >
+  <div class="display-dendrogram--group" *ngIf="this.displayDendrogram">
     <!-- TODO: render dendrogram here or pass data into child component -->
-    <app-hierarchy *ngIf="this.displayDendrogram">
+    <app-hierarchy>
       <!-- src/app/shared/components/hierarchy/hierarchy.component.html -->
       <!-- This component is in /components/d3/ -->
     </app-hierarchy>
@@ -21,4 +17,4 @@
       </div>
     </mat-card>
   </div>
-</section>
+</slot>

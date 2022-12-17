@@ -37,6 +37,7 @@ import { DashboardPanelComponent } from './shared/components/extra/dashboard-pan
 import { LoaderComponent } from './shared/components/ui/loader/loader.component';
 import { HierarchyComponent } from './shared/components/extra/hierarchy/hierarchy.component';
 import { OptionalSelectionCardComponent } from './shared/components/ui/optional-selection-card/optional-selection-card.component';
+import { InteractionDashboardComponent } from './shared/components/interaction/interaction-dashboard/interaction-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { OptionalSelectionCardComponent } from './shared/components/ui/optional-
     LoaderComponent,
     HierarchyComponent,
     OptionalSelectionCardComponent,
+    InteractionDashboardComponent,
   ],
   imports: [
     BrowserModule,

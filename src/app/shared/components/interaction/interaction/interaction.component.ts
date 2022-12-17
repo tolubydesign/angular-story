@@ -36,9 +36,14 @@ export class InteractionComponent implements OnInit {
       );
   }
 
+  /**
+   * @description Story interaction button. 
+   * @param id ID of user selected narrative.
+   */
   interact(id: string) {
-    // direct user to panel dashboard
+    this.plotService.UpdateStoryBehavior(id);
 
-    // this.router.navigate([`/panel/${id}`])
+    // direct user to panel dashboard
+    this.router.navigate([`/dashboard/${id}`]);
   }
 }

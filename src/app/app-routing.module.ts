@@ -6,6 +6,7 @@ import { EditorComponent } from "./shared/components/editor/editor/editor.compon
 import { InteractionComponent } from "./shared/components/interaction/interaction/interaction.component";
 import { NotFoundComponent } from './shared/components/pages/not-found/not-found.component';
 import { DashboardPanelComponent } from './shared/components/extra/dashboard-panel/dashboard-panel.component';
+import { InteractionDashboardComponent } from '@shared/components/interaction/interaction-dashboard/interaction-dashboard.component';
 
 const routes: Routes = [
   { path: "", component: StartScreenComponent },
@@ -13,8 +14,12 @@ const routes: Routes = [
   { path: "interaction", component: InteractionComponent },
   { path: "panel", component: DashboardPanelComponent },
   { path: "panel/:id", component: DashboardPanelComponent },
+  { path: 'dashboard', component: InteractionDashboardComponent },
+  { path: 'dashboard/:id', component: InteractionDashboardComponent },
+  
+  // 404 must be last
   { path: '404', component: NotFoundComponent },
-  { path: '**', redirectTo: '404' }
+  { path: '**', redirectTo: '404' },
 ];
 
 @NgModule({

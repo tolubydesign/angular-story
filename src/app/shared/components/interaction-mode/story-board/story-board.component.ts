@@ -16,6 +16,7 @@ export class StoryBoardComponent implements OnInit {
   title: string = '';
   optionalSelection: PlotContent[] = [];
   narrative: PlotContent | undefined = undefined;
+  level: number = 0
 
   constructor() { }
 
@@ -60,7 +61,12 @@ export class StoryBoardComponent implements OnInit {
     this.updateBoard(option)
   }
 
-  updateBoard(option: PlotContent) {
-    this.narrative = this.board?.SelectOption(option).state;
+  updateBoard(option: PlotContent): Error | undefined {
+    if (!this.board) return new Error('Error. Attempted to update Board. Cant find board.')
+    const {state, level}: {state: any, level: any} = this.board.SelectOption(option);
+    
+    this.narrative = state;
+    this.level = level;
+    return
   }
 }

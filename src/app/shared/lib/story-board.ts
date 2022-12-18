@@ -8,6 +8,8 @@ export default class Board {
   readonly storyId: string = '';
 
   state: PlotContent | undefined = undefined;
+  previousState: PlotContent | undefined = undefined;
+
   level: number = 0;
 
   constructor(
@@ -49,15 +51,27 @@ export default class Board {
    * @description Select narrative path to follow. User choice
    * @param selection { any }
    */
-  SelectOption(selection: PlotContent) {
+  SelectOption(selection: PlotContent): {state: PlotContent, level: number} {
+    this.previousState = this.state
     this.state = selection;
-    const state = this.state;
     this.level++;
 
+    const state = this.state;
+    const level = this.level;
 
     return {
       state,
-      
+      level,
     }
+  }
+
+  /**
+   * @description Find a specific story moment.
+   * @param { unknown }
+   * @returns {PlotContent}
+   */
+  findNarrativeState(): PlotContent | undefined {
+
+    return this.state
   }
 }

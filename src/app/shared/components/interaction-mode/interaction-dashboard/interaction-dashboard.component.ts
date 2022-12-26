@@ -47,7 +47,6 @@ export class InteractionDashboardComponent implements OnInit {
   async getParameters() {
     await this.parameters.getParametersID()
     this.parameterId = this.parameters.parameterId;
-    console.log("async getParameters", this.parameterId);
   }
 
   async getStory(stories: Plot[]) {

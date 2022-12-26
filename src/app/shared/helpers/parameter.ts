@@ -35,8 +35,8 @@ export class URLParameters {
 
     if (!this.parameterId) {
       return new Error("Parameter id could not be found.")
-    } else {
-      return this.parameterId
     }
+
+    return this.parameterId
   }
 }

@@ -60,7 +60,7 @@ export class StoryBoardComponent implements OnInit {
   }
 
   selectionOption(option: PlotContent) {
-    console.log("fn selectionOption", option);
+    // console.log("fn selectionOption", option);
     this.updateBoard(option)
   }
 

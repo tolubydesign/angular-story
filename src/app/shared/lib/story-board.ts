@@ -71,7 +71,6 @@ export default class Board {
    * @returns {PlotContent}
    */
   findNarrativeState(): PlotContent | undefined {
-
     return this.state
   }
 }

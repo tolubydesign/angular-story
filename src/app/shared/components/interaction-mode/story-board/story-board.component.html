@@ -8,9 +8,7 @@
 
     <mat-card class="board-card--base">
       <mat-card-content class="board--content--group" *ngIf="narrative" data-element="Story Board Narrative Details and Optional Choices.">
-        <div class="board--graphics--group" [style]="!narrative.graphics ? 'background-color: #d4d4d4' : '' ">
-          
-        </div>
+        <div class="board--graphics--group" [style]="!narrative.graphics ? 'background-color: #d4d4d4' : ''"></div>
 
         <div class="board--description--group">
           {{ narrative.description }}
@@ -18,12 +16,28 @@
 
         <div class="board--options--group">
           <!-- loop - optional selections -->
-          <ng-template ngIf="listing" ngFor let-child [ngForOf]="narrative.children" let-i="index">
+          <ng-template #button *ngIf="narrative" ngFor let-child [ngForOf]="narrative.children" let-i="index">
             <button class="board-button--option" mat-stroked-button *ngIf="child.name" data-id="{{ child.id }}" (click)="selectionOption(child)">
               {{ child.name }}
             </button>
           </ng-template>
         </div>
+
+        <div *ngIf="narrative && !narrative.children" class="">
+          <p class="board-button--option" style="text-align:center">Story Ended</p>
+          <div>
+            <a [routerLink]="['/interaction']" [queryParams]="{debug: true}" queryParamsHandling="merge">
+              Go to Interaction Page.
+            </a>
+            <br />
+            <a (click)="reload()">
+              Return to start.
+            </a>
+          </div>
+          
+        </div>
+        
+        
       </mat-card-content>
     </mat-card>
   </article>

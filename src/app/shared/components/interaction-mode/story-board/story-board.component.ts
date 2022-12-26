@@ -2,6 +2,7 @@ import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { Plot, PlotContent } from '@models/plot';
 import { falsy } from '@models/tree.model';
 import Board from '@lib/story-board';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-story-board',
@@ -11,6 +12,7 @@ import Board from '@lib/story-board';
 export class StoryBoardComponent implements OnInit {
   @Input() fullStory: Plot | falsy = undefined;
 
+  id: string = '';
   board: Board | falsy = undefined;
   description: string = '';
   title: string = '';
@@ -18,7 +20,7 @@ export class StoryBoardComponent implements OnInit {
   narrative: PlotContent | undefined = undefined;
   level: number = 0
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
@@ -33,6 +35,7 @@ export class StoryBoardComponent implements OnInit {
 
   initialization(): void {
     if (this.fullStory) {
+      this.id = this.fullStory.id;
       this.board = new Board(this.fullStory);
     }
 
@@ -69,4 +72,14 @@ export class StoryBoardComponent implements OnInit {
     this.level = level;
     return
   }
+
+  reload(): void {
+    if (this.fullStory) {
+      this.board = new Board(this.fullStory);
+      this.selectionOption(this.fullStory.content);
+    } else {
+      new Error('Story not fund.')
+    }
+  }
+
 }

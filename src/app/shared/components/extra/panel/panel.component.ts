@@ -34,6 +34,7 @@ const THUMBUP_ICON =
   styleUrls: ["./panel.component.scss"],
 })
 export class PanelComponent implements OnInit {
+  
   // VARIABLES
   requestSubscription: Subscription | falsy;
   parameterID: string | unknown;
@@ -79,51 +80,16 @@ export class PanelComponent implements OnInit {
    */
   getParameterID() {
     // Route
-    this.activatedRoute.paramMap.subscribe((value: ParamMap | { params: { id: string } } | any) => {
+
+    
+    return this.activatedRoute.paramMap.subscribe((value: ParamMap | { params: { id: string } } | any) => {
       if (value && value.params && value.params.id) {
         this.parameterID = value.params.id;
 
         // We have the relevant parameter id. Make a request to back-end.
-        this.initializeComponent();
+        this.plotService.UpdateStoryBehavior(value.params.id);
+        this.displayDendrogram = true;
       }
     });
-
-    // const state = this.router.routerState;
-    // const currentNavigation = this.router.getCurrentNavigation();
-  }
-
-  /**
-   * @param
-   * @description Initialise component. Get and set the necessary data
-   * @return void
-   */
-  initializeComponent(): void {
-    this.requestSubscription = this.plotService.GetStory().subscribe((response: Plot[]) => {
-
-      if (response && response.length) {
-        this.selectedPlot = response.find((ob: Plot) => ob.id === this.parameterID);
-
-        if (this.selectedPlot) {
-          // Update store.
-          this.plotService.storyBehaviorSubject.next(this.selectedPlot);
-          // Show dendrogram.
-          this.displayDendrogram = true;
-        } else {
-          // Update store.
-          // this.plotService.storySubject.next(undefined);
-          // Hide dendrogram.
-          this.displayDendrogram = false;
-        };
-      }
-
-      console.log("Generated:", data)
-      console.log("SUB:storyBehaviorSubject", this.plotService.storyBehaviorSubject.getValue());
-    });
-
-    // subscribe to values in service
-    // this.plotService.storyBehavior.subscribe((response: PlotContent | undefined) => {
-    //   console.log("this.plotService.storyBehavior.subscribe", response);
-    //   return response
-    // });
   }
 }

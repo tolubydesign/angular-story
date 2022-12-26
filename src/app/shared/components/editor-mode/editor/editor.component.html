@@ -1,6 +1,6 @@
 <a class="return-home--link" mat-stroked-button routerLink="/" routerLinkActive="active">Home</a>
 
-<section data-component="Editor Component" class="editor--component--section">
+<slot data-component="Editor Component" class="editor--component--section">
   <!-- loop this element. based on data -->
   <app-optional-selection-card [listing]="storyEdits" [primaryText]="'DELETE'" 
     [secondaryText]="'EDIT'" (PrimaryClick)="deletePlot($event)" (SecondaryClick)="editPlot($event)" >
@@ -22,4 +22,4 @@
       <button mat-button (click)="editPlot(edit.id)">EDIT</button>
     </mat-card-actions>
   </mat-card> -->
-</section>
+</slot>

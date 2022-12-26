@@ -29,6 +29,8 @@
       "@components/*": ["src/app/shared/components/*"],
       "@misc/*": ["src/app/shared/misc/*"],
       "@icons/*": ["src/app/shared/icons/*"],
+      "@helpers/*": ["src/app/shared/helpers/*"],
+      "@lib/*": ["src/app/shared/lib/*"],
     }
   },
   "angularCompilerOptions": {

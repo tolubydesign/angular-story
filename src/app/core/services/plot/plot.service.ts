@@ -26,6 +26,8 @@ export class PlotService {
   Plot: PlotModel | null = null;
   Story: PlotContent | undefined = undefined;
 
+  storyJSON = "assets/data/stories.json";
+
   // BEHAVIOR SUBJECT
   plotData = new BehaviorSubject<Plot[] | undefined>(undefined);
   plotData$ = this.plotData.asObservable();
@@ -66,7 +68,7 @@ export class PlotService {
   }
 
   GetStory(): Observable<Plot[]> {
-    return this.http.get<PlotContent>("assets/data/stories.json")
+    return this.http.get<PlotContent>(this.storyJSON)
       // Error  
       .pipe(
         catchError((error: Error, caught: Observable<any>) => {
@@ -78,41 +80,26 @@ export class PlotService {
       // Request 
       .pipe(
         tap((res: Plot[]) => {
-          console.log("Getting Stories map", res);
+          console.info("Getting Stories map", res);
           return res;
         })
       )
-    // return this.http.get<PlotContent>("assets/data/stories.json")
-    //   .pipe(
-    //     map((res: any) => {
-    //       // Error handling
-    //       // (!) For later use.
-    //       // if (!res.response) {
-    //       //   throw new Error('No value provided.');
-    //       // }
-    //       this.storyBehavior.next(res);
-    //       console.log("Getting Stories map", res);
-    //       return res;
-    //     }),
-
-    //     catchError((error: Error, caught: Observable<any>) => {
-    //       console.warn("Getting Stories Error:", error.message);
-    //       return of([])
-    //     })
-    //   )
   }
 
-  UpdateStorySubject() {
+  UpdateStoryBehavior(id: string): void {
+    console.log('fn:selection', id)
+    // update store
+    this.GetStory().subscribe((response: Plot[]) =>
+      (response && response.length) ? this.storyBehaviorSubject.next(response.find((ob: Plot) => ob.id === id)) : null
+    )
 
+    /** Alternative */
+    // let story;
+    // this.GetStory().subscribe((response: Plot[]) => {
+    //   if (response?.length) {
+    //     story = response.find((ob: Plot) => ob.id === id);
+    //     this.storyBehaviorSubject.next(story);
+    //   }
+    // });
   }
-
-  Initialization() {
-
-  }
-  // setNodesAndLinks() {
-  //   const content = this.Plot?.selectedPlot?.content;
-  //   if (content) {
-  //     this.Plot?.setNodesAndLinks(content);
-  //   }
-  // }
 }

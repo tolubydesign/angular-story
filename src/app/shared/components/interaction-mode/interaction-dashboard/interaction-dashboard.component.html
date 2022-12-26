@@ -1,0 +1,8 @@
+<slot data-component="Interaction Dashboard Component" class="component">
+  <app-story-board *ngIf="story" [fullStory]="story">
+  </app-story-board>
+  <!-- error response -->
+  <article *ngIf="!story">
+    <p>No Story was found</p>
+  </article>
+</slot>

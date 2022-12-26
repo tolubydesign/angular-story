@@ -1,20 +1,20 @@
-<p>optional-selection-card works!</p>
+<slot data-component="Optional Selection Cards">
+  <ng-template ngIf="listing" ngFor let-item [ngForOf]="listing" let-i="index">
+    <mat-card *ngIf="item.title || item.description" class="editor-card">
+      <mat-card-header class="card-header">
+        <mat-card-subtitle class="subtitle">
+          <p class="subtitle-paragraph">{{ item.title }}</p>
+        </mat-card-subtitle>
+      </mat-card-header>
 
-<ng-template ngIf="listing" ngFor let-item [ngForOf]="listing" let-i="index">
-  <mat-card *ngIf="item.title || item.description" class="editor-card">
-    <mat-card-header class="card-header">
-      <mat-card-subtitle class="subtitle">
-        <p class="subtitle-paragraph">{{ item.title }}</p>
-      </mat-card-subtitle>
-    </mat-card-header>
-  
-    <mat-card-content class="card-description">
-      <p class="descriptions-text">{{ item.description }}</p>
-    </mat-card-content>
-  
-    <mat-card-actions *ngIf="primaryText || secondaryText" class="card-actions--group">
-      <button *ngIf="primaryText" mat-button (click)="onPrimaryClick(item)">{{ primaryText }}</button>
-      <button *ngIf="secondaryText" mat-button (click)="onSecondaryClick(item)">{{ secondaryText }}</button>
-    </mat-card-actions>
-  </mat-card>
-</ng-template>
+      <mat-card-content class="card-description">
+        <p class="descriptions-text">{{ item.description }}</p>
+      </mat-card-content>
+
+      <mat-card-actions *ngIf="primaryText || secondaryText" class="card-actions--group">
+        <button *ngIf="primaryText" mat-button (click)="onPrimaryClick(item)">{{ primaryText }}</button>
+        <button *ngIf="secondaryText" mat-button (click)="onSecondaryClick(item)">{{ secondaryText }}</button>
+      </mat-card-actions>
+    </mat-card>
+  </ng-template>
+</slot>

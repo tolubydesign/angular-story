@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Plot } from '@models/plot';
 import { falsy } from '@models/tree.model';
+import { PlotService } from "@services/plot/plot.service";
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-optional-selection-card',
@@ -10,15 +13,28 @@ import { falsy } from '@models/tree.model';
 export class OptionalSelectionCardComponent implements OnInit {
 
   @Input() listing: Plot[] = []; // decorate the property with @Input()
-  @Input() primaryText: falsy | string = null; 
-  @Input() secondaryText: falsy | string = null; 
+  @Input() primaryText: falsy | string = null;
+  @Input() secondaryText: falsy | string = null;
 
   @Output() PrimaryClick = new EventEmitter<string>();
   @Output() SecondaryClick = new EventEmitter<string>();
 
-  constructor() { }
+  paramId: string | falsy = undefined;
+  selectedPlot: Plot | falsy = undefined;
+  requestSubscription: Subscription | falsy;
+
+  constructor(
+    private plotService: PlotService,
+    private activatedRoute: ActivatedRoute,
+  ) { }
 
   ngOnInit(): void {
+    this.getParameterID();
+  }
+
+  ngOnDestroy(): void {
+    // UNSUBSCRIBE
+    this.requestSubscription?.unsubscribe();
   }
 
   onPrimaryClick(item: Plot) {
@@ -27,6 +43,30 @@ export class OptionalSelectionCardComponent implements OnInit {
 
   onSecondaryClick(item: Plot) {
     this.SecondaryClick.emit(item.id)
+  };
+
+  /**
+   * @description Get id from url. Page route
+   * @return void
+   */
+  getParameterID(): void {
+    // Route
+    this.activatedRoute.paramMap.subscribe((value: ParamMap | { params: { id: string } } | any) => {
+      if (value && value.params && value.params.id) {
+        this.paramId = value.params.id;
+
+        // Check if parameter and set-story match 
+        // We have the relevant parameter id. Make a request to back-end.
+        this.matchStoryId(value.params.id)
+      }
+    });
   }
 
+  /**
+   * @description Check that id matches what is available 
+   * @param id 
+   */
+  matchStoryId(id: string | falsy) {
+    (id) ? this.plotService.UpdateStoryBehavior(id) : new Error('URL parameter ID could not be found.');
+  }
 }

@@ -35,6 +35,7 @@ export class EditorComponent implements OnInit {
   }
 
   editPlot(id: string) {
+    this.plotService.UpdateStoryBehavior(id);
     // direct user to panel dashboard.
     this.router.navigate([`/panel/${id}`])
   }

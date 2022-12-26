@@ -5,9 +5,21 @@ export interface Plot {
   content: PlotContent;
 }
 
-export interface PlotContent {
+export type PlotContent = {
   id: string;
   name: string;
   description?: string;
   children?: PlotContent[];
+  graphics?: BoardGraphic;
+  characters?: BoardCharacter[]
+}
+
+
+export type BoardGraphic = {
+  backgroundImage: string,
+}
+
+export type BoardCharacter = {
+  name: string,
+  image: string,
 }

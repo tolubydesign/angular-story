@@ -16,22 +16,48 @@
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2020",
+    "target": "ES2022",
     "module": "es2020",
-    "lib": ["es2020", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "paths": {
-      "@/*": ["*"],
-      "@data/*": ["src/assets/data/*"],
-      "@services/*": ["src/app/core/services/*"],
-      "@models/*": ["src/app/shared/models/*"],
-      "@assets/*": ["src/assets/*"],
-      "@shared/*": ["src/app/shared/*"],
-      "@components/*": ["src/app/shared/components/*"],
-      "@misc/*": ["src/app/shared/misc/*"],
-      "@icons/*": ["src/app/shared/icons/*"],
-      "@helpers/*": ["src/app/shared/helpers/*"],
-      "@lib/*": ["src/app/shared/lib/*"],
-    }
+      "@/*": [
+        "*"
+      ],
+      "@data/*": [
+        "src/assets/data/*"
+      ],
+      "@services/*": [
+        "src/app/core/services/*"
+      ],
+      "@models/*": [
+        "src/app/shared/models/*"
+      ],
+      "@assets/*": [
+        "src/assets/*"
+      ],
+      "@shared/*": [
+        "src/app/shared/*"
+      ],
+      "@components/*": [
+        "src/app/shared/components/*"
+      ],
+      "@misc/*": [
+        "src/app/shared/misc/*"
+      ],
+      "@icons/*": [
+        "src/app/shared/icons/*"
+      ],
+      "@helpers/*": [
+        "src/app/shared/helpers/*"
+      ],
+      "@lib/*": [
+        "src/app/shared/lib/*"
+      ]
+    },
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

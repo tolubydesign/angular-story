@@ -1,12 +1,12 @@
 import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
+import { NgModule } from '@angular/core';
 
 /* angular material */
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { MatButtonModule } from "@angular/material/button";
-import { MatCardModule } from "@angular/material/card";
-import { MatCheckboxModule } from "@angular/material/checkbox";
-import { MatListModule } from "@angular/material/list";
+import { MatLegacyButtonModule as MatButtonModule } from "@angular/material/legacy-button";
+import { MatLegacyCardModule as MatCardModule } from "@angular/material/legacy-card";
+import { MatLegacyCheckboxModule as MatCheckboxModule } from "@angular/material/legacy-checkbox";
+import { MatLegacyListModule as MatListModule } from "@angular/material/legacy-list";
 import { MatIconModule } from "@angular/material/icon";
 
 /* router */

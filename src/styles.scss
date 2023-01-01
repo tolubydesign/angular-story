@@ -1,9 +1,8 @@
 @use '@angular/material' as mat;
 @import './app/style/fonts/fonts';
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
 @include mat.core();
 @include mat.strong-focus-indicators();
@@ -62,7 +61,7 @@ $light-theme: mat.define-light-theme(
       accent: $my-accent,
       warn: $my-warn,
     ),
-    typography: $default-typography-config,
+    typography: $custom-typography-config,
     density: 0,
   )
 );
@@ -76,14 +75,13 @@ $dark-theme: mat.define-dark-theme(
       warn: $my-warn,
     ),
     // Only include `typography` and `density` in the default dark theme.
-    typography: $default-typography-config,
+    typography: $custom-typography-config,
     density: 0,
   )
 );
 
 // @include mat.all-component-themes($light-theme);
-// @include mat.button-typography($custom-typography-config);
-// @include mat.strong-focus-indicators-theme($light-theme);
+@include mat.strong-focus-indicators-theme($light-theme);
 
 // Emit theme-dependent styles for common features used across multiple components.
 @include mat.core-theme($light-theme);
@@ -93,8 +91,7 @@ $dark-theme: mat.define-dark-theme(
 // passed to `define-light-theme` omits typography, `button-theme` will not
 // emit any typography styles.
 @include mat.button-theme($light-theme);
-
-@include mat.strong-focus-indicators-theme($light-theme);
+@include mat.button-typography($custom-typography-config);
 
 // Apply the light theme only when the user prefers light themes.
 @media (prefers-color-scheme: dark) {

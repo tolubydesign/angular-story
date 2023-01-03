@@ -6,20 +6,9 @@
     [secondaryText]="'EDIT'" (PrimaryClick)="deletePlot($event)" (SecondaryClick)="editPlot($event)" >
   </app-optional-selection-card>
   
-  <!-- <mat-card *ngFor="let edit of storyEdits" class="editor-card">
-    <mat-card-header class="card-header">
-      <mat-card-subtitle class="subtitle">
-        <p class="subtitle-paragraph">{{ edit.title }}</p>
-      </mat-card-subtitle>
-    </mat-card-header>
+  <!-- create new story -->
+  <div class="mt-10">
+    <button mat-raised-button (click)="createStory()">Create</button>
+  </div>
 
-    <mat-card-content class="card-description">
-      <p class="descriptions-text">{{ edit.description }}</p>
-    </mat-card-content>
-
-    <mat-card-actions class="card-actions--group">
-      <button mat-button (click)="deletePlot(edit.id)">DELETE</button>
-      <button mat-button (click)="editPlot(edit.id)">EDIT</button>
-    </mat-card-actions>
-  </mat-card> -->
 </slot>

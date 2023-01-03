@@ -1,0 +1,9 @@
+<div class="absolute top-3 left-3">
+  <a mat-stroked-button routerLink="/editor" routerLinkActive="active">Return to Main Edit Page</a>
+</div>
+
+<slot class="">
+  <p> parameter id of {{ parameterId }}</p>
+  <p>editing works!</p>
+  <p class="t-[10px]">{{ board | json }}</p>
+</slot>

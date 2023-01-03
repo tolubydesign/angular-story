@@ -3,6 +3,7 @@ import { PlotService } from "@services/plot/plot.service";
 import { Subscription, Observable, tap, map } from "rxjs";
 import { Plot } from "@models/plot";
 import { Router } from "@angular/router";
+import * as uuid from "uuid";
 
 @Component({
   selector: "app-editor",
@@ -34,9 +35,24 @@ export class EditorComponent implements OnInit {
     console.log("delete", editID);
   }
 
+  /**
+   * @description 
+   * @param id string
+   * 
+   */
   editPlot(id: string) {
     this.plotService.UpdateStoryBehavior(id);
     // direct user to panel dashboard.
     this.router.navigate([`/panel/${id}`])
+  }
+
+  /**
+   * @description Redirect to create a new story, in edit more.
+   * @return {void} 
+   */
+  createStory(): void {
+    // Utilize uuid v4 => uuid.v4();
+    const id = uuid.v4();
+    this.router.navigate([`/editing/${id}`])
   }
 }

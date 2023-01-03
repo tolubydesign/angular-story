@@ -23,8 +23,8 @@ export class StoryBoardComponent implements OnInit {
   constructor(private router: Router) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
-    //Add '${implements OnChanges}' to the class.
+    // Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
+    // Add '${implements OnChanges}' to the class.
     console.log('changes', changes);
   }
 

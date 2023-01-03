@@ -39,6 +39,7 @@ import { HierarchyComponent } from './shared/components/extra/hierarchy/hierarch
 import { OptionalSelectionCardComponent } from './shared/components/ui/optional-selection-card/optional-selection-card.component';
 import { InteractionDashboardComponent } from './shared/components/interaction-mode/interaction-dashboard/interaction-dashboard.component';
 import { StoryBoardComponent } from './shared/components/interaction-mode/story-board/story-board.component';
+import { EditingComponent } from './shared/components/editor-mode/editing/editing.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { StoryBoardComponent } from './shared/components/interaction-mode/story-
     OptionalSelectionCardComponent,
     InteractionDashboardComponent,
     StoryBoardComponent,
+    EditingComponent,
   ],
   imports: [
     BrowserModule,

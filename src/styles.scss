@@ -1,8 +1,11 @@
 @use '@angular/material' as mat;
 @import './app/style/fonts/fonts';
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+// @import "tailwindcss/base";
+// @import "tailwindcss/components";
+// @import "tailwindcss/utilities";
 
 @include mat.core();
 @include mat.strong-focus-indicators();
@@ -97,6 +100,6 @@ $dark-theme: mat.define-dark-theme(
 @media (prefers-color-scheme: dark) {
   // Use the `-color` mixins to only apply color styles without reapplying the same
   // typography and density styles.
-  @include mat.core-color($dark-theme);
- @include mat.button-color($dark-theme);
+  // @include mat.core-color($dark-theme);
+  // @include mat.button-color($dark-theme);
 }

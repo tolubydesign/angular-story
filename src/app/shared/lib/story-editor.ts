@@ -15,7 +15,8 @@ export default class Builder {
     set: function (target, key, value) {
       console.log("board proxy: target", target)
       console.log("board proxy: key", key)
-      console.log("board proxy: value", value)
+      console.log("board proxy: value", value);
+      
       return true
     }
   });

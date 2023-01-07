@@ -1,3 +1,7 @@
 <div data-component="Hierarchy Component">
   <div id="d3-hierarchy"></div>
 </div>
+
+<div *ngIf="plot" class="fixed bottom-[20px] left-0 bg-white shadow-md max-h-[100px] overflow-scroll">
+  <p class="text-[8px]">{{ plot | json }}</p>
+</div>

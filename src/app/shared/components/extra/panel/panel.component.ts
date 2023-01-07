@@ -18,7 +18,7 @@ const CloseIcon = `
   </g>
 </svg>
 `
-const THUMBUP_ICON =
+const THUMB_ICON =
   `
   <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px">
     <path d="M0 0h24v24H0z" fill="none"/>
@@ -34,7 +34,7 @@ const THUMBUP_ICON =
   styleUrls: ["./panel.component.scss"],
 })
 export class PanelComponent implements OnInit {
-  
+
   // VARIABLES
   requestSubscription: Subscription | falsy;
   parameterID: string | unknown;
@@ -58,7 +58,7 @@ export class PanelComponent implements OnInit {
     // Note that we provide the icon here as a string literal here due to a limitation in
     // Stackblitz. If you want to provide the icon from a URL, you can use:
     // `iconRegistry.addSvgIcon('thumbs-up', sanitizer.bypassSecurityTrustResourceUrl('icon.svg'));`
-    iconRegistry.addSvgIconLiteral('thumbs-up', sanitizer.bypassSecurityTrustHtml(THUMBUP_ICON));
+    iconRegistry.addSvgIconLiteral('thumbs-up', sanitizer.bypassSecurityTrustHtml(THUMB_ICON));
     iconRegistry.addSvgIconLiteral('close', sanitizer.bypassSecurityTrustHtml(CloseIcon));
   }
 
@@ -69,27 +69,31 @@ export class PanelComponent implements OnInit {
   ngOnDestroy(): void {
     // UNSUBSCRIBE
     // this.plotService.storyBehavior.unsubscribe();
-    this.requestSubscription?.unsubscribe();
+    // this.requestSubscription?.unsubscribe();
   }
 
   /**
    * 
-   * @param
    * @description Get id from url. Page route
-   * @return void
+   * @return {void}
    */
   getParameterID() {
     // Route
-
-    
     return this.activatedRoute.paramMap.subscribe((value: ParamMap | { params: { id: string } } | any) => {
       if (value && value.params && value.params.id) {
         this.parameterID = value.params.id;
-
-        // We have the relevant parameter id. Make a request to back-end.
-        this.plotService.UpdateStoryBehavior(value.params.id);
+        this.updateStory(value.params.id);
         this.displayDendrogram = true;
       }
     });
+  };
+
+  /**
+   * @description descriptive text 
+   * @param {string} id 
+   */
+  updateStory(id: string) {
+    // We have the relevant parameter id. Make a request to back-end.
+    this.plotService.UpdateStoryBehavior(id);
   }
 }

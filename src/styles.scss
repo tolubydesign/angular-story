@@ -1,14 +1,15 @@
 @use '@angular/material' as mat;
 @import './app/style/fonts/fonts';
+@include mat.core();
+@include mat.strong-focus-indicators();
+
+// Tailwind
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 // @import "tailwindcss/base";
 // @import "tailwindcss/components";
 // @import "tailwindcss/utilities";
-
-@include mat.core();
-@include mat.strong-focus-indicators();
 
 html,
 body {
@@ -103,3 +104,4 @@ $dark-theme: mat.define-dark-theme(
   // @include mat.core-color($dark-theme);
   // @include mat.button-color($dark-theme);
 }
+

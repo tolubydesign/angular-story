@@ -7,6 +7,8 @@ import { BehaviorSubject, Falsy, Subscription } from 'rxjs';
 import { Plot, PlotContent } from '@models/plot';
 
 type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any[], x0: any, y0: any } | any;
+// TODO: REFACTOR clean up code; remove commented out code.
+// TODO: Make code neater. More human readable.
 
 @Component({
   selector: 'app-hierarchy',
@@ -16,6 +18,7 @@ type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any
 export class HierarchyComponent implements OnInit {
 
   constructor(private plotService: PlotService) { }
+  plot: Plot | Falsy = undefined
   name = "d3-hierarchy";
   HierarchyElement = `div#${this.name}`;
   // ************** Generate the tree diagram	 ***************** //
@@ -38,6 +41,7 @@ export class HierarchyComponent implements OnInit {
   };
 
   // declares a tree layout and assigns the size
+  // Controls the look of the graph/D3-table
   treeMap = d3.tree().size([this.width, this.height]);
 
   // SUBSCRIBER.
@@ -52,32 +56,29 @@ export class HierarchyComponent implements OnInit {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
 
-    // Unsubscribe
+    // UNSUBSCRIBE
     this.hierarchySubscriber?.unsubscribe()
   }
 
+  /**
+   * @returns { void }
+   */
   InitialiseComponent() {
     console.info("fn:InitialiseComponent");
     this.root = null
 
     // Assign data
-    this.plotService.storyBehaviorSubject.subscribe((v: Plot | Falsy) => {
-      // console.info(`observer: ${v}`);
-      if (v && v.content) {
+    this.hierarchySubscriber = this.plotService.storyBehaviorSubject.subscribe((plot: Plot | Falsy) => {
+
+      if (plot && plot.content) {
+        this.plot = plot;
         // Initialise d3 hierarchy graph.
-        this.root = d3.hierarchy(v.content, (d) => d.children);
+        this.root = d3.hierarchy(plot.content, (d) => d.children);
         //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
         //Add 'implements OnInit' to the class.
         this.createCanvas().then(() => this.initialize());
       }
-    })
-
-
-
-    // this.hierarchySubscriber = this.plotService.storyBehaviorSubject.subscribe({
-    //   next: (v: Plot | undefined): void => {
-    //   },
-    // });
+    });
   }
 
   /**
@@ -104,7 +105,7 @@ export class HierarchyComponent implements OnInit {
 
   /**
    * @description 
-   * @return void
+   * @return {void}
    */
   initialize(): void {
     if (!this.root) {
@@ -190,21 +191,55 @@ export class HierarchyComponent implements OnInit {
         return "translate(" + d.x + "," + d.y + ")";
         // return "translate(" + source.x + "," + source.y + ")";
       })
-      // .call(drag)
-      .on("click", this.click);
+    // .call(drag)
+    // .on("click", this.click);
 
     /**
      * CIRCLE.
      * Add Circle for the nodes.
      */
-    nodeEnter
-      .append("circle")
-      .attr("r", 20)
-      .attr("stroke", "steelblue")
-      .style("fill", (d: any) => {
-        return d.children ? "lightsteelblue" : "#fff";
-      })
-      .attr("stroke-width", "3px;");
+    // nodeEnter
+    //   .append("circle")
+    //   .attr("r", 20)
+    //   .attr("stroke", "steelblue")
+    //   .style("fill", (d: any) => {
+    //     return d.children ? "lightsteelblue" : "#fff";
+    //   })
+    //   .attr("stroke-width", "3px;");
+
+    const nodeEnterRectWidth = 42;
+    const nodeEnterRectHeight = nodeEnterRectWidth;
+    const nodeEnterRectRepoX = (nodeEnterRectWidth - (nodeEnterRectWidth * 2)) / 2;
+    const nodeEnterRectRepoY = (nodeEnterRectHeight - (nodeEnterRectHeight * 2)) / 2;
+
+    /**
+     * RECTANGLE
+     * Replaces circle, above
+     */
+    nodeEnter.append('rect')
+      .attr('width', nodeEnterRectWidth).attr('height', nodeEnterRectHeight).attr('stroke-width', '3px')
+      // (below) reposition box/rectangle
+      .attr("x", nodeEnterRectRepoX).attr('y', nodeEnterRectRepoY)
+      .style('stroke', 'blue').style('fill', (d: any) => d.children ? "lightsteelblue" : "#fff");
+
+    /**
+     * RECTANGLE
+     * interactive button
+     */
+    nodeEnter.append('rect')
+      .attr('width', nodeEnterRectWidth / 3).attr('height', nodeEnterRectHeight / 3).attr('stroke-width', '2px')
+      .attr('rx', 100)
+      .attr("x", `${-Math.abs((nodeEnterRectWidth / 3) / 2)}`).attr('y', nodeEnterRectWidth - 10)
+      .style('stroke', 'blue').style('fill', (d: any) => d.children ? "lightsteelblue" : "#fff")
+      .attr('class', 'cursor-pointer')
+      
+      .on("click", this.click);
+
+      // TODO: add icon or text inside of interactive button. Highlight that element is intractable
+      // nodeEnter.append('text')
+      // .attr('writing-mode', "tb")
+      // .attr("x", `${-Math.abs((nodeEnterRectWidth / 3) / 2)}`).attr('y', nodeEnterRectWidth - 10)
+      // .text('+')
 
     /**
      * LABEL
@@ -223,7 +258,10 @@ export class HierarchyComponent implements OnInit {
       .style("fill-opacity", 1)
       .attr("text-anchor", "middle")
       .attr("fill", "#000")
-      .style("font", "12px sans-serif");
+      .style("font-size", "10px")
+      .style('font-family', '"Roboto-Mono", "Helvetica Neue", sans-serif');
+
+
 
     /** UPDATE (DON'T REALLY KNOW WHAT) */
     // // ****************** links section ***************************
@@ -252,16 +290,23 @@ export class HierarchyComponent implements OnInit {
       // .attr('d', d3.linkVertical())
       .attr("d", (d: any, al: any) => {
         // console.log("link.enter():(d|al|le)", {d}, {al});
-        return this.diagonal(d.parent ? d.parent : source, d) as any;
+        return diagonal(d.parent ? d.parent : source, d) as any;
       });
   }
 
-  // Creates a curved (diagonal) path from parent to the child nodes
-  diagonal(s: any, d: any) {
-    const path = `M ${s.x} ${s.y} C ${(s.x + d.x) / 2} ${s.y}, ${(s.x + d.x) / 2
-      } ${d.y}, ${d.x} ${d.y}`;
-    return path;
-  }
+
+}
+
+/**
+ * @description Creates a curved (diagonal) path from parent to the child nodes
+ * @param {any} s 
+ * @param {any} d 
+ * @returns {any} path
+ */
+function diagonal(s: any, d: any) {
+  const path = `M ${s.x} ${s.y} C ${(s.x + d.x) / 2} ${s.y}, ${(s.x + d.x) / 2
+    } ${d.y}, ${d.x} ${d.y}`;
+  return path;
 }
 
 // const drag = {

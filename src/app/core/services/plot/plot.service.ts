@@ -27,6 +27,7 @@ export class PlotService {
   Story: PlotContent | undefined = undefined;
 
   storyJSON = "assets/data/stories.json";
+  storyEditorJSON = "assets/data/story-editor.json";
 
   // BEHAVIOR SUBJECT
   plotData = new BehaviorSubject<Plot[] | undefined>(undefined);
@@ -46,7 +47,7 @@ export class PlotService {
   /** getPlot is created by outside component. Should only be called once. */
   // get plot form mock api. Will be converted to live when ready. API and all
   getPlot() {
-    return this.http.get<Plot[]>("assets/data/story-editor.json")
+    return this.http.get<Plot[]>(this.storyEditorJSON)
       .pipe(catchError((err) => {
         console.log('error caught in service')
         console.warn(err);
@@ -86,6 +87,11 @@ export class PlotService {
       )
   }
 
+  /**
+   * @description 
+   * @param {string} id 
+   * @returns {void}
+   */
   UpdateStoryBehavior(id: string): void {
     console.log('fn:selection', id)
     // update store

@@ -18,6 +18,7 @@ type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any
 export class HierarchyComponent implements OnInit {
 
   constructor(private plotService: PlotService) { }
+
   plot: Plot | Falsy = undefined
   name = "d3-hierarchy";
   HierarchyElement = `div#${this.name}`;
@@ -26,23 +27,22 @@ export class HierarchyComponent implements OnInit {
   height = 2000;
   createSvg: any = svg;
 
+  // declares a tree layout and assigns the size
+  // Controls the look of the graph/D3-table
+  treeMap = d3.tree().size([this.width, this.height]);
+
   margin = { top: 100, right: 50, bottom: 100, left: 50 };
   // viewerWidth = this.width - this.margin.left - this.margin.right;
   // viewerHeight = this.height - this.margin.top - this.margin.bottom;
-
-  // append the svg object to the body of the page
-  svg: Selection<SVGGElement, HierarchyNode<PlotContent> | unknown, HTMLElement, any> | undefined = undefined;
-  // svg: Selection<Element, any, HTMLElement, any> = undefined;
-
   duration = 750;
   i = 0;
   root: RootType = {
     children: [], x0: 0, y0: 0
   };
 
-  // declares a tree layout and assigns the size
-  // Controls the look of the graph/D3-table
-  treeMap = d3.tree().size([this.width, this.height]);
+  // append the svg object to the body of the page
+  svg: Selection<SVGGElement, HierarchyNode<PlotContent> | unknown, HTMLElement, any> | undefined = undefined;
+  // svg: Selection<Element, any, HTMLElement, any> = undefined;
 
   // SUBSCRIBER.
   hierarchySubscriber: Subscription | undefined = undefined;
@@ -69,11 +69,11 @@ export class HierarchyComponent implements OnInit {
   /**
    * @returns { void }
    */
-  InitialiseComponent() {
+  InitialiseComponent(): void {
     console.info("fn:InitialiseComponent");
     this.root = null
 
-    // Assign data
+    // Get data from database
     this.hierarchySubscriber = this.plotService.storyBehaviorSubject.subscribe((plot: Plot | Falsy) => {
 
       if (plot && plot.content) {
@@ -91,10 +91,9 @@ export class HierarchyComponent implements OnInit {
    * @description Create svg graph.
    * @returns svg ; the graph and attaching it to a local value `Promise<d3.Selection<SVGGElement, PlotContent, HTMLElement, any> | undefined>`
    */
-  async createCanvas() {
+  async createCanvas(): Promise<void> {
     // append the svg object to the body of the page
-    return this.svg = d3
-      .select(this.HierarchyElement)
+    this.svg = d3.select(this.HierarchyElement)
       .append("svg")
       .attr("width", this.width)
       .attr("height", this.height)
@@ -106,7 +105,7 @@ export class HierarchyComponent implements OnInit {
         "translate(" + this.margin.left + "," + this.margin.top + ")"
       );
 
-    return;
+    return
   }
 
   /**
@@ -126,8 +125,8 @@ export class HierarchyComponent implements OnInit {
 
   /**
    * Collapse the node and all it's children
-   * @param d 
-   * @return void
+   * @param {any} d 
+   * @return {void}
    */
   collapse(d: any) {
     if (d.children) {
@@ -293,6 +292,10 @@ export class HierarchyComponent implements OnInit {
       });
   }
 
+  /**
+   * @description 
+   * @param {d3.Selection} nodeEnter 
+   */
   createNodes(nodeEnter: Selection<SVGGElement, d3.HierarchyNode<unknown>, SVGGElement, unknown>) {
     /**
      * CIRCLE.

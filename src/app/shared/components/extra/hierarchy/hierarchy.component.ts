@@ -47,6 +47,12 @@ export class HierarchyComponent implements OnInit {
   // SUBSCRIBER.
   hierarchySubscriber: Subscription | undefined = undefined;
 
+  // Node related
+  nodeEnterRectWidth = 42;
+  nodeEnterRectHeight = this.nodeEnterRectWidth;
+  nodeEnterRectRepoX = (this.nodeEnterRectWidth - (this.nodeEnterRectWidth * 2)) / 2;
+  nodeEnterRectRepoY = (this.nodeEnterRectHeight - (this.nodeEnterRectHeight * 2)) / 2;
+
   ngOnInit(): void {
     // Get information from store.
     this.InitialiseComponent();
@@ -131,8 +137,13 @@ export class HierarchyComponent implements OnInit {
     }
   }
 
-  // (function) Toggle children on click.
-  click(event: any, d: any) {
+  /**
+   * @description Node event
+   * @param event 
+   * @param d 
+   */
+  click(event: any, d: d3.HierarchyNode<Plot> | any) {
+    // (function) Toggle children on click
     if (d.children) {
       d._children = d.children;
       d.children = null;
@@ -140,8 +151,42 @@ export class HierarchyComponent implements OnInit {
       d.children = d._children;
       d._children = null;
     }
-
+    console.log(typeof event);
+    console.log(typeof d);
     console.log("function click", d);
+  }
+
+  /**
+   * @description Node event
+   * @param {any} event 
+   * @param {HierarchyNode<Plot>} d 
+   * @param {SVGRectElement} this
+   */
+  addNode(this: SVGRectElement, event: any, d: HierarchyNode<unknown | Plot>): void {
+    console.log("add node", d)
+  }
+
+  /**
+   * @description Node event
+   * @param {any} event 
+   * @param {HierarchyNode<Plot>} d 
+   * @param {SVGRectElement} this
+   */
+  removeNode(this: SVGRectElement, event: any, d: HierarchyNode<unknown | Plot>): void {
+    console.log("remove node", d);
+    return;
+  }
+
+  /**
+   * @description Node event
+   * @param {any} event 
+   * @param {HierarchyNode<Plot>} d 
+   * @param {SVGRectElement} this
+   */
+  editNode(this: SVGRectElement, event: any, d: HierarchyNode<unknown | Plot>): void {
+    console.log("edit node", d);
+
+    return;
   }
 
   /**
@@ -183,7 +228,7 @@ export class HierarchyComponent implements OnInit {
     });
 
     // Enter any new modes at the parent's previous position.
-    let nodeEnter = node
+    let nodeEnter: Selection<SVGGElement, d3.HierarchyNode<unknown>, SVGGElement, unknown> = node
       .enter()
       .append("g")
       .attr("class", "node")
@@ -192,61 +237,16 @@ export class HierarchyComponent implements OnInit {
         // return "translate(" + source.x + "," + source.y + ")";
       })
     // .call(drag)
-    // .on("click", this.click);
+    // .on("click", (a, b) => this.click(a, b));
 
-    /**
-     * CIRCLE.
-     * Add Circle for the nodes.
-     */
-    // nodeEnter
-    //   .append("circle")
-    //   .attr("r", 20)
-    //   .attr("stroke", "steelblue")
-    //   .style("fill", (d: any) => {
-    //     return d.children ? "lightsteelblue" : "#fff";
-    //   })
-    //   .attr("stroke-width", "3px;");
-
-    const nodeEnterRectWidth = 42;
-    const nodeEnterRectHeight = nodeEnterRectWidth;
-    const nodeEnterRectRepoX = (nodeEnterRectWidth - (nodeEnterRectWidth * 2)) / 2;
-    const nodeEnterRectRepoY = (nodeEnterRectHeight - (nodeEnterRectHeight * 2)) / 2;
-
-    /**
-     * RECTANGLE
-     * Replaces circle, above
-     */
-    nodeEnter.append('rect')
-      .attr('width', nodeEnterRectWidth).attr('height', nodeEnterRectHeight).attr('stroke-width', '3px')
-      // (below) reposition box/rectangle
-      .attr("x", nodeEnterRectRepoX).attr('y', nodeEnterRectRepoY)
-      .style('stroke', 'blue').style('fill', (d: any) => d.children ? "lightsteelblue" : "#fff");
-
-    /**
-     * RECTANGLE
-     * interactive button
-     */
-    nodeEnter.append('rect')
-      .attr('width', nodeEnterRectWidth / 3).attr('height', nodeEnterRectHeight / 3).attr('stroke-width', '2px')
-      .attr('rx', 100)
-      .attr("x", `${-Math.abs((nodeEnterRectWidth / 3) / 2)}`).attr('y', nodeEnterRectWidth - 10)
-      .style('stroke', 'blue').style('fill', (d: any) => d.children ? "lightsteelblue" : "#fff")
-      .attr('class', 'cursor-pointer')
-      
-      .on("click", this.click);
-
-      // TODO: add icon or text inside of interactive button. Highlight that element is intractable
-      // nodeEnter.append('text')
-      // .attr('writing-mode', "tb")
-      // .attr("x", `${-Math.abs((nodeEnterRectWidth / 3) / 2)}`).attr('y', nodeEnterRectWidth - 10)
-      // .text('+')
+    // Append various node elements
+    this.createNodes(nodeEnter);
 
     /**
      * LABEL
-     * Add labels to nodes
+     * Add labels to nodes.
      */
-    nodeEnter
-      .append("text")
+    nodeEnter.append("text")
       .attr("pointer-events", "none")
       // .attr("y", (d: any) => {
       //   return d.children || d._children ? -18 : 18;
@@ -279,8 +279,7 @@ export class HierarchyComponent implements OnInit {
       });
 
     // Enter the links.
-    link
-      .enter()
+    link.enter()
       .insert("path", "g")
       .attr("class", "link")
       .attr("stroke", "black")
@@ -294,7 +293,60 @@ export class HierarchyComponent implements OnInit {
       });
   }
 
+  createNodes(nodeEnter: Selection<SVGGElement, d3.HierarchyNode<unknown>, SVGGElement, unknown>) {
+    /**
+     * CIRCLE.
+     * Add Circle for the nodes.
+     */
+    // nodeEnter
+    //   .append("circle")
+    //   .attr("r", 20)
+    //   .attr("stroke", "steelblue")
+    //   .style("fill", (d: any) => {
+    //     return d.children ? "lightsteelblue" : "#fff";
+    //   })
+    //   .attr("stroke-width", "3px;");
 
+    /**
+     * RECTANGLE
+     * Replaces circle, above
+     */
+    nodeEnter.append('rect')
+      .attr('width', this.nodeEnterRectWidth).attr('height', this.nodeEnterRectHeight).attr('stroke-width', '3px')
+      // (below) reposition box/rectangle
+      .attr("x", this.nodeEnterRectRepoX).attr('y', this.nodeEnterRectRepoY)
+      .style('stroke', 'blue').style('fill', (d: any) => d.children ? "lightsteelblue" : "#fff")
+      .attr('class', 'cursor-pointer')
+      .on("click", this.editNode);
+
+    /**
+      * RECTANGLE
+      * interactive button
+      */
+    // Add child node
+    nodeEnter.append('rect')
+      .attr('width', this.nodeEnterRectWidth / 3).attr('height', this.nodeEnterRectHeight / 3).attr('stroke-width', '2px')
+      .attr('rx', 100)
+      .attr("x", `${(this.nodeEnterRectWidth / 3) / 2}`).attr('y', this.nodeEnterRectWidth - 10)
+      .style('fill', '#22a422')
+      .attr('class', 'cursor-pointer')
+      .on("click", this.addNode);
+
+    // to delete child node   
+    nodeEnter.append('rect')
+      .attr('width', this.nodeEnterRectWidth / 3).attr('height', this.nodeEnterRectHeight / 3).attr('stroke-width', '2px')
+      .attr('rx', 100)
+      .attr("x", `${-Math.abs((this.nodeEnterRectWidth) / 2)}`).attr('y', this.nodeEnterRectWidth - 10)
+      .style('fill', 'rgb(123, 28, 28)')
+      .attr('class', 'cursor-pointer')
+      .on("click", this.removeNode);
+
+    // TODO: add icon or text inside of interactive button. Highlight that element is intractable
+    // nodeEnter.append('text')
+    // .attr('writing-mode', "tb")
+    // .attr("x", `${-Math.abs((nodeEnterRectWidth / 3) / 2)}`).attr('y', nodeEnterRectWidth - 10)
+    // .text('+')
+  }
 }
 
 /**

@@ -14,7 +14,6 @@ export type PlotContent = {
   characters?: BoardCharacter[]
 }
 
-
 export type BoardGraphic = {
   backgroundImage: string,
 }

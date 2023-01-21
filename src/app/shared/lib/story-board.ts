@@ -1,6 +1,6 @@
 import { Plot, PlotContent } from "@models/plot";
 
-export default class Board {
+export default class StoryBoard {
   readonly initialObject: Plot | undefined = undefined;
   readonly story: PlotContent | undefined = undefined;
   readonly title: string = '';
@@ -15,6 +15,8 @@ export default class Board {
   constructor(
     story: Plot
   ) {
+    console.info("Story Board constructor initialised");
+
     this.initialObject = story;
     this.title = story.title;
     this.description = story.description;
@@ -23,8 +25,6 @@ export default class Board {
     this.story = story.content;
     this.state = story.content;
     this.level = 0;
-
-    console.log("Board constructor", this.initialObject);
   }
 
   /**
@@ -52,16 +52,14 @@ export default class Board {
    * @param selection { any }
    */
   SelectOption(selection: PlotContent): {state: PlotContent, level: number} {
+    console.info('selected option');
     this.previousState = this.state
     this.state = selection;
     this.level++;
 
-    const state = this.state;
-    const level = this.level;
-
     return {
-      state,
-      level,
+      state: this.state,
+      level: this.level,
     }
   }
 

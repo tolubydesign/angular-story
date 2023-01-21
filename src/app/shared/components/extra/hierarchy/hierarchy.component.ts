@@ -5,6 +5,7 @@ import { HierarchyNode, Selection, svg, drag, ValueFn } from "d3";
 import { BaseType } from 'd3-selection';
 import { BehaviorSubject, Falsy, Subscription } from 'rxjs';
 import { Plot, PlotContent } from '@models/plot';
+import StoryEditor from "@lib/story-editor";
 
 type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any[], x0: any, y0: any } | any;
 // TODO: REFACTOR clean up code; remove commented out code.
@@ -17,8 +18,11 @@ type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any
 })
 export class HierarchyComponent implements OnInit {
 
-  constructor(private plotService: PlotService) { }
+  constructor(
+    private plotService: PlotService,
+  ) { }
 
+  editor: StoryEditor | undefined = undefined;
   plot: Plot | Falsy = undefined
   name = "d3-hierarchy";
   HierarchyElement = `div#${this.name}`;
@@ -80,9 +84,13 @@ export class HierarchyComponent implements OnInit {
         this.plot = plot;
         // Initialise d3 hierarchy graph.
         this.root = d3.hierarchy(plot.content, (d) => d.children);
+
         //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
         //Add 'implements OnInit' to the class.
         this.createCanvas().then(() => this.initialize());
+
+        // Initialise Editor
+        this.editor = new StoryEditor(this.plot.id, plot);
       }
     });
   }

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { Plot, PlotContent } from '@models/plot';
 import { falsy } from '@models/tree.model';
-import Board from '@lib/story-board';
+import StoryBoard from '@lib/story-board';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,7 +13,7 @@ export class StoryBoardComponent implements OnInit {
   @Input() fullStory: Plot | falsy = undefined;
 
   id: string = '';
-  board: Board | falsy = undefined;
+  board: StoryBoard | falsy = undefined;
   description: string = '';
   title: string = '';
   optionalSelection: PlotContent[] = [];
@@ -36,7 +36,7 @@ export class StoryBoardComponent implements OnInit {
   initialization(): void {
     if (this.fullStory) {
       this.id = this.fullStory.id;
-      this.board = new Board(this.fullStory);
+      this.board = new StoryBoard(this.fullStory);
     }
 
     if (!this.board) {
@@ -56,7 +56,7 @@ export class StoryBoardComponent implements OnInit {
       ['state', this.board.state],
     ]);
 
-    (this.narrative) ? this.updateBoard(this.narrative) : new Error('Board state cant be updated.');
+    (this.narrative) ? this.updateBoard(this.narrative) : new Error('Story Board state cant be updated.');
   }
 
   selectionOption(option: PlotContent) {
@@ -65,7 +65,7 @@ export class StoryBoardComponent implements OnInit {
   }
 
   updateBoard(option: PlotContent): Error | undefined {
-    if (!this.board) return new Error('Error. Attempted to update Board. Cant find board.')
+    if (!this.board) return new Error('Error. Attempted to update Story Board. Cant find board.')
     const {state, level}: {state: any, level: any} = this.board.SelectOption(option);
     
     this.narrative = state;
@@ -75,7 +75,7 @@ export class StoryBoardComponent implements OnInit {
 
   reload(): void {
     if (this.fullStory) {
-      this.board = new Board(this.fullStory);
+      this.board = new StoryBoard(this.fullStory);
       this.selectionOption(this.fullStory.content);
     } else {
       new Error('Story not fund.')

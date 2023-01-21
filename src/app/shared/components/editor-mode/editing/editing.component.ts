@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { falsy } from '@models/tree.model';
 import { URLParameters } from '@helpers/parameter';
-import Builder from '@lib/story-editor';
+import StoryEditor from '@lib/story-editor';
 import { Plot } from '@models/plot';
 
 @Component({
@@ -15,7 +15,7 @@ export class EditingComponent {
 
   parameterId: string | falsy;
   parameters = new URLParameters(this.activatedRoute);
-  builder: Builder | undefined = undefined;
+  builder: StoryEditor | undefined = undefined;
   board: Plot | {} = {};
 
   constructor(
@@ -32,12 +32,12 @@ export class EditingComponent {
 
   }
 
-  async initialization(): Promise<Builder | Error | null | undefined> {
+  async initialization(): Promise<StoryEditor | Error | null | undefined> {
     await this.parameters.getParametersID()
     this.parameterId = this.parameters.parameterId;
 
     if (this.parameterId) {
-      this.builder = new Builder(this.parameterId);
+      this.builder = new StoryEditor(this.parameterId);
       // TODO: find better location for function.
       this.updateGraph();
       return
@@ -60,6 +60,6 @@ export class EditingComponent {
       return this.board = this.builder.board;
     }
 
-    return new Error(`Builder data isn't available.`)
+    return new Error(`Story Editor data isn't available.`)
   }
 }

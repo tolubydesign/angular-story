@@ -36,7 +36,7 @@ export class PlotModel {
       }
     });
 
-    console.log("(setNodesAndLinks)", this.selectedPlot, this.nodes);
+    console.log("(set nodes and links)", this.selectedPlot, this.nodes);
   }
 
   /**

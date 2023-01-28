@@ -1,14 +1,18 @@
 import * as uuid from "uuid";
 import { Plot } from '@models/plot';
 
-type TBoard = { story: Plot } | { story: {} };
+type TBoard = {
+  story: Plot | {}
+  saveSession: () => void,
+  getSession: () => Plot | Error
+};
 
 /**
  * @description Handle changes and updates made in the Editor part of the website 
  */
 export default class StoryEditor {
   id: string;
-  board: TBoard | any = {
+  board: TBoard = {
     story: {},
     saveSession: () => this.updateSessionStorage(),
     getSession: () => this.getSessionStorage(),
@@ -26,7 +30,6 @@ export default class StoryEditor {
     construct(target: any, args: any) {
       console.log(`Creating a ${target.name}`);
       // Expected output: "Creating a monster1"
-
       return new target(...args);
     },
     set: function (target: any, key: string | symbol, value: Plot) {
@@ -34,9 +37,7 @@ export default class StoryEditor {
       console.log("board proxy: key", key)
       console.log("board proxy: value", value);
       target[key] = value;
-      // target.setItem(key, value)
-      // Save to Windows
-
+      // Save to Windows/Browser
       target.saveSession();
       return true
     },
@@ -48,9 +49,8 @@ export default class StoryEditor {
     id: string,
     plot?: Plot,
   ) {
+    console.log("story editor Class");
     this.id = id;
-
-
 
     if (plot) {
       this.id = plot.id;
@@ -59,7 +59,9 @@ export default class StoryEditor {
       this.initialization();
     }
 
-    console.log("story editor board", JSON.stringify(this.board))
+    // Enable "confirm before you leave"
+    this.enableBeforeunload()
+    // 
   }
 
   /**
@@ -96,25 +98,57 @@ export default class StoryEditor {
    * @description Save board changes to browser session storage.
    */
   updateSessionStorage() {
-    console.log("function update session storage");
+    console.log("function update session storage.");
 
     if (typeof this.board.story === 'object')
       sessionStorage.setItem(this.sessionStorageKey, JSON.stringify(this.board.story));
   }
 
   /**
-   * @param { void }
-   * @returns 
+   * @description
+   * @returns { Plot | Error } Plot or Error()
    */
   getSessionStorage(): Plot | Error {
+    console.log("function get session storage.")
     const storage: string | null = sessionStorage.getItem(this.sessionStorageKey);
     let restructured: Plot | undefined = undefined;
     if (storage) {
       restructured = JSON.parse(storage);
-      
       if (restructured) return restructured;
     }
 
     return new Error(`Session Storage ${this.sessionStorageKey} cant be accessed`);
+  }
+
+  /**
+   * @description Make sure user confirms before closing unsaved information
+   */
+  enableBeforeunload() {
+    // RESOURCE: https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event
+    if (window) {
+      window.addEventListener("beforeunload", this.beforeUnload)
+    }
+  }
+
+  /**
+   * 
+   * @param event 
+   * @returns {string}
+   */
+  beforeUnload(event: Event) {
+    console.log("function beforeunload", event);
+    return "Changes are unsaved";
+  }
+
+  /**
+   * @description
+   * @example
+   * this.disableBeforeunload()
+   */
+  disableBeforeunload() {
+    // RESOURCE: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener
+    if (window) {
+      window.addEventListener("beforeunload", this.beforeUnload, true)
+    }
   }
 }

@@ -18,6 +18,9 @@ import { HttpClientModule } from "@angular/common/http";
 /* graph component */
 // import { NgxEchartsModule } from 'ngx-echarts';
 
+/* form */
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+
 /* components */
 import { AppComponent } from "./app.component";
 import { DashboardComponent } from "./shared/components/interaction-mode/dashboard/dashboard.component";
@@ -40,6 +43,10 @@ import { OptionalSelectionCardComponent } from './shared/components/ui/optional-
 import { InteractionDashboardComponent } from './shared/components/interaction-mode/interaction-dashboard/interaction-dashboard.component';
 import { StoryBoardComponent } from './shared/components/interaction-mode/story-board/story-board.component';
 import { EditingComponent } from './shared/components/editor-mode/editing/editing.component';
+import { PanelInstanceComponent } from './shared/components/editor-mode/panel-instance/panel-instance.component';
+
+
+
 
 @NgModule({
   declarations: [
@@ -65,6 +72,7 @@ import { EditingComponent } from './shared/components/editor-mode/editing/editin
     InteractionDashboardComponent,
     StoryBoardComponent,
     EditingComponent,
+    PanelInstanceComponent,
   ],
   imports: [
     BrowserModule,
@@ -79,6 +87,8 @@ import { EditingComponent } from './shared/components/editor-mode/editing/editin
     // NgxEchartsModule.forRoot({
     //   echarts: () => import('echarts')
     // }),
+    FormsModule, 
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

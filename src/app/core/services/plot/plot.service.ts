@@ -32,10 +32,15 @@ export class PlotService {
   // BEHAVIOR SUBJECT
   plotData = new BehaviorSubject<Plot[] | undefined>(undefined);
   plotData$ = this.plotData.asObservable();
+  
   storyBehavior = new BehaviorSubject<Plot[]>([]);
   storyBehavior$ = this.storyBehavior.asObservable();
+  
   storyBehaviorSubject: BehaviorSubject<Plot | Falsy> = new BehaviorSubject<Plot | Falsy>(undefined);
   selectedPointer: BehaviorSubject<PlotContent | Falsy> = new BehaviorSubject<PlotContent | Falsy>(null);
+  
+  instanceEditSubject = new BehaviorSubject<PlotContent | undefined>(undefined);
+
 
   // SUBJECT(S)
   // storySubject: Subject<Plot | undefined> = new Subject();
@@ -108,4 +113,13 @@ export class PlotService {
     //   }
     // });
   }
+
+  selectInstance(instance: PlotContent | undefined) {
+    if (instance) this.instanceEditSubject.next(instance);
+  };
+
+  closeInstancePanel() {
+    console.log("close")
+    this.instanceEditSubject.next(undefined);
+  };
 }

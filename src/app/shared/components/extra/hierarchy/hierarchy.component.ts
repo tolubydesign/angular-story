@@ -165,12 +165,12 @@ export class HierarchyComponent implements OnInit {
 
   /**
    * @description Node event
-   * @param {any} event 
-   * @param {HierarchyNode<Plot>} d 
-   * @param {SVGRectElement} this
+   * @param { SVGRectElement } this
+   * @param { * } event 
+   * @param { HierarchyNode<unknown | Plot | PlotContent> } d 
    */
-  addNode(this: SVGRectElement, event: any, d: HierarchyNode<unknown | Plot>): void {
-    console.log("add node", d)
+  addNode(event: any, d: HierarchyNode<any>): void {
+    console.log("add node", d);
   }
 
   /**
@@ -186,12 +186,16 @@ export class HierarchyComponent implements OnInit {
 
   /**
    * @description Node event
-   * @param {any} event 
-   * @param {HierarchyNode<Plot>} d 
-   * @param {SVGRectElement} this
+   * @param { SVGRectElement } this
+   * @param { * } event 
+   * @param { HierarchyNode<unknown | Plot | PlotContent> } d
    */
-  editNode(this: SVGRectElement, event: any, d: HierarchyNode<unknown | Plot>): void {
-    console.log("edit node", d);
+  editNode(event: any, d: any): void {
+    console.log("edit node, ", d);
+    console.log("edit node, ", d.data);
+    console.log("edit node, ", this);
+    
+    this.plotService.selectInstance(d.data);
 
     return;
   }
@@ -328,7 +332,10 @@ export class HierarchyComponent implements OnInit {
       .attr("x", this.nodeEnterRectRepoX).attr('y', this.nodeEnterRectRepoY)
       .style('stroke', 'blue').style('fill', (d: any) => d.children ? "lightsteelblue" : "#fff")
       .attr('class', 'cursor-pointer')
-      .on("click", this.editNode);
+      .on("click", (event: any, d: HierarchyNode<unknown>) => {
+        this.editNode(event, d)
+        // this.plotService.selectInstance(d.data);
+      });
 
     /**
       * RECTANGLE

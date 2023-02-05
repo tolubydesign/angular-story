@@ -1,8 +1,8 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import { PlotService } from "@services/plot/plot.service";
-import { Observable, Observer, Subscription } from "rxjs";
+import { Falsy, Observable, Observer, Subscription } from "rxjs";
 import { Plot, PlotContent } from "@models/plot";
 import { ActivatedRoute, NavigationStart, Router, ParamMap } from '@angular/router';
 import { data } from "@models/tree-data.model";
@@ -33,7 +33,7 @@ const THUMB_ICON =
   templateUrl: "./panel.component.html",
   styleUrls: ["./panel.component.scss"],
 })
-export class PanelComponent implements OnInit {
+export class PanelComponent implements OnInit, OnDestroy {
 
   // VARIABLES
   requestSubscription: Subscription | falsy;
@@ -47,6 +47,9 @@ export class PanelComponent implements OnInit {
   plotSelectionSubscription: Subscription | undefined = undefined;
   selectedPlot: Plot | undefined = undefined;
   displayDendrogram: boolean = false;
+
+  plot: Plot | undefined = undefined;
+  hierarchySubscriber: Subscription | undefined = undefined;
 
   constructor(
     private plotService: PlotService,
@@ -64,12 +67,17 @@ export class PanelComponent implements OnInit {
 
   ngOnInit(): void {
     this.getParameterID();
+
+    this.hierarchySubscriber = this.plotService.storyBehaviorSubject.subscribe((plot: Plot | Falsy) => {
+      if (plot && plot.content) this.plot = plot;
+    });
   }
 
   ngOnDestroy(): void {
     // UNSUBSCRIBE
     // this.plotService.storyBehavior.unsubscribe();
     // this.requestSubscription?.unsubscribe();
+    this.hierarchySubscriber?.unsubscribe();
   }
 
   /**

@@ -5,10 +5,13 @@
 
   <div class="display-dendrogram--group" *ngIf="this.displayDendrogram">
     <!-- TODO: render dendrogram here or pass data into child component -->
-    <app-hierarchy>
+    <app-hierarchy *ngIf="plot" [plot]="plot">
       <!-- src/app/shared/components/hierarchy/hierarchy.component.html -->
       <!-- This component is in /components/d3/ -->
     </app-hierarchy>
+    <div *ngIf="!plot">
+      <p class="text-sm text-center text-rose-500">Story information couldn't be fetched.</p>
+    </div>
   </div>
 
   <app-panel-instance></app-panel-instance>

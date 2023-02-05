@@ -13,11 +13,11 @@ export class PanelInstanceComponent {
 
   // Form values
   // RESOURCE: https://angular.io/guide/forms-overview
-  contentIdControl = new FormControl<string | undefined>(undefined);
+  // contentIdControl = new FormControl<string | undefined>(undefined);
 
   // RESOURCE: https://angular.io/guide/reactive-forms
   form = new FormGroup({
-    id: new FormControl<string | undefined>("", Validators.required),
+    id: new FormControl<string | undefined>({ value: '', disabled: true }, Validators.required),
     name: new FormControl<string | undefined>(""),
     description: new FormControl<string | undefined>(""),
 
@@ -41,6 +41,11 @@ export class PanelInstanceComponent {
         this.loadFormContent()
       }
     })
+
+    this.form.statusChanges.subscribe((value) => {
+      console.log(value);
+      return
+    });
   }
 
   ngOnDestroy(): void {
@@ -53,17 +58,18 @@ export class PanelInstanceComponent {
   }
 
   closePanel(): void {
-    console.log("asdf---")
     this.plotService.closeInstancePanel();
     this.content = undefined;
   }
 
   loadFormContent(): void {
-    this.contentIdControl.setValue(this.content?.id);
+    // this.contentIdControl.setValue(this.content?.id);
+    const content = this.content
+
     this.form.setValue({
-      description: this.content?.description,
-      id: this.content?.id,
-      name: this.content?.name
+      description: content?.description ? content.description : "",
+      id: content?.id ? content.id : "",
+      name: content?.name ? content.name : ""
     })
   }
 }

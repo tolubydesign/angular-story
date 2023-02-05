@@ -1,5 +1,5 @@
 import { PlotService } from '@services/plot/plot.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import * as d3 from "d3";
 import { HierarchyNode, Selection, svg, drag, ValueFn } from "d3";
 import { BaseType } from 'd3-selection';
@@ -16,16 +16,32 @@ type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any
   templateUrl: './hierarchy.component.html',
   styleUrls: ['./hierarchy.component.scss']
 })
-export class HierarchyComponent implements OnInit {
+export class HierarchyComponent implements OnInit, OnDestroy {
+
+  @Input() plot: Plot | undefined = undefined;
+  // SUBSCRIBER.
+  hierarchySubscriber: Subscription | undefined = undefined;
+
 
   constructor(
     private plotService: PlotService,
   ) { }
 
   editor: StoryEditor | undefined = undefined;
-  plot: Plot | Falsy = undefined
+  // plot: Plot | Falsy = undefined
   name = "d3-hierarchy";
   HierarchyElement = `div#${this.name}`;
+
+  ngOnInit(): void {
+    // Get information from store.
+    this.InitialiseComponent();
+  }
+
+  ngOnDestroy(): void {
+    // UNSUBSCRIBE
+    this.hierarchySubscriber?.unsubscribe()
+  }
+
   // ************** Generate the tree diagram	 ***************** //
   width = 2500;
   height = 2000;
@@ -48,51 +64,30 @@ export class HierarchyComponent implements OnInit {
   svg: Selection<SVGGElement, HierarchyNode<PlotContent> | unknown, HTMLElement, any> | undefined = undefined;
   // svg: Selection<Element, any, HTMLElement, any> = undefined;
 
-  // SUBSCRIBER.
-  hierarchySubscriber: Subscription | undefined = undefined;
-
   // Node related
   nodeEnterRectWidth = 42;
   nodeEnterRectHeight = this.nodeEnterRectWidth;
   nodeEnterRectRepoX = (this.nodeEnterRectWidth - (this.nodeEnterRectWidth * 2)) / 2;
   nodeEnterRectRepoY = (this.nodeEnterRectHeight - (this.nodeEnterRectHeight * 2)) / 2;
 
-  ngOnInit(): void {
-    // Get information from store.
-    this.InitialiseComponent();
-  }
-
-  ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
-
-    // UNSUBSCRIBE
-    this.hierarchySubscriber?.unsubscribe()
-  }
-
   /**
    * @returns { void }
    */
   InitialiseComponent(): void {
-    console.info("fn:InitialiseComponent");
+    console.info("function call initialise component");
     this.root = null
 
-    // Get data from database
-    this.hierarchySubscriber = this.plotService.storyBehaviorSubject.subscribe((plot: Plot | Falsy) => {
+    if (this.plot && this.plot?.content) {
+      // Initialise d3 hierarchy graph.
+      this.root = d3.hierarchy(this.plot.content, (d) => d.children);
 
-      if (plot && plot.content) {
-        this.plot = plot;
-        // Initialise d3 hierarchy graph.
-        this.root = d3.hierarchy(plot.content, (d) => d.children);
+      //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+      //Add 'implements OnInit' to the class.
+      this.createCanvas().then(() => this.initialize());
 
-        //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-        //Add 'implements OnInit' to the class.
-        this.createCanvas().then(() => this.initialize());
-
-        // Initialise Editor
-        this.editor = new StoryEditor(this.plot.id, plot);
-      }
-    });
+      // Initialise Editor
+      this.editor = new StoryEditor(this.plot.id, this.plot);
+    }
   }
 
   /**
@@ -191,12 +186,8 @@ export class HierarchyComponent implements OnInit {
    * @param { HierarchyNode<unknown | Plot | PlotContent> } d
    */
   editNode(event: any, d: any): void {
-    console.log("edit node, ", d);
-    console.log("edit node, ", d.data);
-    console.log("edit node, ", this);
-    
+    console.log('NODE function call edit node ::: (d)', d);
     this.plotService.selectInstance(d.data);
-
     return;
   }
 

@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { falsy } from '@models/tree.model';
 import { URLParameters } from '@helpers/parameter';
 import StoryEditor from '@lib/story-editor';
 import { Plot } from '@models/plot';
+import { Falsy, Subscription } from 'rxjs';
+import { PlotService } from '@services/plot/plot.service';
 
 @Component({
   selector: 'app-editing',
@@ -11,30 +13,39 @@ import { Plot } from '@models/plot';
   styleUrls: ['./editing.component.scss']
 })
 
-export class EditingComponent {
+export class EditingComponent implements OnInit, OnDestroy {
 
   parameterId: string | falsy;
   parameters = new URLParameters(this.activatedRoute);
   builder: StoryEditor | undefined = undefined;
   board: Plot | {} = {};
+  plot: Plot | undefined = undefined;
+  hierarchySubscriber: Subscription | undefined = undefined;
 
   constructor(
     private activatedRoute: ActivatedRoute,
-  ) {
-
-  }
+    private plotService: PlotService
+  ) { }
 
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
     this.getParameters();
     this.initialization();
+  }
 
+  ngOnDestroy(): void {
+    // UNSUBSCRIBE
+    this.hierarchySubscriber?.unsubscribe()
   }
 
   async initialization(): Promise<StoryEditor | Error | null | undefined> {
     await this.parameters.getParametersID()
     this.parameterId = this.parameters.parameterId;
+
+    this.hierarchySubscriber = this.plotService.storyBehaviorSubject.subscribe((plot: Plot | Falsy) => {
+      if (plot && plot.content) this.plot = plot;
+    });
 
     if (this.parameterId) {
       this.builder = new StoryEditor(this.parameterId);

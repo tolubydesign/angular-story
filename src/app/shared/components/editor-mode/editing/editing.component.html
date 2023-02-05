@@ -1,3 +1,4 @@
+<!-- TODO: remove file in future -->
 <div class="absolute top-3 left-3">
   <a mat-stroked-button routerLink="/editor" routerLinkActive="active">Return to Main Edit Page</a>
 </div>
@@ -6,10 +7,13 @@
   <p> parameter id of {{ parameterId }}</p>
   <p>editing works!</p>
   <p class="text-[10px]">{{ board | json }}</p>
-
-  <app-hierarchy>
+  
+  <app-hierarchy *ngIf="plot" [plot]="plot">
     <!-- src/app/shared/components/hierarchy/hierarchy.component.html -->
     <!-- This component is in /components/d3/ -->
   </app-hierarchy>
+  <div *ngIf="!plot">
+    <p class="text-sm text-center">Story information couldn't be fetched.</p>
+  </div>
 
 </slot>

@@ -39,8 +39,9 @@ export class PlotService {
   storyBehaviorSubject: BehaviorSubject<Plot | Falsy> = new BehaviorSubject<Plot | Falsy>(undefined);
   selectedPointer: BehaviorSubject<PlotContent | Falsy> = new BehaviorSubject<PlotContent | Falsy>(null);
   
+  // Edit mode. Activate to edit content text like description, name ... 
   instanceEditSubject = new BehaviorSubject<PlotContent | undefined>(undefined);
-
+  $instanceEditSubject = this.instanceEditSubject.asObservable();
 
   // SUBJECT(S)
   // storySubject: Subject<Plot | undefined> = new Subject();
@@ -119,7 +120,7 @@ export class PlotService {
   };
 
   closeInstancePanel() {
-    console.log("close")
+    console.log("function call close instance panel.")
     this.instanceEditSubject.next(undefined);
   };
 }

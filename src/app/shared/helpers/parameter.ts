@@ -1,7 +1,6 @@
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { falsy } from '../models/tree.model';
 
-
 /**
  * @author Tolu Adesina
  * @description Requires ActivatedRoute from '@angular/router'
@@ -24,7 +23,7 @@ export class URLParameters {
    * await this.parameters.getParametersID()
    * this.parameters.parameterId;
    * 
-   * @see {@link newclass.method} https://www.cloudhadoop.com/2018/09/typescript-beginner-guide-to-comments.html
+   * @see {@link https://www.cloudhadoop.com/2018/09/typescript-beginner-guide-to-comments.html} 
    */
   async getParametersID(): Promise<string | falsy | Error> {
     this.activatedRoute.paramMap.subscribe(

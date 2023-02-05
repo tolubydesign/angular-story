@@ -131,11 +131,11 @@ export default class StoryEditor {
   }
 
   /**
-   * 
+   * @description 
    * @param event 
-   * @returns {string}
+   * @returns {string} 
    */
-  beforeUnload(event: Event) {
+  beforeUnload(event: Event): string {
     console.log("function beforeunload", event);
     return "Changes are unsaved";
   }

@@ -32,13 +32,13 @@ export class PlotService {
   // BEHAVIOR SUBJECT
   plotData = new BehaviorSubject<Plot[] | undefined>(undefined);
   plotData$ = this.plotData.asObservable();
-  
+
   storyBehavior = new BehaviorSubject<Plot[]>([]);
   storyBehavior$ = this.storyBehavior.asObservable();
-  
+
   storyBehaviorSubject: BehaviorSubject<Plot | Falsy> = new BehaviorSubject<Plot | Falsy>(undefined);
   selectedPointer: BehaviorSubject<PlotContent | Falsy> = new BehaviorSubject<PlotContent | Falsy>(null);
-  
+
   // Edit mode. Activate to edit content text like description, name ... 
   instanceEditSubject = new BehaviorSubject<PlotContent | undefined>(undefined);
   $instanceEditSubject = this.instanceEditSubject.asObservable();
@@ -99,20 +99,11 @@ export class PlotService {
    * @returns {void}
    */
   UpdateStoryBehavior(id: string): void {
-    console.log('fn:selection', id)
+    console.log('function call update story behavior.')
     // update store
-    this.GetStory().subscribe((response: Plot[]) =>
+    this.GetStory().subscribe((response: Plot[]) => {
       (response && response.length) ? this.storyBehaviorSubject.next(response.find((ob: Plot) => ob.id === id)) : null
-    )
-
-    /** Alternative */
-    // let story;
-    // this.GetStory().subscribe((response: Plot[]) => {
-    //   if (response?.length) {
-    //     story = response.find((ob: Plot) => ob.id === id);
-    //     this.storyBehaviorSubject.next(story);
-    //   }
-    // });
+    });
   }
 
   selectInstance(instance: PlotContent | undefined) {

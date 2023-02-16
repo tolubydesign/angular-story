@@ -2,32 +2,18 @@
   <a mat-flat-button routerLink="/editor" routerLinkActive="active">Return to Main Edit Page</a>
 </div>
 
-<!-- <slot class="">
-  <p>parameter id of {{ parameterId }}</p>
-  <p>editing works!</p>
-  <p class="text-[10px]">{{ board | json }}</p>
-
-  <app-hierarchy *ngIf="plot" [plot]="plot">
-  </app-hierarchy>
-  <div *ngIf="!plot">
-    <p class="text-sm text-center">Story information couldn't be fetched.</p>
-  </div>
-</slot> -->
-
 <slot data-component="Panel Component" [ngClass]="{ 'panel--component': true }">
-  <div class="loader--group" *ngIf="!board">
-    <app-loader></app-loader>
-  </div>
-
-  <div class="display-dendrogram--group" *ngIf="board">
+  <div class="display-dendrogram--group">
     <app-hierarchy *ngIf="plot" [plot]="plot">
       <!-- src/app/shared/components/hierarchy/hierarchy.component.html -->
       <!-- This component is in /components/d3/ -->
     </app-hierarchy>
+
     <div *ngIf="!plot">
+      <div class="loader--group mb-2">
+        <app-loader></app-loader>
+      </div>
       <p class="text-sm text-center text-rose-500">Story information couldn't be fetched.</p>
     </div>
   </div>
-
-  <app-panel-instance></app-panel-instance>
 </slot>

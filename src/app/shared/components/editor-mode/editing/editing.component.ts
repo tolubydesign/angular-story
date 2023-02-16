@@ -41,22 +41,9 @@ export class EditingComponent implements OnInit, OnDestroy {
 
   parameterId: string | falsy;
   parameters = new URLParameters(this.activatedRoute);
-  builder: StoryEditor | undefined = undefined;
-  board: Plot | {} = {};
+  storyEditor: StoryEditor | undefined = undefined;
   plot: Plot | undefined = undefined;
   hierarchySubscriber: Subscription | undefined = undefined;
-
-  // VARIABLES
-  requestSubscription: Subscription | falsy;
-  parameterID: string | unknown;
-  panelError: { type: 'unknown error' | 'not found' | falsy, error: boolean } = {
-    type: undefined,
-    error: false,
-  };
-
-  // SUBSCRIPTIONS
-  plotSelectionSubscription: Subscription | undefined = undefined;
-  selectedPlot: Plot | undefined = undefined;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -79,15 +66,18 @@ export class EditingComponent implements OnInit, OnDestroy {
     this.hierarchySubscriber?.unsubscribe()
   }
 
+  /**
+   * @description Initialise component.
+   * @returns 
+   */
   async initialization(): Promise<StoryEditor | Error | null | undefined> {
-    await this.getParameters();
     this.hierarchySubscriber = this.plotService.storyBehaviorSubject.subscribe((plot: Plot | Falsy) => {
       if (plot && plot.content) this.plot = plot;
     });
 
+    await this.getParameters();
     if (this.parameterId) {
-      this.builder = new StoryEditor(this.parameterId);
-      this.updateGraph();
+      this.storyEditor = new StoryEditor(this.parameterId);
       this.updateStory(this.parameterId);
       return
     }
@@ -112,11 +102,5 @@ export class EditingComponent implements OnInit, OnDestroy {
   updateStory(id: string) {
     // We have the relevant parameter id. Make a request to back-end.
     this.plotService.UpdateStoryBehavior(id);
-  }
-
-  updateGraph() {
-    console.log("function call update graph.");
-    if (this.builder && this.builder.board) return this.board = this.builder.board;
-    return new Error(`Story Editor data isn't available.`)
   }
 }

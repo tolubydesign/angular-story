@@ -1,5 +1,5 @@
 import { PlotService } from '@services/plot/plot.service';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Plot, PlotContent } from '@models/plot';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -11,18 +11,18 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class PanelInstanceComponent {
 
+  @Output() updateNodeContent: EventEmitter<any> = new EventEmitter();
+  // @Output() newItemEvent = new EventEmitter<string>();
+
   // Form values
   // RESOURCE: https://angular.io/guide/forms-overview
   // contentIdControl = new FormControl<string | undefined>(undefined);
 
   // RESOURCE: https://angular.io/guide/reactive-forms
   form = new FormGroup({
-    id: new FormControl<string | undefined>({ value: '', disabled: true }, Validators.required),
-    name: new FormControl<string | undefined>(""),
-    description: new FormControl<string | undefined>(""),
-
-    // first: new FormControl({value: 'Nancy', disabled: true}, Validators.required),
-    // last: new FormControl('Drew', Validators.required)
+    id: new FormControl<string | undefined>({ value: "", disabled: true }, Validators.required),
+    name: new FormControl<string | undefined>("", Validators.required),
+    description: new FormControl<string | undefined>("", Validators.required),
   });
 
   // SUBSCRIBER.
@@ -37,8 +37,7 @@ export class PanelInstanceComponent {
     this.subscriber = this.plotService.instanceEditSubject.subscribe((content: PlotContent | undefined) => {
       if (content) {
         this.content = content;
-        console.log("content", content)
-        this.loadFormContent()
+        this.loadFormContent(content)
       }
     })
 
@@ -54,7 +53,14 @@ export class PanelInstanceComponent {
   }
 
   onSubmit(): void {
-    console.log("form values", this.form.value, this.form.valid)
+    if (this.form && !this.form.valid) console.error("form not valid.");
+
+    const mergedForm = {
+      ...this.form.value,
+      id: this.content?.id
+    }
+    this.updateNodeContent.emit(mergedForm);
+    this.closePanel();
   }
 
   closePanel(): void {
@@ -62,14 +68,13 @@ export class PanelInstanceComponent {
     this.content = undefined;
   }
 
-  loadFormContent(): void {
+  loadFormContent(content: PlotContent): void {
     // this.contentIdControl.setValue(this.content?.id);
-    const content = this.content
-
+    console.log("function call load form content", content)
     this.form.setValue({
-      description: content?.description ? content.description : "",
       id: content?.id ? content.id : "",
-      name: content?.name ? content.name : ""
+      description: content?.description ? content.description : "",
+      name: content?.name ? content.name : "",
     })
   }
 }

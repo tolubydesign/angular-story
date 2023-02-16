@@ -1,8 +1,9 @@
 import * as uuid from "uuid";
-import { Plot } from '@models/plot';
+import { Plot, PlotContent } from '@models/plot';
 
 type TBoard = {
-  story: Plot | {}
+  story: Plot | null,
+  totalNoNodes: number,
   saveSession: () => void,
   getSession: () => Plot | Error
 };
@@ -12,33 +13,39 @@ type TBoard = {
  */
 export default class StoryEditor {
   id: string;
+  // Basic/Original 
   board: TBoard = {
-    story: {},
+    story: null,
+    totalNoNodes: 0,
     saveSession: () => this.updateSessionStorage(),
     getSession: () => this.getSessionStorage(),
   };
   sessionStorageKey = "board";
-
+  searchingNodes = false;
   /** 
+   * @description
    * As of 2018, you can now use the [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) object 
    * to monitor (and intercept) changes made to an object. It is purpose built for what the OP is trying to do. Here's a basic example:
-   * RESOURCE: https://stackoverflow.com/questions/1759987/listening-for-variable-changes-in-javascript
-   * RESOURCE: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
-   * RESOURCE: https://fedingo.com/how-to-listen-to-variable-changes-in-javascript/
+   *  
+   * @see {@link https://fedingo.com/how-to-listen-to-variable-changes-in-javascript/} 
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy} 
+   * @see {@link https://stackoverflow.com/questions/1759987/listening-for-variable-changes-in-javascript} 
    */
-  boardProxy = new Proxy(this.board, {
+  boardProxy: TBoard = new Proxy(this.board, {
     construct(target: any, args: any) {
       console.log(`Creating a ${target.name}`);
       // Expected output: "Creating a monster1"
       return new target(...args);
     },
-    set: function (target: any, key: string | symbol, value: Plot) {
-      console.log("board proxy: target", target)
-      console.log("board proxy: key", key)
-      console.log("board proxy: value", value);
+    set: function (target: TBoard | any, key: string | symbol, value: Plot) {
+      // console.info("board proxy")
+      // console.log("board proxy: target", target)
+      // console.log("board proxy: key", key)
+      // console.log("board proxy: value", value);
       target[key] = value;
+
       // Save to Windows/Browser
-      target.saveSession();
+      // target.saveSession();
       return true
     },
 
@@ -49,19 +56,32 @@ export default class StoryEditor {
     id: string,
     plot?: Plot,
   ) {
-    console.log("story editor Class");
+    console.log("class call story editor.");
     this.id = id;
+
+    // check if storage has information;
+    if (this.getSessionStorage()) {
+
+    }
 
     if (plot) {
       this.id = plot.id;
       this.updateBoard(plot);
+      // if (this.getSessionStorage()) {
+      //   this.updateBoard(this.getSessionStorage() as Plot)
+      // } else {
+      //   this.updateBoard(plot);
+      // }
     } else {
       this.initialization();
     }
 
     // Enable "confirm before you leave"
     this.enableBeforeunload()
-    // 
+
+    if (plot?.content) {
+      this.countNode(plot.content)
+    }
   }
 
   /**
@@ -90,8 +110,8 @@ export default class StoryEditor {
    * @returns { void }
    */
   updateBoard(update: Plot): void {
-    // this.board = update;
     this.boardProxy.story = update;
+    this.boardProxy.saveSession();
   }
 
   /**
@@ -100,8 +120,16 @@ export default class StoryEditor {
   updateSessionStorage() {
     console.log("function update session storage.");
 
-    if (typeof this.board.story === 'object')
+    if (typeof this.board.story === 'object') {
       sessionStorage.setItem(this.sessionStorageKey, JSON.stringify(this.board.story));
+    }
+  }
+
+  updatedBoardFromSessionStorage(): void | Error {
+    const saved = sessionStorage.getItem(this.sessionStorageKey);
+    if (!saved) return new Error("A saved story board could not be found");
+    const jsonSave = JSON.parse(saved);
+    this.updateBoard(jsonSave);
   }
 
   /**
@@ -114,6 +142,8 @@ export default class StoryEditor {
     let restructured: Plot | undefined = undefined;
     if (storage) {
       restructured = JSON.parse(storage);
+
+      console.log("function get session storage ::: restructured ::", restructured, storage)
       if (restructured) return restructured;
     }
 
@@ -126,18 +156,8 @@ export default class StoryEditor {
   enableBeforeunload() {
     // RESOURCE: https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event
     if (window) {
-      window.addEventListener("beforeunload", this.beforeUnload)
+      window.addEventListener("beforeunload", beforeUnload)
     }
-  }
-
-  /**
-   * @description 
-   * @param event 
-   * @returns {string} 
-   */
-  beforeUnload(event: Event): string {
-    console.log("function beforeunload", event);
-    return "Changes are unsaved";
   }
 
   /**
@@ -148,7 +168,102 @@ export default class StoryEditor {
   disableBeforeunload() {
     // RESOURCE: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener
     if (window) {
-      window.addEventListener("beforeunload", this.beforeUnload, true)
+      window.addEventListener("beforeunload", beforeUnload, true)
     }
   }
+
+  countNode(node: PlotContent) {
+    this.boardProxy.totalNoNodes = this.boardProxy.totalNoNodes + 1;
+    // console.log("function call count nodes total", this.boardProxy.totalNoNodes);
+    if (!node.children) return;
+    node.children.forEach((child: PlotContent) => this.countNode(child));
+  }
+
+  /**
+   * @description Recursive function. Update node with content provided.
+   * @param content first Plot Content.
+   * @param level 
+   */
+  setNodeContent(change: PlotContent, level: number = 0, passthrough?: PlotContent) {
+    const full = this.boardProxy.story;
+    let node = undefined;
+
+    if (level === 0) {
+      node = this.boardProxy.story?.content
+      this.searchingNodes = true
+    }
+
+    if (level > 0) {
+      node = passthrough
+    }
+
+    // TODO: start data modification inside of function. 
+    // TODO: track level of search
+    console.log("function call set node content ::: node ::", node);
+    console.log("function call set node content ::: level ::", level);
+
+    level++
+    if (change.id === node?.id) {
+      console.log("function call set node content - found :::")
+      console.log("function call set node content - found ::: change ::", change)
+      node.id = change.id;
+      node.name = change.name;
+      node.description = change.description
+      node.graphics = change.graphics;
+      node.characters = change.characters;
+
+      this.searchingNodes = false
+      return
+    }
+
+    if (!node?.children) return;
+
+    if (this.searchingNodes) {
+      for (const child of node.children) {
+        if (change.id === node?.id) break;
+        this.setNodeContent(change, level, child)
+      }
+      // node.children.forEach((child: PlotContent) => this.setNodeContent(change, level, child));
+    }
+  }
+
+  // setNodeContent({
+  //   node, content
+  // }: { node?: PlotContent, content: PlotContent }) {
+  //   const story = this.boardProxy.story
+  //   // TODO: start data modification inside of function. 
+  //   // TODO: track level of search
+  //   if (story) {
+
+  //   }
+  //   console.log("function call set node content");
+
+  //   if (content.id === node?.id) {
+  //     console.log("function call set node content - found", node, content)
+  //     node.id = content.id;
+  //     node.name = content.name;
+  //     node.description = content.description
+  //     node.graphics = content.graphics;
+  //     node.characters = content.characters;
+  //     return 
+  //   }
+
+  //   if (!node?.children) return;
+  //   node.children.forEach((child: PlotContent) => this.setNodeContent({ node: child, content: content }));
+  // }
+
+  searchNodes(node: PlotContent, id: string): PlotContent | void {
+    if (id === node.id) return node
+    node.children?.forEach((child: PlotContent) => this.searchNodes(child, id));
+  }
+}
+
+/**
+ * @description 
+ * @param event 
+ * @returns {string} 
+ */
+function beforeUnload(event: Event): string {
+  console.log("function beforeunload", event);
+  return "Changes are unsaved";
 }

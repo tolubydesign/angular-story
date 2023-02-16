@@ -19,22 +19,25 @@ type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any
 export class HierarchyComponent implements OnInit, OnDestroy {
 
   @Input() plot: Plot | undefined = undefined;
+  mutatedPlot: Plot | undefined | null = undefined
+  totalNoNodes: number | null = null
   // SUBSCRIBER.
   hierarchySubscriber: Subscription | undefined = undefined;
-
 
   constructor(
     private plotService: PlotService,
   ) { }
 
-  editor: StoryEditor | undefined = undefined;
+  storyEditor: StoryEditor | undefined = undefined;
   // plot: Plot | Falsy = undefined
   name = "d3-hierarchy";
   HierarchyElement = `div#${this.name}`;
 
   ngOnInit(): void {
+
+    if (this.plot?.content) this.storyEditor = new StoryEditor(this.plot.id, this.plot);
     // Get information from store.
-    this.InitialiseComponent();
+    this.initialiseComponent();
   }
 
   ngOnDestroy(): void {
@@ -73,20 +76,27 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   /**
    * @returns { void }
    */
-  InitialiseComponent(): void {
-    console.info("function call initialise component");
-    this.root = null
+  initialiseComponent(): void {
 
-    if (this.plot && this.plot?.content) {
+    this.root = null;
+
+    if (this.plot?.content && this.storyEditor) {
+      console.info("function call initialise component", this.storyEditor.boardProxy.story);
+
+      // Initialise Editor
+      this.mutatedPlot = this.storyEditor.boardProxy.story
+      this.totalNoNodes = this.storyEditor.boardProxy.totalNoNodes
+    }
+
+    if (this.mutatedPlot?.content) {
       // Initialise d3 hierarchy graph.
-      this.root = d3.hierarchy(this.plot.content, (d) => d.children);
+      // this.root = d3.hierarchy(this.mutatedPlot.content, (d) => d.children);
 
       //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
       //Add 'implements OnInit' to the class.
-      this.createCanvas().then(() => this.initialize());
 
-      // Initialise Editor
-      this.editor = new StoryEditor(this.plot.id, this.plot);
+      if (this.svg) this.svg.remove();
+      this.createCanvas().then(() => this.initialize());
     }
   }
 
@@ -94,9 +104,9 @@ export class HierarchyComponent implements OnInit, OnDestroy {
    * @description Create svg graph.
    * @returns svg ; the graph and attaching it to a local value `Promise<d3.Selection<SVGGElement, PlotContent, HTMLElement, any> | undefined>`
    */
-  async createCanvas(): Promise<void> {
+  async createCanvas(): Promise<Selection<SVGGElement, unknown, HTMLElement, any>> {
     // append the svg object to the body of the page
-    this.svg = d3.select(this.HierarchyElement)
+    return this.svg = d3.select(this.HierarchyElement)
       .append("svg")
       .attr("width", this.width)
       .attr("height", this.height)
@@ -107,8 +117,6 @@ export class HierarchyComponent implements OnInit, OnDestroy {
         "transform",
         "translate(" + this.margin.left + "," + this.margin.top + ")"
       );
-
-    return
   }
 
   /**
@@ -116,79 +124,23 @@ export class HierarchyComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   initialize(): void {
-    if (!this.root) {
-      // Collapse after second level
-      this.root.children.forEach(this.collapse);
-      this.root.x0 = 0;
-      this.root.y0 = 0;
+    // Initialise d3 hierarchy graph.
+    if (this.mutatedPlot?.content) {
+      console.log("function call initialize")
+      this.root = d3.hierarchy(this.mutatedPlot.content, (d) => d.children);
     }
+    if (!this.mutatedPlot) {
+      console.error("mutated plot is undefined.")
+      return
+    }
+    // if (!this.root) {
+    //   // Collapse after second level
+    //   this.root.children.forEach(this.collapse);
+    //   this.root.x0 = 0;
+    //   this.root.y0 = 0;
+    // }
 
     this.update(this.root);
-  }
-
-  /**
-   * Collapse the node and all it's children
-   * @param {any} d 
-   * @return {void}
-   */
-  collapse(d: any) {
-    if (d.children) {
-      d._children = d.children;
-      d._children.forEach(this.collapse);
-      d.children = null;
-    }
-  }
-
-  /**
-   * @description Node event
-   * @param event 
-   * @param d 
-   */
-  click(event: any, d: d3.HierarchyNode<Plot> | any) {
-    // (function) Toggle children on click
-    if (d.children) {
-      d._children = d.children;
-      d.children = null;
-    } else {
-      d.children = d._children;
-      d._children = null;
-    }
-    console.log(typeof event);
-    console.log(typeof d);
-    console.log("function click", d);
-  }
-
-  /**
-   * @description Node event
-   * @param { SVGRectElement } this
-   * @param { * } event 
-   * @param { HierarchyNode<unknown | Plot | PlotContent> } d 
-   */
-  addNode(event: any, d: HierarchyNode<any>): void {
-    console.log("add node", d);
-  }
-
-  /**
-   * @description Node event
-   * @param {any} event 
-   * @param {HierarchyNode<Plot>} d 
-   * @param {SVGRectElement} this
-   */
-  removeNode(this: SVGRectElement, event: any, d: HierarchyNode<unknown | Plot>): void {
-    console.log("remove node", d);
-    return;
-  }
-
-  /**
-   * @description Node event
-   * @param { SVGRectElement } this
-   * @param { * } event 
-   * @param { HierarchyNode<unknown | Plot | PlotContent> } d
-   */
-  editNode(event: any, d: any): void {
-    console.log('NODE function call edit node ::: (d)', d);
-    this.plotService.selectInstance(d.data);
-    return;
   }
 
   /**
@@ -198,12 +150,13 @@ export class HierarchyComponent implements OnInit, OnDestroy {
    * @returns 
    */
   update(source: RootType) {
-    if (!this.root) return;
+    console.log("function call update ::: source ::", source)
+    if (!source) return;
     // Assigns the x and y position for the nodes
     // var treeData = this.flexLayout(this.root);
 
     // Assigns the x and y position for the nodes
-    const treeData = this.treeMap(this.root);
+    const treeData = this.treeMap(source);
 
     // Compute the new tree layout.
     let nodes: HierarchyNode<unknown>[] = treeData.descendants();
@@ -296,6 +249,58 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   }
 
   /**
+ * @description Node event
+ * @param event 
+ * @param d 
+ */
+  click(event: any, d: d3.HierarchyNode<Plot> | any) {
+    // (function) Toggle children on click
+    if (d.children) {
+      d._children = d.children;
+      d.children = null;
+    } else {
+      d.children = d._children;
+      d._children = null;
+    }
+    console.log(typeof event);
+    console.log(typeof d);
+    console.log("function click", d);
+  }
+
+  /**
+   * @description Node event
+   * @param { SVGRectElement } this
+   * @param { * } event 
+   * @param { HierarchyNode<unknown | Plot | PlotContent> } d 
+   */
+  addNode(event: any, d: HierarchyNode<any>): void {
+    console.log("add node", d);
+  }
+
+  /**
+   * @description Node event
+   * @param {any} event 
+   * @param {HierarchyNode<Plot>} d 
+   * @param {SVGRectElement} this
+   */
+  removeNode(this: SVGRectElement, event: any, d: HierarchyNode<unknown | Plot>): void {
+    console.log("remove node", d);
+    return;
+  }
+
+  /**
+   * @description Node event
+   * @param { SVGRectElement } this
+   * @param { * } event 
+   * @param { HierarchyNode<unknown | Plot | PlotContent> } d
+   */
+  editNode(event: any, d: any): void {
+    console.log('NODE function call edit node ::: (d)', d);
+    this.plotService.selectInstance(d.data);
+    return;
+  }
+
+  /**
    * @description 
    * @param {d3.Selection} nodeEnter 
    */
@@ -355,6 +360,34 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     // .attr('writing-mode', "tb")
     // .attr("x", `${-Math.abs((nodeEnterRectWidth / 3) / 2)}`).attr('y', nodeEnterRectWidth - 10)
     // .text('+')
+  }
+
+  updateNodeContent(form: any) {
+    if (!this.storyEditor) {
+      console.error("Editor cant be found. No update was made.")
+      return
+    };
+
+    if (!this.storyEditor.board.story) {
+      console.error("Editor Error board.")
+      return
+    }
+
+    console.log("function call update node content ::: form", form);
+    console.log("function call update node content ::: story", this.storyEditor.boardProxy.story);
+
+    this.storyEditor.setNodeContent(
+      form,
+      undefined
+    )
+
+    this.storyEditor.boardProxy.saveSession();
+    // this.storyEditor.setNodeContent({
+    //   content: this.storyEditor.board.story.content,
+    //   content: form,
+    // })
+
+    this.initialiseComponent();
   }
 }
 

@@ -1,5 +1,5 @@
 import { PlotService } from '@services/plot/plot.service';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import * as d3 from "d3";
 import { HierarchyNode, Selection, svg, drag, ValueFn } from "d3";
 import { BaseType } from 'd3-selection';
@@ -19,6 +19,7 @@ type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any
 export class HierarchyComponent implements OnInit, OnDestroy {
 
   @Input() plot: Plot | undefined = undefined;
+  @ViewChild('D3HierarchyInputRef') D3HierarchyInputRef: ElementRef | undefined;
   mutatedPlot: Plot | undefined | null = undefined
   totalNoNodes: number | null = null
   // SUBSCRIBER.
@@ -52,7 +53,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
 
   // declares a tree layout and assigns the size
   // Controls the look of the graph/D3-table
-  treeMap = d3.tree().size([this.width, this.height]);
+  treeMap: d3.TreeLayout<unknown> = d3.tree().size([this.width, this.height]);
 
   margin = { top: 100, right: 50, bottom: 100, left: 50 };
   // viewerWidth = this.width - this.margin.left - this.margin.right;
@@ -95,7 +96,18 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
       //Add 'implements OnInit' to the class.
 
-      if (this.svg) this.svg.remove();
+      this.treeMap.size();
+
+      if (this.svg) {
+        // Remove existing svg
+        this.svg.remove();
+
+        // Remove duplicate svg
+        console.log("asdf asdf asdf", this.D3HierarchyInputRef);
+        const SVG = document.getElementById("d3-svg");
+        this.D3HierarchyInputRef?.nativeElement.removeChild(SVG);
+      }
+      // if (this.treeMap) this.treeMap.
       this.createCanvas().then(() => this.initialize());
     }
   }
@@ -105,9 +117,12 @@ export class HierarchyComponent implements OnInit, OnDestroy {
    * @returns svg ; the graph and attaching it to a local value `Promise<d3.Selection<SVGGElement, PlotContent, HTMLElement, any> | undefined>`
    */
   async createCanvas(): Promise<Selection<SVGGElement, unknown, HTMLElement, any>> {
+    // this.treeMap = d3.tree().size([this.width, this.height]);
+
     // append the svg object to the body of the page
     return this.svg = d3.select(this.HierarchyElement)
       .append("svg")
+      .attr("id", "d3-svg")
       .attr("width", this.width)
       .attr("height", this.height)
       // .attr("width", this.width + this.margin.right + this.margin.left)

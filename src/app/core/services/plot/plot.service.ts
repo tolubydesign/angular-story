@@ -3,7 +3,7 @@ import { Observable, of, Subscription, BehaviorSubject, Subject, throwError, Fal
 import { HttpClient } from '@angular/common/http';
 // import { HttpErrorResponse } from '@angular/common/http';
 import { map, tap, retry, catchError } from 'rxjs/operators';
-import { Plot, PlotContent } from '@models/plot';
+import { Plot, PlotContent, PlotInstanceType } from '@models/plot';
 import { PlotModel } from "@models/plot.model";
 import { data } from '@models/tree-data.model';
 import * as JSON5 from 'json5'
@@ -40,7 +40,11 @@ export class PlotService {
   selectedPointer: BehaviorSubject<PlotContent | Falsy> = new BehaviorSubject<PlotContent | Falsy>(null);
 
   // Edit mode. Activate to edit content text like description, name ... 
-  instanceEditSubject = new BehaviorSubject<PlotContent | undefined>(undefined);
+  instanceEditSubject = new BehaviorSubject<{
+    type: PlotInstanceType,
+    instance: PlotContent,
+    parentInstance?: PlotContent,
+  } | undefined>(undefined);
   $instanceEditSubject = this.instanceEditSubject.asObservable();
 
   // SUBJECT(S)
@@ -106,8 +110,8 @@ export class PlotService {
     });
   }
 
-  selectInstance(instance: PlotContent | undefined) {
-    if (instance) this.instanceEditSubject.next(instance);
+  selectInstance({ instance, type, parentInstance }: { instance: PlotContent, type: PlotInstanceType, parentInstance?: PlotContent }) {
+    this.instanceEditSubject.next({ type, instance, parentInstance });
   };
 
   closeInstancePanel() {

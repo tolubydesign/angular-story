@@ -103,7 +103,6 @@ export class HierarchyComponent implements OnInit, OnDestroy {
         this.svg.remove();
 
         // Remove duplicate svg
-        console.log("asdf asdf asdf", this.D3HierarchyInputRef);
         const SVG = document.getElementById("d3-svg");
         this.D3HierarchyInputRef?.nativeElement.removeChild(SVG);
       }
@@ -231,8 +230,6 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       .style("font-size", "10px")
       .style('font-family', '"Roboto-Mono", "Helvetica Neue", sans-serif');
 
-
-
     /** UPDATE (DON'T REALLY KNOW WHAT) */
     // // ****************** links section ***************************
     /**
@@ -283,35 +280,50 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description Node event
+   * @description Node event. Add a child node to selected node.
    * @param { SVGRectElement } this
    * @param { * } event 
    * @param { HierarchyNode<unknown | Plot | PlotContent> } d 
    */
   addNode(event: any, d: HierarchyNode<any>): void {
-    console.log("add node", d);
+    console.log("hierarchy component function call add node :::", d);
+    this.plotService.selectInstance({
+      instance: {
+        id: "",
+        name: "",
+      },
+      type: 'create',
+      parentInstance: d.data
+    });
   }
 
   /**
-   * @description Node event
+   * @description Node event. Remove node from graph
    * @param {any} event 
    * @param {HierarchyNode<Plot>} d 
    * @param {SVGRectElement} this
    */
-  removeNode(this: SVGRectElement, event: any, d: HierarchyNode<unknown | Plot>): void {
-    console.log("remove node", d);
-    return;
+  removeNode(event: any, d: HierarchyNode<Plot>): void {
+    if (this.storyEditor) {
+      this.storyEditor.removeNode(d.data.id);
+      this.storyEditor.boardProxy.saveSession();
+      this.initialiseComponent();
+    } else {
+      console.warn("[ERROR] Editor component could not be found.")
+    }
   }
 
   /**
-   * @description Node event
+   * @description Node event. Edit node on graph
    * @param { SVGRectElement } this
    * @param { * } event 
    * @param { HierarchyNode<unknown | Plot | PlotContent> } d
    */
   editNode(event: any, d: any): void {
-    console.log('NODE function call edit node ::: (d)', d);
-    this.plotService.selectInstance(d.data);
+    this.plotService.selectInstance({
+      instance: d.data,
+      type: 'edit',
+    });
     return;
   }
 
@@ -343,9 +355,9 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       .attr("x", this.nodeEnterRectRepoX).attr('y', this.nodeEnterRectRepoY)
       .style('stroke', 'blue').style('fill', (d: any) => d.children ? "lightsteelblue" : "#fff")
       .attr('class', 'cursor-pointer')
+      .attr('data-node-type', 'button-edit-node')
       .on("click", (event: any, d: HierarchyNode<unknown>) => {
-        this.editNode(event, d)
-        // this.plotService.selectInstance(d.data);
+        this.editNode(event, d);
       });
 
     /**
@@ -359,6 +371,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       .attr("x", `${(this.nodeEnterRectWidth / 3) / 2}`).attr('y', this.nodeEnterRectWidth - 10)
       .style('fill', '#22a422')
       .attr('class', 'cursor-pointer')
+      .attr('data-node-type', 'button-add-node')
       .on("click", this.addNode);
 
     // to delete child node   
@@ -368,7 +381,8 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       .attr("x", `${-Math.abs((this.nodeEnterRectWidth) / 2)}`).attr('y', this.nodeEnterRectWidth - 10)
       .style('fill', 'rgb(123, 28, 28)')
       .attr('class', 'cursor-pointer')
-      .on("click", this.removeNode);
+      .attr('data-node-type', 'button-remove-node')
+      .on("click", (event: any, d: HierarchyNode<unknown>) => this.removeNode(event, d as HierarchyNode<Plot>));
 
     // TODO: add icon or text inside of interactive button. Highlight that element is intractable
     // nodeEnter.append('text')
@@ -377,7 +391,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     // .text('+')
   }
 
-  updateNodeContent(form: any) {
+  updateNodeContent({form, parent}: {form: any, parent?: PlotContent}) {
     if (!this.storyEditor) {
       console.error("Editor cant be found. No update was made.")
       return
@@ -387,10 +401,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       console.error("Editor Error board.")
       return
     }
-
-    console.log("function call update node content ::: form", form);
-    console.log("function call update node content ::: story", this.storyEditor.boardProxy.story);
-
+    
     this.storyEditor.setNodeContent(
       form,
       undefined

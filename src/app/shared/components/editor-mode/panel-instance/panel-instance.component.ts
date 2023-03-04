@@ -1,7 +1,7 @@
 import { PlotService } from '@services/plot/plot.service';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Plot, PlotContent } from '@models/plot';
+import { Plot, PlotContent, PlotInstanceType } from '@models/plot';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -27,19 +27,26 @@ export class PanelInstanceComponent {
 
   // SUBSCRIBER.
   subscriber: Subscription | undefined = undefined;
-  content: PlotContent | undefined = undefined;
+  instanceContent: PlotContent | undefined = undefined;
+  instanceType: PlotInstanceType | undefined = undefined;
+  instanceParent: PlotContent | undefined = undefined
+
   constructor(
     private plotService: PlotService,
   ) { }
 
   ngOnInit(): void {
     // listen to behavior subject.
-    this.subscriber = this.plotService.instanceEditSubject.subscribe((content: PlotContent | undefined) => {
-      if (content) {
-        this.content = content;
-        this.loadFormContent(content)
-      }
-    })
+    this.subscriber = this.plotService.$instanceEditSubject
+      .subscribe((content: { type: PlotInstanceType, instance: PlotContent, parentInstance?: PlotContent } | undefined) => {
+        if (content?.instance) {
+          this.instanceContent = content.instance;
+          this.instanceType = content.type
+          this.loadFormContent(content.instance);
+
+          if (content?.parentInstance) this.instanceParent = content.parentInstance;
+        }
+      })
 
     this.form.statusChanges.subscribe((value) => {
       console.log(value);
@@ -57,20 +64,20 @@ export class PanelInstanceComponent {
 
     const mergedForm = {
       ...this.form.value,
-      id: this.content?.id
+      id: this.instanceContent?.id
     }
-    this.updateNodeContent.emit(mergedForm);
+    this.updateNodeContent.emit({form: mergedForm, parentNode: this.instanceParent});
     this.closePanel();
   }
 
   closePanel(): void {
     this.plotService.closeInstancePanel();
-    this.content = undefined;
+    this.instanceContent = undefined;
   }
 
   loadFormContent(content: PlotContent): void {
     // this.contentIdControl.setValue(this.content?.id);
-    console.log("function call load form content", content)
+    // console.log("function call load form content", content)
     this.form.setValue({
       id: content?.id ? content.id : "",
       description: content?.description ? content.description : "",

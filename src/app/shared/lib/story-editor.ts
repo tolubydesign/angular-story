@@ -197,22 +197,14 @@ export default class StoryEditor {
       node = passthrough
     }
 
-    // TODO: start data modification inside of function. 
-    // TODO: track level of search
-    console.log("function call set node content ::: node ::", node);
-    console.log("function call set node content ::: level ::", level);
-
-    level++
     if (change.id === node?.id) {
-      console.log("function call set node content - found :::")
-      console.log("function call set node content - found ::: change ::", change)
       node.id = change.id;
       node.name = change.name;
       node.description = change.description
       node.graphics = change.graphics;
       node.characters = change.characters;
 
-      this.searchingNodes = false
+      this.searchingNodes = false;
       return
     }
 
@@ -221,36 +213,55 @@ export default class StoryEditor {
     if (this.searchingNodes) {
       for (const child of node.children) {
         if (change.id === node?.id) break;
-        this.setNodeContent(change, level, child)
+        this.setNodeContent(change, level + 1, child)
       }
-      // node.children.forEach((child: PlotContent) => this.setNodeContent(change, level, child));
     }
   }
 
-  // setNodeContent({
-  //   node, content
-  // }: { node?: PlotContent, content: PlotContent }) {
-  //   const story = this.boardProxy.story
-  //   // TODO: start data modification inside of function. 
-  //   // TODO: track level of search
-  //   if (story) {
+  /**
+   * @description Recursive function. Remove node and update story object.
+   * @param nodeId 
+   * @param lvl 
+   * @param passthrough 
+   * @param parentPassthrough 
+   */
+  removeNode(nodeId: string, lvl: number = 0, passthrough?: PlotContent, parentPassthrough?: PlotContent) {
+    let node = undefined;
 
-  //   }
-  //   console.log("function call set node content");
+    if (lvl === 0) {
+      node = this.boardProxy.story?.content
+      this.searchingNodes = true
+    }
 
-  //   if (content.id === node?.id) {
-  //     console.log("function call set node content - found", node, content)
-  //     node.id = content.id;
-  //     node.name = content.name;
-  //     node.description = content.description
-  //     node.graphics = content.graphics;
-  //     node.characters = content.characters;
-  //     return 
-  //   }
+    if (lvl > 0) node = passthrough;
 
-  //   if (!node?.children) return;
-  //   node.children.forEach((child: PlotContent) => this.setNodeContent({ node: child, content: content }));
-  // }
+    if (
+      parentPassthrough?.children &&
+      nodeId === node?.id &&
+      this.searchingNodes
+    ) {
+      if (!parentPassthrough.children) {
+        this.searchingNodes = false;
+        return
+      }
+      // target parent and delete child that matches id
+      for (const [index, child] of parentPassthrough.children.entries()) {
+        if (child.id === nodeId) {
+          parentPassthrough.children.splice(index, 1);
+          this.searchingNodes = false;
+          return
+        }
+      }
+    }
+
+    if (!node?.children || !this.searchingNodes) return;
+    if (this.searchingNodes) {
+      for (const child of node.children) {
+        if (nodeId === node?.id) break;
+        this.removeNode(nodeId, lvl + 1, child, node)
+      }
+    }
+  };
 
   searchNodes(node: PlotContent, id: string): PlotContent | void {
     if (id === node.id) return node

@@ -3,7 +3,7 @@ import { Observable, of, Subscription, BehaviorSubject, Subject, throwError, Fal
 import { HttpClient } from '@angular/common/http';
 // import { HttpErrorResponse } from '@angular/common/http';
 import { map, tap, retry, catchError } from 'rxjs/operators';
-import { Plot, PlotContent } from '@models/plot';
+import { Plot, PlotContent, PlotInstanceType } from '@models/plot';
 import { PlotModel } from "@models/plot.model";
 import { data } from '@models/tree-data.model';
 import * as JSON5 from 'json5'
@@ -27,14 +27,25 @@ export class PlotService {
   Story: PlotContent | undefined = undefined;
 
   storyJSON = "assets/data/stories.json";
+  storyEditorJSON = "assets/data/story-editor.json";
 
   // BEHAVIOR SUBJECT
   plotData = new BehaviorSubject<Plot[] | undefined>(undefined);
   plotData$ = this.plotData.asObservable();
+
   storyBehavior = new BehaviorSubject<Plot[]>([]);
   storyBehavior$ = this.storyBehavior.asObservable();
+
   storyBehaviorSubject: BehaviorSubject<Plot | Falsy> = new BehaviorSubject<Plot | Falsy>(undefined);
   selectedPointer: BehaviorSubject<PlotContent | Falsy> = new BehaviorSubject<PlotContent | Falsy>(null);
+
+  // Edit mode. Activate to edit content text like description, name ... 
+  instanceEditSubject = new BehaviorSubject<{
+    type: PlotInstanceType,
+    instance: PlotContent,
+    parentInstance?: PlotContent,
+  } | undefined>(undefined);
+  $instanceEditSubject = this.instanceEditSubject.asObservable();
 
   // SUBJECT(S)
   // storySubject: Subject<Plot | undefined> = new Subject();
@@ -46,7 +57,7 @@ export class PlotService {
   /** getPlot is created by outside component. Should only be called once. */
   // get plot form mock api. Will be converted to live when ready. API and all
   getPlot() {
-    return this.http.get<Plot[]>("assets/data/story-editor.json")
+    return this.http.get<Plot[]>(this.storyEditorJSON)
       .pipe(catchError((err) => {
         console.log('error caught in service')
         console.warn(err);
@@ -86,20 +97,25 @@ export class PlotService {
       )
   }
 
+  /**
+   * @description 
+   * @param {string} id 
+   * @returns {void}
+   */
   UpdateStoryBehavior(id: string): void {
-    console.log('fn:selection', id)
+    console.log('function call update story behavior.')
     // update store
-    this.GetStory().subscribe((response: Plot[]) =>
+    this.GetStory().subscribe((response: Plot[]) => {
       (response && response.length) ? this.storyBehaviorSubject.next(response.find((ob: Plot) => ob.id === id)) : null
-    )
-
-    /** Alternative */
-    // let story;
-    // this.GetStory().subscribe((response: Plot[]) => {
-    //   if (response?.length) {
-    //     story = response.find((ob: Plot) => ob.id === id);
-    //     this.storyBehaviorSubject.next(story);
-    //   }
-    // });
+    });
   }
+
+  selectInstance({ instance, type, parentInstance }: { instance: PlotContent, type: PlotInstanceType, parentInstance?: PlotContent }) {
+    this.instanceEditSubject.next({ type, instance, parentInstance });
+  };
+
+  closeInstancePanel() {
+    console.log("function call close instance panel.")
+    this.instanceEditSubject.next(undefined);
+  };
 }

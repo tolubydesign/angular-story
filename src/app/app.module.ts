@@ -1,5 +1,5 @@
 import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
+import { NgModule } from '@angular/core';
 
 /* angular material */
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -17,6 +17,9 @@ import { HttpClientModule } from "@angular/common/http";
 
 /* graph component */
 // import { NgxEchartsModule } from 'ngx-echarts';
+
+/* form */
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 /* components */
 import { AppComponent } from "./app.component";
@@ -39,6 +42,11 @@ import { HierarchyComponent } from './shared/components/extra/hierarchy/hierarch
 import { OptionalSelectionCardComponent } from './shared/components/ui/optional-selection-card/optional-selection-card.component';
 import { InteractionDashboardComponent } from './shared/components/interaction-mode/interaction-dashboard/interaction-dashboard.component';
 import { StoryBoardComponent } from './shared/components/interaction-mode/story-board/story-board.component';
+import { EditingComponent } from './shared/components/editor-mode/editing/editing.component';
+import { PanelInstanceComponent } from './shared/components/editor-mode/panel-instance/panel-instance.component';
+
+
+
 
 @NgModule({
   declarations: [
@@ -63,6 +71,8 @@ import { StoryBoardComponent } from './shared/components/interaction-mode/story-
     OptionalSelectionCardComponent,
     InteractionDashboardComponent,
     StoryBoardComponent,
+    EditingComponent,
+    PanelInstanceComponent,
   ],
   imports: [
     BrowserModule,
@@ -77,6 +87,8 @@ import { StoryBoardComponent } from './shared/components/interaction-mode/story-
     // NgxEchartsModule.forRoot({
     //   echarts: () => import('echarts')
     // }),
+    FormsModule, 
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

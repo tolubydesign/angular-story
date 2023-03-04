@@ -1,3 +1,5 @@
+<!-- TODO: remove file in future. No longer in use (production) -->
+<!-- DELETE FILE -->
 <slot data-component="Panel Component" [ngClass]="{ 'panel--component': true }">
   <div class="loader--group" *ngIf="!this.displayDendrogram">
     <app-loader></app-loader>
@@ -5,16 +7,16 @@
 
   <div class="display-dendrogram--group" *ngIf="this.displayDendrogram">
     <!-- TODO: render dendrogram here or pass data into child component -->
-    <app-hierarchy>
+    <app-hierarchy *ngIf="plot" [plot]="plot">
       <!-- src/app/shared/components/hierarchy/hierarchy.component.html -->
       <!-- This component is in /components/d3/ -->
     </app-hierarchy>
-
-    <mat-card class="test-mat-card">
-      <div class="test--mat-card--group">
-        <p class="test--mat-card--text"><b>panel works!</b></p>
-        <p class="test--mat-card--text">{{ selectedPlot | json }}</p>
-      </div>
-    </mat-card>
+    
+    <div *ngIf="!plot">
+      <p class="text-sm text-center text-rose-500">Story information couldn't be fetched.</p>
+    </div>
   </div>
+
+  <app-panel-instance></app-panel-instance>
+
 </slot>

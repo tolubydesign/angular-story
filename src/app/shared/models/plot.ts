@@ -14,6 +14,7 @@ export type PlotContent = {
   characters?: BoardCharacter[]
 }
 
+export type PlotInstanceType = 'edit' | 'create';
 
 export type BoardGraphic = {
   backgroundImage: string,

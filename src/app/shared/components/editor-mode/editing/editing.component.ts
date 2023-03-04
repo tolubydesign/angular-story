@@ -1,12 +1,15 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { falsy } from '@models/tree.model';
+import { URLParameters } from '@helpers/parameter';
+import StoryEditor from '@lib/story-editor';
+import { Plot, PlotContent } from '@models/plot';
+import { Falsy, Subscription, Observable, Observer, } from 'rxjs';
+import { PlotService } from '@services/plot/plot.service';
+
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
-import { PlotService } from "@services/plot/plot.service";
-import { Falsy, Observable, Observer, Subscription } from "rxjs";
-import { Plot, PlotContent } from "@models/plot";
-import { ActivatedRoute, NavigationStart, Router, ParamMap } from '@angular/router';
 import { data } from "@models/tree-data.model";
-import { falsy } from "@models/tree.model";
 
 // Create Mat Icons.
 const CloseIcon = `
@@ -29,35 +32,25 @@ const THUMB_ICON =
 `;
 
 @Component({
-  selector: "app-panel",
-  templateUrl: "./panel.component.html",
-  styleUrls: ["./panel.component.scss"],
+  selector: 'app-editing',
+  templateUrl: './editing.component.html',
+  styleUrls: ['./editing.component.scss']
 })
-export class PanelComponent implements OnInit, OnDestroy {
 
-  // VARIABLES
-  requestSubscription: Subscription | falsy;
-  parameterID: string | unknown;
-  panelError: { type: 'unknown error' | 'not found' | falsy, error: boolean } = {
-    type: undefined,
-    error: false,
-  };
+export class EditingComponent implements OnInit, OnDestroy {
 
-  // SUBSCRIPTIONS
-  plotSelectionSubscription: Subscription | undefined = undefined;
-  selectedPlot: Plot | undefined = undefined;
-  displayDendrogram: boolean = false;
-
+  parameterId: string | falsy;
+  parameters = new URLParameters(this.activatedRoute);
+  storyEditor: StoryEditor | undefined = undefined;
   plot: Plot | undefined = undefined;
   hierarchySubscriber: Subscription | undefined = undefined;
 
   constructor(
+    private activatedRoute: ActivatedRoute,
     private plotService: PlotService,
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,) {
-
+  ) {
     // Note that we provide the icon here as a string literal here due to a limitation in
     // Stackblitz. If you want to provide the icon from a URL, you can use:
     // `iconRegistry.addSvgIcon('thumbs-up', sanitizer.bypassSecurityTrustResourceUrl('icon.svg'));`
@@ -66,35 +59,41 @@ export class PanelComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.getParameterID();
-
-    this.hierarchySubscriber = this.plotService.storyBehaviorSubject.subscribe((plot: Plot | Falsy) => {
-      if (plot && plot.content) this.plot = plot;
-    });
+    this.initialization();
   }
 
   ngOnDestroy(): void {
-    // UNSUBSCRIBE
-    // this.plotService.storyBehavior.unsubscribe();
-    // this.requestSubscription?.unsubscribe();
-    this.hierarchySubscriber?.unsubscribe();
+    this.hierarchySubscriber?.unsubscribe()
   }
 
   /**
-   * 
-   * @description Get id from url. Page route
-   * @return {void}
+   * @description Initialise component.
+   * @returns 
    */
-  getParameterID() {
-    // Route
-    return this.activatedRoute.paramMap.subscribe((value: ParamMap | { params: { id: string } } | any) => {
-      if (value && value.params && value.params.id) {
-        this.parameterID = value.params.id;
-        this.updateStory(value.params.id);
-        this.displayDendrogram = true;
-      }
+  async initialization(): Promise<StoryEditor | Error | null | undefined> {
+    this.hierarchySubscriber = this.plotService.storyBehaviorSubject.subscribe((plot: Plot | Falsy) => {
+      if (plot && plot.content) this.plot = plot;
     });
-  };
+
+    await this.getParameters();
+    if (this.parameterId) {
+      this.storyEditor = new StoryEditor(this.parameterId);
+      this.updateStory(this.parameterId);
+      return
+    }
+
+    return new Error("Parameter id could not be captured.");
+  }
+
+  /**
+   * @description Get id from url. Page route
+   * @return {Promise<void>}
+   */
+  async getParameters(): Promise<void> {
+    await this.parameters.getParametersID()
+    this.parameterId = this.parameters.parameterId;
+    return
+  }
 
   /**
    * @description descriptive text 

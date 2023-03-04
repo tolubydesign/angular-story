@@ -26,11 +26,11 @@
         <div *ngIf="narrative && !narrative.children" class="">
           <p class="board-button--option" style="text-align:center">Story Ended</p>
           <div>
-            <a [routerLink]="['/interaction']" [queryParams]="{debug: true}" queryParamsHandling="merge">
+            <a class="hover:cursor-pointer" [routerLink]="['/interaction']" [queryParams]="{debug: true}" queryParamsHandling="merge">
               Go to Interaction Page.
             </a>
             <br />
-            <a (click)="reload()">
+            <a class="hover:cursor-pointer" (click)="reload()">
               Return to start.
             </a>
           </div>

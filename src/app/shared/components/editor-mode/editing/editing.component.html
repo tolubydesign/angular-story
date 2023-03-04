@@ -1,0 +1,19 @@
+<div class="absolute top-3 left-3">
+  <a mat-flat-button routerLink="/editor" routerLinkActive="active">Return to Main Edit Page</a>
+</div>
+
+<slot data-component="Panel Component" [ngClass]="{ 'panel--component': true }">
+  <div class="display-dendrogram--group">
+    <app-hierarchy *ngIf="plot" [plot]="plot">
+      <!-- src/app/shared/components/hierarchy/hierarchy.component.html -->
+      <!-- This component is in /components/d3/ -->
+    </app-hierarchy>
+
+    <div *ngIf="!plot">
+      <div class="loader--group mb-2">
+        <app-loader></app-loader>
+      </div>
+      <p class="text-sm text-center text-rose-500">Story information couldn't be fetched.</p>
+    </div>
+  </div>
+</slot>

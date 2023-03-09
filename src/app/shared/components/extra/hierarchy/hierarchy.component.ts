@@ -6,6 +6,7 @@ import { BaseType } from 'd3-selection';
 import { BehaviorSubject, Falsy, Subscription } from 'rxjs';
 import { Plot, PlotContent } from '@models/plot';
 import StoryEditor from "@lib/story-editor";
+import * as uuid from "uuid";
 
 type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any[], x0: any, y0: any } | any;
 // TODO: REFACTOR clean up code; remove commented out code.
@@ -286,14 +287,18 @@ export class HierarchyComponent implements OnInit, OnDestroy {
    * @param { HierarchyNode<unknown | Plot | PlotContent> } d 
    */
   addNode(event: any, d: HierarchyNode<any>): void {
-    console.log("hierarchy component function call add node :::", d);
+    console.log("hierarchy component function call add node :::", d, event);
+    console.log("hierarchy component function call plot service :::", this.plotService);
+
     this.plotService.selectInstance({
       instance: {
-        id: "",
-        name: "",
+        id: uuid.v4(),
+        name: "not set",
+        description: "not set",
+        children: undefined,
       },
-      type: 'create',
-      parentInstance: d.data
+      type: 'edit',
+      parentInstanceId: d.data.id
     });
   }
 
@@ -320,11 +325,12 @@ export class HierarchyComponent implements OnInit, OnDestroy {
    * @param { HierarchyNode<unknown | Plot | PlotContent> } d
    */
   editNode(event: any, d: any): void {
+    console.log("hierarchy component function call plot service :::", this.plotService);
+
     this.plotService.selectInstance({
       instance: d.data,
       type: 'edit',
     });
-    return;
   }
 
   /**
@@ -372,7 +378,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       .style('fill', '#22a422')
       .attr('class', 'cursor-pointer')
       .attr('data-node-type', 'button-add-node')
-      .on("click", this.addNode);
+      .on("click", (event: any, d: HierarchyNode<unknown>) => this.addNode(event, d));
 
     // to delete child node   
     nodeEnter.append('rect')
@@ -391,17 +397,16 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     // .text('+')
   }
 
-  updateNodeContent({form, parent}: {form: any, parent?: PlotContent}) {
-    if (!this.storyEditor) {
-      console.error("Editor cant be found. No update was made.")
+  updateNodeContent({ form, parent }: { form: any, parent?: PlotContent }) {
+    if (
+      !this.storyEditor ||
+      !this.storyEditor.board.story
+    ) {
+      if (!this.storyEditor) console.error("Editor cant be found. No update was made.")
+      if (!this.storyEditor?.board.story) console.error("Editor Error board.")
       return
     };
 
-    if (!this.storyEditor.board.story) {
-      console.error("Editor Error board.")
-      return
-    }
-    
     this.storyEditor.setNodeContent(
       form,
       undefined

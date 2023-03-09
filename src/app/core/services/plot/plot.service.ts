@@ -43,7 +43,7 @@ export class PlotService {
   instanceEditSubject = new BehaviorSubject<{
     type: PlotInstanceType,
     instance: PlotContent,
-    parentInstance?: PlotContent,
+    parentInstanceId?: string,
   } | undefined>(undefined);
   $instanceEditSubject = this.instanceEditSubject.asObservable();
 
@@ -110,8 +110,8 @@ export class PlotService {
     });
   }
 
-  selectInstance({ instance, type, parentInstance }: { instance: PlotContent, type: PlotInstanceType, parentInstance?: PlotContent }) {
-    this.instanceEditSubject.next({ type, instance, parentInstance });
+  selectInstance({ instance, type, parentInstanceId }: { instance: PlotContent, type: PlotInstanceType, parentInstanceId?: string }) {
+    this.instanceEditSubject.next({ type, instance, parentInstanceId });
   };
 
   closeInstancePanel() {

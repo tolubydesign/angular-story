@@ -287,8 +287,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
    * @param { HierarchyNode<unknown | Plot | PlotContent> } d 
    */
   addNode(event: any, d: HierarchyNode<any>): void {
-    console.log("hierarchy component function call add node :::", d, event);
-    console.log("hierarchy component function call plot service :::", this.plotService);
+    console.log("hierarchy component function call add node :::", d);
 
     this.plotService.selectInstance({
       instance: {
@@ -297,7 +296,6 @@ export class HierarchyComponent implements OnInit, OnDestroy {
         description: "not set",
         children: undefined,
       },
-      type: 'edit',
       parentInstanceId: d.data.id
     });
   }
@@ -325,11 +323,9 @@ export class HierarchyComponent implements OnInit, OnDestroy {
    * @param { HierarchyNode<unknown | Plot | PlotContent> } d
    */
   editNode(event: any, d: any): void {
-    console.log("hierarchy component function call plot service :::", this.plotService);
-
+    // console.log("hierarchy component function call plot service :::", this.plotService);
     this.plotService.selectInstance({
       instance: d.data,
-      type: 'edit',
     });
   }
 
@@ -397,7 +393,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     // .text('+')
   }
 
-  updateNodeContent({ form, parent }: { form: any, parent?: PlotContent }) {
+  updateNodeContent({ form }: { form: any }) {
     if (
       !this.storyEditor ||
       !this.storyEditor.board.story
@@ -413,11 +409,27 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     )
 
     this.storyEditor.boardProxy.saveSession();
-    // this.storyEditor.setNodeContent({
-    //   content: this.storyEditor.board.story.content,
-    //   content: form,
-    // })
+    this.initialiseComponent();
+  }
 
+  addNodeContent({ form, parentNodeId }: { form: any, parentNodeId: string }) {
+    if (
+      !this.storyEditor ||
+      !this.storyEditor.board.story
+    ) {
+      if (!this.storyEditor) console.error("Editor cant be found. No update was made.")
+      if (!this.storyEditor?.board.story) console.error("Editor Error board.")
+      return
+    };
+
+    console.log('function call: add node content', form, parentNodeId);
+    // Update story editor
+    this.storyEditor.appendAdditionalNodeContent(
+      parentNodeId,
+      form
+    )
+
+    this.storyEditor.boardProxy.saveSession();
     this.initialiseComponent();
   }
 }

@@ -1,7 +1,7 @@
 import { PlotService } from '@services/plot/plot.service';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Plot, PlotContent, PlotInstanceType } from '@models/plot';
+import { Plot, PlotContent } from '@models/plot';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -12,6 +12,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 export class PanelInstanceComponent {
 
   @Output() updateNodeContent: EventEmitter<any> = new EventEmitter();
+  @Output() addNodeContent: EventEmitter<any> = new EventEmitter();
   // @Output() newItemEvent = new EventEmitter<string>();
 
   // Form values
@@ -28,8 +29,8 @@ export class PanelInstanceComponent {
   // SUBSCRIBER.
   subscriber: Subscription | undefined = undefined;
   instanceContent: PlotContent | undefined = undefined;
-  instanceType: PlotInstanceType | undefined = undefined;
-  instanceParent: PlotContent | undefined = undefined
+  // instanceType: PlotInstanceType | undefined = undefined;
+  instanceParentId: string | undefined = undefined
 
   constructor(
     private plotService: PlotService,
@@ -38,18 +39,18 @@ export class PanelInstanceComponent {
   ngOnInit(): void {
     // listen to behavior subject.
     this.subscriber = this.plotService.$instanceEditSubject
-      .subscribe((content: { type: PlotInstanceType, instance: PlotContent, parentInstance?: PlotContent } | undefined) => {
+      .subscribe((content: { instance: PlotContent, parentInstanceId?: string } | undefined) => {
         if (content?.instance) {
           this.instanceContent = content.instance;
-          this.instanceType = content.type
+          // this.instanceType = content.type
+          this.instanceParentId = content.parentInstanceId;
           this.loadFormContent(content.instance);
 
-          if (content?.parentInstance) this.instanceParent = content.parentInstance;
         }
       })
 
     this.form.statusChanges.subscribe((value) => {
-      console.log(value);
+      // console.log('[panel instance comp] form status changes subscriber', value);
       return
     });
   }
@@ -66,7 +67,15 @@ export class PanelInstanceComponent {
       ...this.form.value,
       id: this.instanceContent?.id
     }
-    this.updateNodeContent.emit({form: mergedForm, parentNode: this.instanceParent});
+
+    console.log('function call on submit', this.form, this.instanceParentId);
+
+    if (this.instanceParentId) {
+      this.addNodeContent.emit({ form: mergedForm, parentNodeId: this.instanceParentId })
+    } else {
+      this.updateNodeContent.emit({ form: mergedForm });
+    }
+
     this.closePanel();
   }
 

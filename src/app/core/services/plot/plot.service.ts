@@ -41,7 +41,7 @@ export class PlotService {
 
   // Edit mode. Activate to edit content text like description, name ... 
   instanceEditSubject = new BehaviorSubject<{
-    type: PlotInstanceType,
+    // type: PlotInstanceType,
     instance: PlotContent,
     parentInstanceId?: string,
   } | undefined>(undefined);
@@ -110,8 +110,8 @@ export class PlotService {
     });
   }
 
-  selectInstance({ instance, type, parentInstanceId }: { instance: PlotContent, type: PlotInstanceType, parentInstanceId?: string }) {
-    this.instanceEditSubject.next({ type, instance, parentInstanceId });
+  selectInstance({ instance, parentInstanceId }: { instance: PlotContent, parentInstanceId?: string }) {
+    this.instanceEditSubject.next({ instance, parentInstanceId });
   };
 
   closeInstancePanel() {

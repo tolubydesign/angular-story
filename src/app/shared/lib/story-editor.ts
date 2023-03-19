@@ -237,8 +237,6 @@ export default class StoryEditor {
 
     if (parentId === node?.id) {
       // Make changes to node. In this case node children.
-      console.log('function call: append additional node content: node', node);
-      
       if (!node.children?.length) {
         node.children = [];
       }

@@ -312,7 +312,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       this.storyEditor.boardProxy.saveSession();
       this.initialiseComponent();
     } else {
-      console.warn("[ERROR] Editor component could not be found.")
+      console.warn("[ERROR] Editor, could not be found.")
     }
   }
 

@@ -6,7 +6,8 @@ import { map, tap, retry, catchError } from 'rxjs/operators';
 import { Plot, PlotContent, PlotInstanceType } from '@models/plot';
 import { PlotModel } from "@models/plot.model";
 import { data } from '@models/tree-data.model';
-import * as JSON5 from 'json5'
+import * as JSON5 from 'json5';
+import * as uuid from "uuid";
 
 // import json5 from "json5";
 // import { readFile } from "fs/promises";
@@ -108,6 +109,27 @@ export class PlotService {
     this.GetStory().subscribe((response: Plot[]) => {
       (response && response.length) ? this.storyBehaviorSubject.next(response.find((ob: Plot) => ob.id === id)) : null
     });
+  }
+
+  /**
+   * @description create a brand new story graph.
+   * @param id 
+   */
+  createStoryGraph(id: string) {
+    const newStory: Plot = {
+      id,
+      description: "-",
+      title: "-",
+      content: {
+        id: uuid.v4(),
+        name: "brand new",
+        description: "-",
+        children: undefined,
+        graphics: undefined,
+        characters: undefined,
+      }
+    }
+    this.storyBehaviorSubject.next(newStory);
   }
 
   selectInstance({ instance, parentInstanceId }: { instance: PlotContent, parentInstanceId?: string }) {

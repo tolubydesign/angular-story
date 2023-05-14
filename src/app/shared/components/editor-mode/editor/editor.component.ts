@@ -36,8 +36,8 @@ export class EditorComponent implements OnInit {
   }
 
   /**
-   * @description 
-   * @param id string
+   * @description Modify an existing plot 
+   * @param { string } id The specific ID node
    * 
    */
   editPlot(id: string) {

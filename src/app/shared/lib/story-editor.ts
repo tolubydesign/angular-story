@@ -219,6 +219,44 @@ export default class StoryEditor {
   }
 
   /**
+   * @description Recursive function. Add node with content provided.
+   * @param { string } parentId The id of the parent node
+   * @param nodeContent The node content needed to show a story path, option 
+   * @param level 
+   * @param passthrough Optional 
+   */
+  appendAdditionalNodeContent(parentId: string, contentChanges: PlotContent, lvl: number = 0, passthrough?: PlotContent) {
+    let node: PlotContent | undefined;
+
+    if (lvl === 0) {
+      node = this.boardProxy.story?.content
+      this.searchingNodes = true
+    }
+
+    if (lvl > 0) node = passthrough;
+
+    if (parentId === node?.id) {
+      // Make changes to node. In this case node children.
+      if (!node.children?.length) {
+        node.children = [];
+      }
+
+      node.children.push(contentChanges);
+      this.searchingNodes = false;
+      return
+    }
+
+    if (!node?.children) return;
+
+    if (this.searchingNodes) {
+      for (const child of node.children) {
+        if (parentId === node?.id) break;
+        this.appendAdditionalNodeContent(parentId, contentChanges, lvl + 1, child)
+      }
+    }
+  }
+
+  /**
    * @description Recursive function. Remove node and update story object.
    * @param nodeId 
    * @param lvl 

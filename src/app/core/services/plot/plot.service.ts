@@ -6,7 +6,8 @@ import { map, tap, retry, catchError } from 'rxjs/operators';
 import { Plot, PlotContent, PlotInstanceType } from '@models/plot';
 import { PlotModel } from "@models/plot.model";
 import { data } from '@models/tree-data.model';
-import * as JSON5 from 'json5'
+import * as JSON5 from 'json5';
+import * as uuid from "uuid";
 
 // import json5 from "json5";
 // import { readFile } from "fs/promises";
@@ -27,7 +28,6 @@ export class PlotService {
   Story: PlotContent | undefined = undefined;
 
   storyJSON = "assets/data/stories.json";
-  storyEditorJSON = "assets/data/story-editor.json";
 
   // BEHAVIOR SUBJECT
   plotData = new BehaviorSubject<Plot[] | undefined>(undefined);
@@ -41,9 +41,9 @@ export class PlotService {
 
   // Edit mode. Activate to edit content text like description, name ... 
   instanceEditSubject = new BehaviorSubject<{
-    type: PlotInstanceType,
+    // type: PlotInstanceType,
     instance: PlotContent,
-    parentInstance?: PlotContent,
+    parentInstanceId?: string,
   } | undefined>(undefined);
   $instanceEditSubject = this.instanceEditSubject.asObservable();
 
@@ -53,30 +53,6 @@ export class PlotService {
   constructor(
     private http: HttpClient,
   ) { }
-
-  /** getPlot is created by outside component. Should only be called once. */
-  // get plot form mock api. Will be converted to live when ready. API and all
-  getPlot() {
-    return this.http.get<Plot[]>(this.storyEditorJSON)
-      .pipe(catchError((err) => {
-        console.log('error caught in service')
-        console.warn(err);
-        //Handle the error here
-        throw new Error(err);
-        return throwError(err); // Rethrow it back to component
-      })
-      )
-      .pipe(
-        tap((res: Plot[]) => {
-          console.log("(getPlot)", res);
-
-          this.plotData.next(res);
-          /** set new class to handle data and data manipulation */
-          this.Plot = new PlotModel(res);
-          return res;
-        })
-      )
-  }
 
   GetStory(): Observable<Plot[]> {
     return this.http.get<PlotContent>(this.storyJSON)
@@ -110,8 +86,29 @@ export class PlotService {
     });
   }
 
-  selectInstance({ instance, type, parentInstance }: { instance: PlotContent, type: PlotInstanceType, parentInstance?: PlotContent }) {
-    this.instanceEditSubject.next({ type, instance, parentInstance });
+  /**
+   * @description create a brand new story graph.
+   * @param id 
+   */
+  createStoryGraph(id: string) {
+    const newStory: Plot = {
+      id,
+      description: "-",
+      title: "-",
+      content: {
+        id: uuid.v4(),
+        name: "brand new",
+        description: "-",
+        children: undefined,
+        graphics: undefined,
+        characters: undefined,
+      }
+    }
+    this.storyBehaviorSubject.next(newStory);
+  }
+
+  selectInstance({ instance, parentInstanceId }: { instance: PlotContent, parentInstanceId?: string }) {
+    this.instanceEditSubject.next({ instance, parentInstanceId });
   };
 
   closeInstancePanel() {

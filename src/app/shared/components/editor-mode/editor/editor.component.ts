@@ -36,8 +36,8 @@ export class EditorComponent implements OnInit {
   }
 
   /**
-   * @description 
-   * @param id string
+   * @description Modify an existing plot 
+   * @param { string } id The specific ID node
    * 
    */
   editPlot(id: string) {
@@ -53,7 +53,7 @@ export class EditorComponent implements OnInit {
   createStory(): void {
     // Utilize uuid v4 => uuid.v4();
     const id = uuid.v4();
-    this.plotService.UpdateStoryBehavior(id);
+    this.plotService.createStoryGraph(id)
     this.router.navigate([`/editing/${id}`])
   }
 }

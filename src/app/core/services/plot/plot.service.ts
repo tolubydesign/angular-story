@@ -28,6 +28,7 @@ export class PlotService {
   Story: PlotContent | undefined = undefined;
 
   storyJSON = "assets/data/stories.json";
+  databaseUrl = ""
 
   // BEHAVIOR SUBJECT
   plotData = new BehaviorSubject<Plot[] | undefined>(undefined);

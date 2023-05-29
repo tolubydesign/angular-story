@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
 })
 export class OptionalSelectionCardComponent implements OnInit {
 
-  @Input() listing: Plot[] = []; // decorate the property with @Input()
+  @Input() stories: Plot[] = []; // decorate the property with @Input()
   @Input() primaryText: falsy | string = null;
   @Input() secondaryText: falsy | string = null;
 

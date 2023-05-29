@@ -17,7 +17,7 @@ export class EditorComponent implements OnInit {
   private _GetStoriesSubscription: Subscription | undefined;
   private _FetchDataSubscription: Subscription | undefined;
   stories: Plot[] = [];
-  storyEdits: Plot[] = [];
+  cards: Plot[] = [];
 
   constructor(
     private plotService: PlotService,
@@ -42,8 +42,7 @@ export class EditorComponent implements OnInit {
 
   populateList(): void {
     this._FetchDataSubscription = this.storiesService.fetchAllStories().subscribe((response: HTTPSuccessResponse) => {
-      this.storyEdits = response?.data;
-      console.log(response);
+      this.cards = response?.data;
       return response;
     })
     // this._FetchDataSubscription = this.storiesService.fetchAllStories().subscribe((response) => {
@@ -104,9 +103,8 @@ export class EditorComponent implements OnInit {
     // })
 
     // this._GetStoriesSubscription = this.plotService.GetStory().subscribe((database: Plot[] | undefined) => {
-    //   if (database) this.storyEdits = database;
+    //   if (database) this.cards = database;
     // });
-
   }
 
   deletePlot(editID: string) {

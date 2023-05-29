@@ -10,6 +10,7 @@ import { PlotService } from '@services/plot/plot.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import { data } from "@models/tree-data.model";
+import { HTTPSuccessResponse, StoriesService } from '@services/stories.service';
 
 // Create Mat Icons.
 const CloseIcon = `
@@ -38,18 +39,19 @@ const THUMB_ICON =
 })
 
 export class EditingComponent implements OnInit, OnDestroy {
-
   parameterId: string | falsy;
   parameters = new URLParameters(this.activatedRoute);
-  storyEditor: StoryEditor | undefined = undefined;
-  plot: Plot | undefined = undefined;
-  hierarchySubscriber: Subscription | undefined = undefined;
+  storyEditor: StoryEditor | undefined;
+  plot: Plot | Falsy;
+  private _FetchStoriesSubscriber: Subscription | undefined;
+  private _EditingStorySubscriber: Subscription | undefined;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private plotService: PlotService,
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer,
+    private storiesService: StoriesService,
   ) {
     // Note that we provide the icon here as a string literal here due to a limitation in
     // Stackblitz. If you want to provide the icon from a URL, you can use:
@@ -63,44 +65,57 @@ export class EditingComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.hierarchySubscriber?.unsubscribe()
+    this._FetchStoriesSubscriber?.unsubscribe();
+    this._EditingStorySubscriber?.unsubscribe()
   }
 
   /**
    * @description Initialise component.
-   * @returns 
+   * @returns {StoryEditor} StoryEditor Class
    */
-  async initialization(): Promise<StoryEditor | Error | null | undefined> {
-    this.hierarchySubscriber = this.plotService.storyBehaviorSubject.subscribe((plot: Plot | Falsy) => {
-      if (plot && plot.content) this.plot = plot;
-    });
+  async initialization(): Promise<void> {
+    this._EditingStorySubscriber = this.storiesService.editingStory.subscribe((story: Plot | null) => {
+      this.plot = story;
+    })
+    
+    const parameterID = await this.getParameterID();
+    if (parameterID instanceof Error) throw parameterID
 
-    await this.getParameters();
-    if (this.parameterId) {
-      this.storyEditor = new StoryEditor(this.parameterId);
-      this.updateStory(this.parameterId);
-      return
+    // fetch files if nothing is in the store.
+    if (!this.storiesService.AllStoriesState()) {
+      this.storiesService.fetchAllStories().subscribe((response: HTTPSuccessResponse<Plot[]>) => {
+        this.updateStoryParameterId(parameterID)
+      })
+    } else {
+      this.updateStoryParameterId(parameterID)
     }
-
-    return new Error("Parameter id could not be captured.");
   }
 
   /**
    * @description Get id from url. Page route
    * @return {Promise<void>}
    */
-  async getParameters(): Promise<void> {
-    await this.parameters.getParametersID()
-    this.parameterId = this.parameters.parameterId;
-    return
+  async getParameterID(): Promise<string | Error> {
+    const parameter = await this.parameters.GetIDParameter();
+    if (parameter instanceof Error) {
+      console.warn(parameter.message);
+      return parameter;
+    }
+
+    this.parameterId = parameter;
+    return parameter;
   }
 
   /**
-   * @description descriptive text 
+   * Update selected story.
    * @param {string} id 
    */
   updateStory(id: string) {
-    // We have the relevant parameter id. Make a request to back-end.
-    this.plotService.UpdateStoryBehavior(id);
+    this.storiesService.updateEditingStory(id);
+  }
+
+  updateStoryParameterId(id: string) {
+    this.storyEditor = new StoryEditor(id);
+    this.updateStory(id);
   }
 }

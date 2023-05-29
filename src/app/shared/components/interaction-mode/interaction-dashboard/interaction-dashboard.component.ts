@@ -44,8 +44,8 @@ export class InteractionDashboardComponent implements OnInit {
    * @description Get id from url. Page route
    * @return {Promise<void>}
    */
-  async getParameters() {
-    await this.parameters.getParametersID()
+  async getParameters(): Promise<void> {
+    await this.parameters.GetIDParameter()
     this.parameterId = this.parameters.parameterId;
   }
 

@@ -7,6 +7,7 @@ import { BehaviorSubject, Falsy, Subscription } from 'rxjs';
 import { Plot, PlotContent } from '@models/plot';
 import StoryEditor from "@lib/story-editor";
 import * as uuid from "uuid";
+import { StoriesService } from '@services/stories.service';
 
 type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any[], x0: any, y0: any } | any;
 // TODO: REFACTOR clean up code; remove commented out code.
@@ -19,24 +20,24 @@ type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any
 })
 export class HierarchyComponent implements OnInit, OnDestroy {
 
-  @Input() plot: Plot | undefined = undefined;
+  @Input() plot?: Plot;
   @ViewChild('D3HierarchyInputRef') D3HierarchyInputRef: ElementRef | undefined;
-  mutatedPlot: Plot | undefined | null = undefined
-  totalNoNodes: number | null = null
-  // SUBSCRIBER.
-  hierarchySubscriber: Subscription | undefined = undefined;
+  private _HierarchySubscriber?: Subscription;
+
+  mutatedPlot?: Plot | null;
+  totalNoNodes?: number;
 
   constructor(
     private plotService: PlotService,
+    private storiesService: StoriesService,
   ) { }
 
-  storyEditor: StoryEditor | undefined = undefined;
+  storyEditor?: StoryEditor;
   // plot: Plot | Falsy = undefined
   name = "d3-hierarchy";
   HierarchyElement = `div#${this.name}`;
 
   ngOnInit(): void {
-
     if (this.plot?.content) this.storyEditor = new StoryEditor(this.plot.id, this.plot);
     // Get information from store.
     this.initialiseComponent();
@@ -44,7 +45,8 @@ export class HierarchyComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     // UNSUBSCRIBE
-    this.hierarchySubscriber?.unsubscribe()
+    this._HierarchySubscriber?.unsubscribe();
+    this.storyEditor = undefined
   }
 
   // ************** Generate the tree diagram	 ***************** //
@@ -76,10 +78,10 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   nodeEnterRectRepoY = (this.nodeEnterRectHeight - (this.nodeEnterRectHeight * 2)) / 2;
 
   /**
-   * @returns { void }
+   * @description Start up D3 graph.
+   * @returns
    */
   initialiseComponent(): void {
-
     this.root = null;
 
     if (this.plot?.content && this.storyEditor) {
@@ -114,7 +116,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
 
   /**
    * @description Create svg graph.
-   * @returns svg ; the graph and attaching it to a local value `Promise<d3.Selection<SVGGElement, PlotContent, HTMLElement, any> | undefined>`
+   * @returns svg graph
    */
   async createCanvas(): Promise<Selection<SVGGElement, unknown, HTMLElement, any>> {
     // this.treeMap = d3.tree().size([this.width, this.height]);
@@ -135,8 +137,8 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description 
-   * @return {void}
+   * @description Create and recreate d3 hierarchy graph.
+   * @return nothing
    */
   initialize(): void {
     // Initialise d3 hierarchy graph.
@@ -145,7 +147,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       this.root = d3.hierarchy(this.mutatedPlot.content, (d) => d.children);
     }
     if (!this.mutatedPlot) {
-      console.error("mutated plot is undefined.")
+      console.error("Mutated plot is undefined.")
       return
     }
     // if (!this.root) {
@@ -275,9 +277,9 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       d.children = d._children;
       d._children = null;
     }
-    console.log(typeof event);
-    console.log(typeof d);
-    console.log("function click", d);
+    // console.log(typeof event);
+    // console.log(typeof d);
+    // console.log("function click", d);
   }
 
   /**
@@ -287,7 +289,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
    * @param { HierarchyNode<unknown | Plot | PlotContent> } d 
    */
   addNode(event: any, d: HierarchyNode<any>): void {
-    console.log("hierarchy component function call add node :::", d);
+    console.log("function call add node, d:", d);
 
     this.plotService.selectInstance({
       instance: {

@@ -9,7 +9,7 @@ type TBoard = {
 };
 
 /**
- * @description Handle changes and updates made in the Editor part of the website 
+ * @description Handle changes and updates made in the Editor part of the website.
  */
 export default class StoryEditor {
   id: string;
@@ -22,6 +22,7 @@ export default class StoryEditor {
   };
   sessionStorageKey = "board";
   searchingNodes = false;
+
   /** 
    * @description
    * As of 2018, you can now use the [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) object 
@@ -33,7 +34,7 @@ export default class StoryEditor {
    */
   boardProxy: TBoard = new Proxy(this.board, {
     construct(target: any, args: any) {
-      console.log(`Creating a ${target.name}`);
+      console.info(`Creating a ${target.name}`);
       // Expected output: "Creating a monster1"
       return new target(...args);
     },
@@ -52,11 +53,8 @@ export default class StoryEditor {
   });
 
   // TODO: find simpler way to capture and assign {id}. Maybe pass it to this.initialization.
-  constructor(
-    id: string,
-    plot?: Plot,
-  ) {
-    console.log("class call story editor.");
+  constructor(id: string, plot?: Plot) {
+    console.log("class story editor.");
     this.id = id;
 
     // check if storage has information;
@@ -133,11 +131,14 @@ export default class StoryEditor {
   }
 
   /**
-   * @description
+   * 
    * @returns { Plot | Error } Plot or Error()
    */
   getSessionStorage(): Plot | Error {
     console.log("function get session storage.")
+    const storageInaccessible = this.sessionStorageInaccessible(); 
+    if (storageInaccessible instanceof Error) throw new Error(storageInaccessible.message); 
+
     const storage: string | null = sessionStorage.getItem(this.sessionStorageKey);
     let restructured: Plot | undefined = undefined;
     if (storage) {
@@ -148,6 +149,26 @@ export default class StoryEditor {
     }
 
     return new Error(`Session Storage ${this.sessionStorageKey} cant be accessed`);
+  }
+
+  /**
+   * Sub-function to check that session storage is accessible.
+   * @returns {Error | undefined} Error out if session storage isn't accessible.
+   */
+  sessionStorageInaccessible = (): Error | undefined => {
+    try {
+      const key = `__storage_test`;
+      sessionStorage.setItem(key, '');
+      sessionStorage.removeItem(key);
+      return;
+    } catch (error: unknown) {
+      console.warn("Session storage Error:", error)
+      return new Error("Session storage could not be accessed");
+    }
+  }
+
+  clearSessionStorage = () => {
+    sessionStorage.clear();
   }
 
   /**

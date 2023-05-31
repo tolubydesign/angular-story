@@ -3,7 +3,8 @@ import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { Plot } from "@models/plot";
-import { falsy } from "@models/tree.model";
+import { StoriesService } from "@services/stories.service";
+import { HTTPSuccessResponse } from "@services/stories.service";
 
 @Component({
   selector: "app-interaction",
@@ -11,29 +12,30 @@ import { falsy } from "@models/tree.model";
   styleUrls: ["./interaction.component.scss"],
 })
 export class InteractionComponent implements OnInit {
-  StorySubscription: Subscription | undefined;
-  story: Plot[] = [];
+  private _FetchStoriesSubscription?: Subscription;
+  stories: Plot[] = [];
 
   constructor(
     private plotService: PlotService,
-    private router: Router
+    private router: Router,
+    private storiesService: StoriesService,
   ) { }
 
   ngOnInit(): void {
     console.log('Component - interaction');
-    this.populate();
+    this.fetchStoriesContent();
   }
 
   ngOnDestroy(): void {
     // UNSUBSCRIBE
-    this.StorySubscription?.unsubscribe();
+    this._FetchStoriesSubscription?.unsubscribe();
   }
 
-  populate(): void {
-    this.StorySubscription = this.plotService.GetStory()
-      .subscribe(
-        (database: Plot[] | undefined) => (database) ? this.story = database : this.story = []
-      );
+  fetchStoriesContent(): void {
+    this._FetchStoriesSubscription = this.storiesService.fetchAllStories()
+      .subscribe((response: HTTPSuccessResponse<Plot[]>) => {
+        this.stories = response.data
+      })
   }
 
   /**

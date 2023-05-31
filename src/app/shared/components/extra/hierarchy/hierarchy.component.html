@@ -1,8 +1,9 @@
-<div data-component="Hierarchy Component">
+<div data-component="Hierarchy Component" class="overflow-auto">
   <div #D3HierarchyInputRef id="d3-hierarchy"></div>
 </div>
 
-<div *ngIf="plot" class="fixed bottom-[20px] left-0 bg-white shadow-md max-h-[100px] overflow-scroll">
+<!-- to be deleted in the future -->
+<div *ngIf="plot" class="fixed bottom-[20px] left-0 bg-white shadow-md max-h-[100px] max-w-[92vw] translate-x-[4vw]  overflow-y-auto">
   <p class="text-[8px]">{{ plot | json }}</p>
 </div>
 

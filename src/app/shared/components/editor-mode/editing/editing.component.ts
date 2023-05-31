@@ -48,7 +48,6 @@ export class EditingComponent implements OnInit, OnDestroy {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private plotService: PlotService,
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer,
     private storiesService: StoriesService,
@@ -66,7 +65,10 @@ export class EditingComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._FetchStoriesSubscriber?.unsubscribe();
-    this._EditingStorySubscriber?.unsubscribe()
+    this._EditingStorySubscriber?.unsubscribe();
+    if (this.storyEditor) {
+      this.storyEditor = undefined;
+    }
   }
 
   /**
@@ -77,15 +79,17 @@ export class EditingComponent implements OnInit, OnDestroy {
     this._EditingStorySubscriber = this.storiesService.editingStory.subscribe((story: Plot | null) => {
       this.plot = story;
     })
-    
+
     const parameterID = await this.getParameterID();
     if (parameterID instanceof Error) throw parameterID
 
     // fetch files if nothing is in the store.
     if (!this.storiesService.AllStoriesState()) {
-      this.storiesService.fetchAllStories().subscribe((response: HTTPSuccessResponse<Plot[]>) => {
-        this.updateStoryParameterId(parameterID)
-      })
+      this.storiesService.fetchAllStories().subscribe(
+        () => {
+          this.updateStoryParameterId(parameterID)
+        }
+      )
     } else {
       this.updateStoryParameterId(parameterID)
     }
@@ -115,7 +119,7 @@ export class EditingComponent implements OnInit, OnDestroy {
   }
 
   updateStoryParameterId(id: string) {
-    this.storyEditor = new StoryEditor(id);
+    // this.storyEditor = new StoryEditor(id);
     this.updateStory(id);
   }
 }

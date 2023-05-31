@@ -21,7 +21,6 @@ export class OptionalSelectionCardComponent implements OnInit {
 
   paramId: string | falsy = undefined;
   selectedPlot: Plot | falsy = undefined;
-  requestSubscription: Subscription | falsy;
 
   constructor(
     private plotService: PlotService,
@@ -33,8 +32,6 @@ export class OptionalSelectionCardComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    // UNSUBSCRIBE
-    this.requestSubscription?.unsubscribe();
   }
 
   onPrimaryClick(item: Plot) {

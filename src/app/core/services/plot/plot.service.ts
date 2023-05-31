@@ -42,7 +42,6 @@ export class PlotService {
 
   // Edit mode. Activate to edit content text like description, name ... 
   instanceEditSubject = new BehaviorSubject<{
-    // type: PlotInstanceType,
     instance: PlotContent,
     parentInstanceId?: string,
   } | undefined>(undefined);
@@ -88,13 +87,13 @@ export class PlotService {
   }
 
   /**
-   * @description create a brand new story graph.
-   * @param id 
+   * Create a brand new story graph.
+   * @param id uuid of Story 
    */
   createStoryGraph(id: string) {
     const newStory: Plot = {
       id,
-      description: "-",
+      description: "",
       title: "-",
       content: {
         id: uuid.v4(),

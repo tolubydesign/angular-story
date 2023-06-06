@@ -2,7 +2,7 @@ import * as uuid from "uuid";
 import { Plot, PlotContent } from '@models/plot';
 
 type TBoard = {
-  story: Plot | null,
+  story?: Plot,
   totalNoNodes: number,
   saveSession: () => void,
   getSession: () => Plot | Error
@@ -15,7 +15,7 @@ export default class StoryEditor {
   id: string;
   // Basic/Original 
   board: TBoard = {
-    story: null,
+    story: undefined,
     totalNoNodes: 0,
     saveSession: () => this.updateSessionStorage(),
     getSession: () => this.getSessionStorage(),
@@ -24,7 +24,7 @@ export default class StoryEditor {
   searchingNodes = false;
 
   /** 
-   * @description
+   * NOTE: unsafe. Do safety checks
    * As of 2018, you can now use the [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) object 
    * to monitor (and intercept) changes made to an object. It is purpose built for what the OP is trying to do. Here's a basic example:
    *  
@@ -39,14 +39,7 @@ export default class StoryEditor {
       return new target(...args);
     },
     set: function (target: TBoard | any, key: string | symbol, value: Plot) {
-      // console.info("board proxy")
-      // console.log("board proxy: target", target)
-      // console.log("board proxy: key", key)
-      // console.log("board proxy: value", value);
       target[key] = value;
-
-      // Save to Windows/Browser
-      // target.saveSession();
       return true
     },
 
@@ -54,12 +47,15 @@ export default class StoryEditor {
 
   // TODO: find simpler way to capture and assign {id}. Maybe pass it to this.initialization.
   constructor(id: string, plot?: Plot) {
-    console.log("class story editor.");
+    console.log("CALL class story editor.");
     this.id = id;
 
-    // check if storage has information;
-    if (this.getSessionStorage()) {
-
+    // NOTE: check if storage has information;
+    const sessionPlot = this.getSessionStorage();
+    if (sessionPlot instanceof Error) {
+      // TODO: handle error responses
+      console.warn('session graph error: ', sessionPlot.message);
+      throw new Error(sessionPlot.message);
     }
 
     if (plot) {
@@ -74,7 +70,7 @@ export default class StoryEditor {
       this.initialization();
     }
 
-    // Enable "confirm before you leave"
+    // NOTE: Enable "confirm before you leave"
     this.enableBeforeunload()
 
     if (plot?.content) {
@@ -89,7 +85,7 @@ export default class StoryEditor {
    * StoryEditor.initialization()
    */
   initialization(): void {
-    const updatedBoard = {
+    const board = {
       id: this.id,
       title: '',
       description: '',
@@ -99,15 +95,23 @@ export default class StoryEditor {
       },
     }
 
-    return this.updateBoard(updatedBoard);
+    return this.updateBoard(board);
   };
 
   /**
-   * @description Update story board.
-   * @param { Plot } update 
-   * @returns { void }
+   * @description Update story board with updated plot object.
+   * @param update 
+   * @returns
    */
   updateBoard(update: Plot): void {
+    // NOTE: in case content is null
+    if (!update.content) {
+      update.content = {
+        id: uuid.v4(),
+        name: '',
+      }
+    }
+
     this.boardProxy.story = update;
     this.boardProxy.saveSession();
   }
@@ -116,7 +120,7 @@ export default class StoryEditor {
    * @description Save board changes to browser session storage.
    */
   updateSessionStorage() {
-    console.log("function update session storage.");
+    console.log("function call update session storage");
 
     if (typeof this.board.story === 'object') {
       sessionStorage.setItem(this.sessionStorageKey, JSON.stringify(this.board.story));
@@ -131,16 +135,18 @@ export default class StoryEditor {
   }
 
   /**
-   * 
-   * @returns { Plot | Error } Plot or Error()
+   * @description Find the return plot data saved to session storage
+   * @returns Plot or Error, if session storage cant be accessed or there's no data.
    */
   getSessionStorage(): Plot | Error {
-    console.log("function get session storage.")
+    console.log("function call get session storage.")
+    
     const storageInaccessible = this.sessionStorageInaccessible(); 
     if (storageInaccessible instanceof Error) throw new Error(storageInaccessible.message); 
 
     const storage: string | null = sessionStorage.getItem(this.sessionStorageKey);
-    let restructured: Plot | undefined = undefined;
+    let restructured: Plot;
+    
     if (storage) {
       restructured = JSON.parse(storage);
 
@@ -152,8 +158,9 @@ export default class StoryEditor {
   }
 
   /**
-   * Sub-function to check that session storage is accessible.
-   * @returns {Error | undefined} Error out if session storage isn't accessible.
+   * Sub-function - Check that session storage is accessible.
+   * @returns Error out if session storage isn't accessible.
+   * @see {@link https://www.30secondsofcode.org/js/s/is-session-storage-enabled/}
    */
   sessionStorageInaccessible = (): Error | undefined => {
     try {
@@ -162,6 +169,7 @@ export default class StoryEditor {
       sessionStorage.removeItem(key);
       return;
     } catch (error: unknown) {
+      console.log("function call session storage inaccessible, error", error);
       console.warn("Session storage Error:", error)
       return new Error("Session storage could not be accessed");
     }
@@ -182,7 +190,7 @@ export default class StoryEditor {
   }
 
   /**
-   * @description
+   * @description ... TODO: create description
    * @example
    * this.disableBeforeunload()
    */
@@ -193,9 +201,13 @@ export default class StoryEditor {
     }
   }
 
-  countNode(node: PlotContent) {
+  /**
+   * Sub-function to calculate the total number of nodes this plot has.
+   * @param node Content of Narrative
+   * @returns void
+   */
+  countNode = (node: PlotContent) => {
     this.boardProxy.totalNoNodes = this.boardProxy.totalNoNodes + 1;
-    // console.log("function call count nodes total", this.boardProxy.totalNoNodes);
     if (!node.children) return;
     node.children.forEach((child: PlotContent) => this.countNode(child));
   }
@@ -325,7 +337,7 @@ export default class StoryEditor {
   searchNodes(node: PlotContent, id: string): PlotContent | void {
     if (id === node.id) return node
     node.children?.forEach((child: PlotContent) => this.searchNodes(child, id));
-  }
+  };
 }
 
 /**

@@ -1,4 +1,4 @@
-export interface Plot {
+export type Plot = {
   id: string;
   title: string;
   description: string;

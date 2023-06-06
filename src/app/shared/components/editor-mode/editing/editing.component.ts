@@ -73,7 +73,7 @@ export class EditingComponent implements OnInit, OnDestroy {
 
   /**
    * @description Initialise component.
-   * @returns {StoryEditor} StoryEditor Class
+   * @returns async void promise
    */
   async initialization(): Promise<void> {
     this._EditingStorySubscriber = this.storiesService.editingStory.subscribe((story: Plot | null) => {
@@ -86,9 +86,7 @@ export class EditingComponent implements OnInit, OnDestroy {
     // fetch files if nothing is in the store.
     if (!this.storiesService.AllStoriesState()) {
       this.storiesService.fetchAllStories().subscribe(
-        () => {
-          this.updateStoryParameterId(parameterID)
-        }
+        () => this.updateStoryParameterId(parameterID)
       )
     } else {
       this.updateStoryParameterId(parameterID)

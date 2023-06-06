@@ -3,8 +3,10 @@
 </div>
 
 <!-- to be deleted in the future -->
-<div *ngIf="plot" class="fixed bottom-[20px] left-0 bg-white shadow-md max-h-[100px] max-w-[92vw] translate-x-[4vw]  overflow-y-auto">
+<div *ngIf="plot" data-element="Hierarchy component json plot"
+  class="fixed bottom-[20px] left-0 bg-white shadow-md max-h-[100px] max-w-[92vw] w-full translate-x-[4vw] overflow-y-auto px-2 py-2">
   <p class="text-[8px]">{{ plot | json }}</p>
 </div>
 
-<app-panel-instance (updateNodeContent)="updateNodeContent($event)" (addNodeContent)="addNodeContent($event)"></app-panel-instance>
+<app-panel-instance (updateNodeContent)="updateNodeContent($event)"
+  (addNodeContent)="addNodeContent($event)"></app-panel-instance>

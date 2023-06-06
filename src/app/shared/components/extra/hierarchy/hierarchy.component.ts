@@ -3,7 +3,7 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@ang
 import * as d3 from "d3";
 import { HierarchyNode, Selection, svg, drag, ValueFn } from "d3";
 import { BaseType } from 'd3-selection';
-import { BehaviorSubject, Falsy, Subscription } from 'rxjs';
+import { Falsy, Subscription } from 'rxjs';
 import { Plot, PlotContent } from '@models/plot';
 import StoryEditor from "@lib/story-editor";
 import * as uuid from "uuid";
@@ -24,8 +24,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   @ViewChild('D3HierarchyInputRef') D3HierarchyInputRef: ElementRef | undefined;
   private _HierarchySubscriber?: Subscription;
 
-  mutatedPlot?: Plot | null;
-  totalNoNodes?: number;
+  mutatedPlot?: Plot;
 
   constructor(
     private plotService: PlotService,
@@ -33,12 +32,13 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   ) { }
 
   storyEditor?: StoryEditor;
-  // plot: Plot | Falsy = undefined
   name = "d3-hierarchy";
   HierarchyElement = `div#${this.name}`;
 
   ngOnInit(): void {
-    if (this.plot?.content) this.storyEditor = new StoryEditor(this.plot.id, this.plot);
+    // TODO: rename `plot` to `narrative`
+    console.log('component-oninit hierarchy plot', this.plot)
+    if (this.plot) this.storyEditor = new StoryEditor(this.plot.id, this.plot);
     // Get information from store.
     this.initialiseComponent();
   }
@@ -46,7 +46,6 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     // UNSUBSCRIBE
     this._HierarchySubscriber?.unsubscribe();
-    this.storyEditor = undefined
   }
 
   // ************** Generate the tree diagram	 ***************** //
@@ -82,36 +81,56 @@ export class HierarchyComponent implements OnInit, OnDestroy {
    * @returns
    */
   initialiseComponent(): void {
+    console.info("function call initialise component");
     this.root = null;
 
-    if (this.plot?.content && this.storyEditor) {
-      console.info("function call initialise component", this.storyEditor.boardProxy.story);
+    // NOTE: if the new id is different to the session storage id. Go with the new id.    
+    const sessionStorageId: string | undefined = this.storyEditor?.boardProxy.story?.id;
+    const sessionStoragePlot: Plot | undefined = this.storyEditor?.boardProxy.story;
+    const plotIdProp = this.plot?.id;
 
+    if (!this.plot || !this.storyEditor) {
+      console.warn("ERROR Plot or Story Editor can not be found.");
+      console.warn("ERROR Story Editor:", this.storyEditor);
+      console.warn("ERROR Plot:", this.plot);
+      return;
+    }
+
+    if (plotIdProp !== sessionStorageId) {
+      // Note: work with the prop-plot. There is a different plot to what has been stored.
+      // Note: update session storage plot with prop-plot
+      this.mutatedPlot = this.plot
+    } else {
       // Initialise Editor
-      this.mutatedPlot = this.storyEditor.boardProxy.story
-      this.totalNoNodes = this.storyEditor.boardProxy.totalNoNodes
+      this.mutatedPlot = sessionStoragePlot;
+    }
+    
+    this.initialiseD3Tree()
+  }
+
+  /**
+   * Sub-function - Initialise the D3 graph. This function will call the necessary function to create the D3 canvas and 
+   * add the data needed to build the graph.
+   * If there exists a graph. It will be wiped and reset.
+   */
+  initialiseD3Tree = () => {
+    // Initialise d3 hierarchy graph.
+    // this.root = d3.hierarchy(this.mutatedPlot.content, (d) => d.children);
+
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+
+    this.treeMap.size();
+    if (this.svg) {
+      // Remove existing svg
+      this.svg.remove();
+
+      // Remove duplicate svg
+      const SVG = document.getElementById("d3-svg");
+      this.D3HierarchyInputRef?.nativeElement.removeChild(SVG);
     }
 
-    if (this.mutatedPlot?.content) {
-      // Initialise d3 hierarchy graph.
-      // this.root = d3.hierarchy(this.mutatedPlot.content, (d) => d.children);
-
-      //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-      //Add 'implements OnInit' to the class.
-
-      this.treeMap.size();
-
-      if (this.svg) {
-        // Remove existing svg
-        this.svg.remove();
-
-        // Remove duplicate svg
-        const SVG = document.getElementById("d3-svg");
-        this.D3HierarchyInputRef?.nativeElement.removeChild(SVG);
-      }
-      // if (this.treeMap) this.treeMap.
-      this.createCanvas().then(() => this.initialize());
-    }
+    this.createCanvas().then(() => this.initializeGraph());
   }
 
   /**
@@ -140,16 +159,16 @@ export class HierarchyComponent implements OnInit, OnDestroy {
    * @description Create and recreate d3 hierarchy graph.
    * @return nothing
    */
-  initialize(): void {
+  initializeGraph(): void {
     // Initialise d3 hierarchy graph.
-    if (this.mutatedPlot?.content) {
-      console.log("function call initialize")
-      this.root = d3.hierarchy(this.mutatedPlot.content, (d) => d.children);
-    }
     if (!this.mutatedPlot) {
       console.error("Mutated plot is undefined.")
       return
     }
+
+    console.log("function call initialize")
+    this.root = d3.hierarchy(this.mutatedPlot.content, (d) => d.children);
+
     // if (!this.root) {
     //   // Collapse after second level
     //   this.root.children.forEach(this.collapse);

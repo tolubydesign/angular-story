@@ -1,6 +1,9 @@
-<a class="return-home--link" mat-stroked-button routerLink="/" routerLinkActive="active">Home</a>
-<section data-component="Interaction" class="editor--component--section">
-  <app-optional-selection-card [stories]="stories" [primaryText]="'INTERACT'" [secondaryText]="null"
-    (PrimaryClick)="interact($event)">
-  </app-optional-selection-card>
+<a class="fixed-position top-[10px] left-[10px]" mat-stroked-button routerLink="/" routerLinkActive="active">Home</a>
+
+<section data-component="Interaction" class="interaction-component--section">
+  <div class="interact-section--cards">
+    <app-optional-selection-card [stories]="stories" [primaryText]="'INTERACT'" [secondaryText]="null"
+      (PrimaryClick)="interact($event)">
+    </app-optional-selection-card>
+  </div>
 </section>

@@ -105,3 +105,4 @@ $dark-theme: mat.define-dark-theme(
   // @include mat.button-color($dark-theme);
 }
 
+@import './app/style/global.scss';

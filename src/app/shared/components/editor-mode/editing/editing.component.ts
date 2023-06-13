@@ -3,14 +3,11 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { falsy } from '@models/tree.model';
 import { URLParameters } from '@helpers/parameter';
 import StoryEditor from '@lib/story-editor';
-import { Plot, PlotContent } from '@models/plot';
+import { Plot } from '@models/plot';
 import { Falsy, Subscription, Observable, Observer, } from 'rxjs';
-import { PlotService } from '@services/plot/plot.service';
-
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
-import { data } from "@models/tree-data.model";
-import { HTTPSuccessResponse, StoriesService } from '@services/stories.service';
+import { StoriesService } from '@services/stories.service';
 
 // Create Mat Icons.
 const CloseIcon = `
@@ -66,17 +63,20 @@ export class EditingComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._FetchStoriesSubscriber?.unsubscribe();
     this._EditingStorySubscriber?.unsubscribe();
+    this.storiesService.updateEditingStory("")
     if (this.storyEditor) {
       this.storyEditor = undefined;
     }
   }
 
+  // TODO: The `this.storiesService.editingStory.subscribe()` request is made twice per load.
+  //          This needs to only happen once. Make sure this only happens once
   /**
    * @description Initialise component.
    * @returns async void promise
    */
   async initialization(): Promise<void> {
-    this._EditingStorySubscriber = this.storiesService.editingStory.subscribe((story: Plot | null) => {
+    this._EditingStorySubscriber = this.storiesService.editingStory.subscribe((story?: Plot) => {
       this.plot = story;
     })
 

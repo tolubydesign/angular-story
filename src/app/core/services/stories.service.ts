@@ -30,16 +30,13 @@ type HTTPErrorResponse = {
 export class StoriesService {
   private _url = "http://127.0.0.1:2100";
 
-  // private _StoriesSubject = new BehaviorSubject<any | null>(null);
-  // stories = this._StoriesSubject.asObservable().pipe(distinctUntilChanged());
-
   private _loading = new BehaviorSubject<boolean>(false);
   isLoading = this._loading.asObservable().pipe(distinctUntilChanged());
 
-  private _AllStoriesSubject = new BehaviorSubject<Plot[] | null>(null);
+  private _AllStoriesSubject = new BehaviorSubject<Plot[] | undefined>(undefined);
   stories = this._AllStoriesSubject.asObservable().pipe(distinctUntilChanged());
 
-  private _EditingStorySubject = new BehaviorSubject<Plot | null>(null);
+  private _EditingStorySubject = new BehaviorSubject<Plot | undefined>(undefined);
   editingStory = this._EditingStorySubject.asObservable().pipe(distinctUntilChanged());
   private _EditingStoryIDSubject = new BehaviorSubject<string>("");
   editingStoryId = this._EditingStoryIDSubject.asObservable().pipe(distinctUntilChanged());
@@ -157,24 +154,33 @@ export class StoriesService {
 
   updateEditingStory(id: string) {
     this._EditingStoryIDSubject.next(id);
+    console.log('function call update editing story');
 
-    if (!this._AllStoriesSubject?.value) this.fetchAllStories().pipe(
-      tap((response: HTTPSuccessResponse<Plot[]>) => {
+    if (id === "") {
+      this._EditingStorySubject.next(undefined)
+      return;
+    }
+
+    if (!this._AllStoriesSubject?.value) {
+      // NOTE: fetch data from database. Then search for story with id
+      this.fetchAllStories().pipe(tap((response: HTTPSuccessResponse<Plot[]>) => {
         const stories = response.data;
-        stories.find((story: Plot) => {
-          if (story.id === id) this._EditingStorySubject.next(story)
-        })
-      }),
-    );
+        const story = stories.find((story: Plot) => (story.id === id) ? story : undefined);
+        this._EditingStorySubject.next(story)
+      }));
 
+      return;
+    }
+
+    // Note: search for story with id
     this._AllStoriesSubject.value?.find((story: Plot) => {
       if (story.id === id) this._EditingStorySubject.next(story)
     });
   };
 
   private handleError = handleError;
-  AllStoriesState = (): Plot[] | null => this._AllStoriesSubject.value;
-  EditingStoryState = (): Plot | null => this._EditingStorySubject.value;
+  AllStoriesState = (): Plot[] | undefined => this._AllStoriesSubject.value;
+  EditingStoryState = (): Plot | undefined => this._EditingStorySubject.value;
   EditingStoryIdState = (): string | null => this._EditingStoryIDSubject.value;
   isLoadingState = (): boolean => this._loading.value;
 }

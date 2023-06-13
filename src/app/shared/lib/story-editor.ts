@@ -52,11 +52,7 @@ export default class StoryEditor {
 
     // NOTE: check if storage has information;
     const sessionPlot = this.getSessionStorage();
-    if (sessionPlot instanceof Error) {
-      // TODO: handle error responses
-      console.warn('session graph error: ', sessionPlot.message);
-      throw new Error(sessionPlot.message);
-    }
+    if (sessionPlot instanceof Error) console.warn('session graph error: ', sessionPlot.message);
 
     if (plot) {
       this.id = plot.id;
@@ -140,7 +136,6 @@ export default class StoryEditor {
    */
   getSessionStorage(): Plot | Error {
     console.log("function call get session storage.")
-    
     const storageInaccessible = this.sessionStorageInaccessible(); 
     if (storageInaccessible instanceof Error) throw new Error(storageInaccessible.message); 
 
@@ -149,14 +144,14 @@ export default class StoryEditor {
     
     if (storage) {
       restructured = JSON.parse(storage);
-
       console.log("function get session storage ::: restructured ::", restructured, storage)
       if (restructured) return restructured;
     }
 
-    return new Error(`Session Storage ${this.sessionStorageKey} cant be accessed`);
+    return new Error(`Session Storage key:"${this.sessionStorageKey}" cant be accessed.`);
   }
 
+  // TODO: create visual error response if inaccessible 
   /**
    * Sub-function - Check that session storage is accessible.
    * @returns Error out if session storage isn't accessible.
@@ -169,7 +164,6 @@ export default class StoryEditor {
       sessionStorage.removeItem(key);
       return;
     } catch (error: unknown) {
-      console.log("function call session storage inaccessible, error", error);
       console.warn("Session storage Error:", error)
       return new Error("Session storage could not be accessed");
     }

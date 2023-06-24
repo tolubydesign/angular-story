@@ -34,9 +34,6 @@ const THUMB_ICON =
   styleUrls: ["./panel.component.scss"],
 })
 export class PanelComponent implements OnInit, OnDestroy {
-
-  // VARIABLES
-  requestSubscription: Subscription | falsy;
   parameterID: string | unknown;
   panelError: { type: 'unknown error' | 'not found' | falsy, error: boolean } = {
     type: undefined,
@@ -44,12 +41,11 @@ export class PanelComponent implements OnInit, OnDestroy {
   };
 
   // SUBSCRIPTIONS
-  plotSelectionSubscription: Subscription | undefined = undefined;
   selectedPlot: Plot | undefined = undefined;
   displayDendrogram: boolean = false;
 
-  plot: Plot | undefined = undefined;
-  hierarchySubscriber: Subscription | undefined = undefined;
+  plot?: Plot;
+  private _HierarchySubscriber?: Subscription;
 
   constructor(
     private plotService: PlotService,
@@ -68,16 +64,13 @@ export class PanelComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getParameterID();
 
-    this.hierarchySubscriber = this.plotService.storyBehaviorSubject.subscribe((plot: Plot | Falsy) => {
+    this._HierarchySubscriber = this.plotService.storyBehaviorSubject.subscribe((plot: Plot | Falsy) => {
       if (plot && plot.content) this.plot = plot;
     });
   }
 
   ngOnDestroy(): void {
-    // UNSUBSCRIBE
-    // this.plotService.storyBehavior.unsubscribe();
-    // this.requestSubscription?.unsubscribe();
-    this.hierarchySubscriber?.unsubscribe();
+    this._HierarchySubscriber?.unsubscribe();
   }
 
   /**
@@ -90,7 +83,7 @@ export class PanelComponent implements OnInit, OnDestroy {
     return this.activatedRoute.paramMap.subscribe((value: ParamMap | { params: { id: string } } | any) => {
       if (value && value.params && value.params.id) {
         this.parameterID = value.params.id;
-        this.updateStory(value.params.id);
+        // this.updateStory(value.params.id);
         this.displayDendrogram = true;
       }
     });

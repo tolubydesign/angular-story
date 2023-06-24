@@ -28,6 +28,7 @@ export class PlotService {
   Story: PlotContent | undefined = undefined;
 
   storyJSON = "assets/data/stories.json";
+  databaseUrl = ""
 
   // BEHAVIOR SUBJECT
   plotData = new BehaviorSubject<Plot[] | undefined>(undefined);
@@ -41,7 +42,6 @@ export class PlotService {
 
   // Edit mode. Activate to edit content text like description, name ... 
   instanceEditSubject = new BehaviorSubject<{
-    // type: PlotInstanceType,
     instance: PlotContent,
     parentInstanceId?: string,
   } | undefined>(undefined);
@@ -74,7 +74,7 @@ export class PlotService {
   }
 
   /**
-   * @description 
+   * Request to get all Stories. These are false data. Stored in `/data`.
    * @param {string} id 
    * @returns {void}
    */
@@ -87,13 +87,13 @@ export class PlotService {
   }
 
   /**
-   * @description create a brand new story graph.
-   * @param id 
+   * Create a brand new story graph.
+   * @param id uuid of Story 
    */
   createStoryGraph(id: string) {
     const newStory: Plot = {
       id,
-      description: "-",
+      description: "",
       title: "-",
       content: {
         id: uuid.v4(),
@@ -112,7 +112,6 @@ export class PlotService {
   };
 
   closeInstancePanel() {
-    console.log("function call close instance panel.")
     this.instanceEditSubject.next(undefined);
   };
 }

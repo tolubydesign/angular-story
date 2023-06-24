@@ -1,8 +1,11 @@
+<a class="fixed-position top-[10px] left-[10px]" mat-stroked-button routerLink="/interaction" routerLinkActive="active">Interaction Page</a>
+
 <slot data-component="Interaction Dashboard Component" class="component">
   <app-story-board *ngIf="story" [fullStory]="story">
   </app-story-board>
+
   <!-- error response -->
   <article *ngIf="!story">
-    <p>No Story was found</p>
+    <p>Error getting story</p>
   </article>
 </slot>

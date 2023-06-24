@@ -5,21 +5,21 @@ import { Plot, PlotContent } from '@models/plot';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-panel-instance',
-  templateUrl: './panel-instance.component.html',
-  styleUrls: ['./panel-instance.component.scss']
+  selector: 'app-node-form',
+  templateUrl: './node-form.component.html',
+  styleUrls: ['./node-form.component.scss']
 })
-export class PanelInstanceComponent {
+export class NodeFormComponent {
 
   @Output() updateNodeContent: EventEmitter<any> = new EventEmitter();
   @Output() addNodeContent: EventEmitter<any> = new EventEmitter();
-  // @Output() newItemEvent = new EventEmitter<string>();
 
-  // Form values
-  // RESOURCE: https://angular.io/guide/forms-overview
-  // contentIdControl = new FormControl<string | undefined>(undefined);
-
-  // RESOURCE: https://angular.io/guide/reactive-forms
+  /**
+   * Form values
+   * @see {@link https://angular.io/guide/reactive-forms}
+   * @see {@link https://angular.io/guide/forms-overview}
+   * @example contentIdControl = new FormControl<string | undefined>(undefined);
+   */
   form = new FormGroup({
     id: new FormControl<string | undefined>({ value: "", disabled: true }, Validators.required),
     name: new FormControl<string | undefined>("", Validators.required),

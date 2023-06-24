@@ -10,41 +10,29 @@ import { falsy } from '../models/tree.model';
  * @see {@link https://www.cloudhadoop.com/2018/09/typescript-beginner-guide-to-comments.html}
  */
 export class URLParameters {
-  parameterId: string | falsy
+  parameterId: string | falsy;
   constructor(
     private activatedRoute: ActivatedRoute,
   ) { }
 
   /**
-   * This is a hello world function.
+   * @description Get ID from url from page route.
    * @author Tolu Adesina
-   * @return { string | falsy | Error } parameter - Return a string promise, possibly.
+   * @return { string | Error } parameter - Return a string promise, possibly.
    * @example
-   * await this.parameters.getParametersID()
+   * await this.parameters.GetIDParameter()
    * this.parameters.parameterId;
    * 
    * @see {@link https://www.cloudhadoop.com/2018/09/typescript-beginner-guide-to-comments.html} 
    */
-  async getParametersID(): Promise<string | falsy | Error> {
+  async GetIDParameter(): Promise<string | Error> {
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap) => {
-        if (params.has('id'))
-          this.parameterId = params.get('id');
+        if (params.has('id')) this.parameterId = params.get('id');
       }
     );
 
-    if (!this.parameterId) {
-      return new Error("Parameter id could not be found.")
-    }
-
+    if (!this.parameterId) return new Error("Parameter id could not be found.")
     return this.parameterId
   }
-}
-
-/**
-   * @description Get id from url. Page route
-   * @return {Promise<void>}
-   */
-async function getParameters(parameter: string): Promise<string> {
-  return await 'Function must be filled.';
 }

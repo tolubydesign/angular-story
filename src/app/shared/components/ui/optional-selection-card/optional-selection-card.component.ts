@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
 })
 export class OptionalSelectionCardComponent implements OnInit {
 
-  @Input() listing: Plot[] = []; // decorate the property with @Input()
+  @Input() stories: Plot[] = []; // decorate the property with @Input()
   @Input() primaryText: falsy | string = null;
   @Input() secondaryText: falsy | string = null;
 
@@ -21,7 +21,6 @@ export class OptionalSelectionCardComponent implements OnInit {
 
   paramId: string | falsy = undefined;
   selectedPlot: Plot | falsy = undefined;
-  requestSubscription: Subscription | falsy;
 
   constructor(
     private plotService: PlotService,
@@ -33,8 +32,6 @@ export class OptionalSelectionCardComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    // UNSUBSCRIBE
-    this.requestSubscription?.unsubscribe();
   }
 
   onPrimaryClick(item: Plot) {

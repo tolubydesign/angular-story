@@ -1,51 +1,50 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { falsy } from '@models/tree.model';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { URLParameters } from '@helpers/parameter';
-import { PlotService } from '@services/plot/plot.service';
 import { Subscription } from 'rxjs';
 import { Plot } from '@models/plot';
+import { HTTPSuccessResponse, StoriesService } from '@services/stories.service';
 
 @Component({
   selector: 'app-interaction-dashboard',
   templateUrl: './interaction-dashboard.component.html',
   styleUrls: ['./interaction-dashboard.component.scss']
 })
-export class InteractionDashboardComponent implements OnInit {
+export class InteractionDashboardComponent implements OnInit, OnDestroy {
 
   parameterId: string | falsy;
   parameters = new URLParameters(this.activatedRoute);
-  StorySubscription: Subscription | undefined;
+  private _FetchStoriesSubscription?: Subscription;
   story: Plot | falsy = undefined;
   
   constructor(
     private activatedRoute: ActivatedRoute,
-    private plotService: PlotService,
+    private storiesService: StoriesService,
   ) { }
 
   ngOnInit(): void {
     this.getParameters();
-    
-    // Get selected story.
-    this.StorySubscription = this.plotService.GetStory().subscribe(
-      (data: Plot[]) => {
-        this.getStory(data);
-      }
-    );
+    this.fetchStories();
   }
 
   ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
-    this.StorySubscription?.unsubscribe();
+    // Called once, before the instance is destroyed.
+    // Add 'implements OnDestroy' to the class.
+    this._FetchStoriesSubscription?.unsubscribe();
+  }
+
+  fetchStories() {
+    this._FetchStoriesSubscription = this.storiesService.fetchAllStories()
+      .subscribe((response: HTTPSuccessResponse<Plot[]>) => this.getStory(response.data))
   }
 
   /**
    * @description Get id from url. Page route
    * @return {Promise<void>}
    */
-  async getParameters() {
-    await this.parameters.getParametersID()
+  async getParameters(): Promise<void> {
+    await this.parameters.GetIDParameter()
     this.parameterId = this.parameters.parameterId;
   }
 

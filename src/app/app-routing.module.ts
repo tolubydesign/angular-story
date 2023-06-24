@@ -13,8 +13,6 @@ const routes: Routes = [
   { path: "", component: StartScreenComponent },
   { path: "editor", component: EditorComponent },
   { path: "interaction", component: InteractionComponent },
-  // { path: "panel", component: DashboardPanelComponent },
-  // { path: "panel/:id", component: DashboardPanelComponent },
   { path: 'dashboard', component: InteractionDashboardComponent },
   { path: 'dashboard/:id', component: InteractionDashboardComponent },
   { path: 'editing', component: EditingComponent },

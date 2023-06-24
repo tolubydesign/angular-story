@@ -6,8 +6,9 @@
 // @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
 .app-router--group {
-  height: 100vh;
   display: grid;
   justify-content: center;
   align-content: center;
+  height: 100vh;
+  width: auto;
 }

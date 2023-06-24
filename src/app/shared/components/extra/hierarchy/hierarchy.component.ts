@@ -3,14 +3,12 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@ang
 import * as d3 from "d3";
 import { HierarchyNode, Selection, svg, drag, ValueFn } from "d3";
 import { BaseType } from 'd3-selection';
-import { BehaviorSubject, Falsy, Subscription } from 'rxjs';
+import { Falsy, Subscription } from 'rxjs';
 import { Plot, PlotContent } from '@models/plot';
 import StoryEditor from "@lib/story-editor";
 import * as uuid from "uuid";
 
 type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any[], x0: any, y0: any } | any;
-// TODO: REFACTOR clean up code; remove commented out code.
-// TODO: Make code neater. More human readable.
 
 @Component({
   selector: 'app-hierarchy',
@@ -19,32 +17,41 @@ type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any
 })
 export class HierarchyComponent implements OnInit, OnDestroy {
 
-  @Input() plot: Plot | undefined = undefined;
+  @Input() plot?: Plot;
   @ViewChild('D3HierarchyInputRef') D3HierarchyInputRef: ElementRef | undefined;
-  mutatedPlot: Plot | undefined | null = undefined
-  totalNoNodes: number | null = null
-  // SUBSCRIBER.
-  hierarchySubscriber: Subscription | undefined = undefined;
+  private _HierarchySubscriber?: Subscription;
+
+  mutatedPlot?: Plot;
 
   constructor(
     private plotService: PlotService,
   ) { }
 
-  storyEditor: StoryEditor | undefined = undefined;
-  // plot: Plot | Falsy = undefined
+  storyEditor?: StoryEditor;
+  private _editedSubscription?: Subscription;
+  narrativeEdited?: boolean;
+  graphRefreshed: boolean = false;
   name = "d3-hierarchy";
   HierarchyElement = `div#${this.name}`;
 
   ngOnInit(): void {
+    // TODO: rename `plot` to `narrative`
+    if (this.plot) {
+      this.storyEditor = new StoryEditor(this.plot.id, this.plot);
+      this._editedSubscription = this.storyEditor?.edited.subscribe((state: boolean) => {
+        console.log("(!!!!) state", state);
+        this.narrativeEdited = state
+      });
+    }
 
-    if (this.plot?.content) this.storyEditor = new StoryEditor(this.plot.id, this.plot);
     // Get information from store.
     this.initialiseComponent();
   }
 
   ngOnDestroy(): void {
     // UNSUBSCRIBE
-    this.hierarchySubscriber?.unsubscribe()
+    this._HierarchySubscriber?.unsubscribe();
+    this._editedSubscription?.unsubscribe();
   }
 
   // ************** Generate the tree diagram	 ***************** //
@@ -76,45 +83,73 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   nodeEnterRectRepoY = (this.nodeEnterRectHeight - (this.nodeEnterRectHeight * 2)) / 2;
 
   /**
-   * @returns { void }
+   * @description Start up D3 graph.
+   * @returns
    */
-  initialiseComponent(): void {
-
+  initialiseComponent(updatingGraph: boolean = false): void {
     this.root = null;
+    const proxy = this.storyEditor?.boardProxy;
+    // NOTE: if the new id is different to the session storage id. Go with the new id.    
+    const sessionStorageId: string | undefined = proxy?.story?.id;
+    const sessionStoragePlot: Plot | undefined = proxy?.story;
+    const plotIdProp = this.plot?.id;
 
-    if (this.plot?.content && this.storyEditor) {
-      console.info("function call initialise component", this.storyEditor.boardProxy.story);
+    if (!this.plot || !this.storyEditor) {
+      console.warn("ERROR Plot or Story Editor can not be found.");
+      console.warn("ERROR Story Editor:", this.storyEditor);
+      console.warn("ERROR Plot:", this.plot);
+      return;
+    }
 
+    if (plotIdProp !== sessionStorageId) {
+      // Note: work with the prop-plot. There is a different plot to what has been stored.
+      // Note: update session storage plot with prop-plot
+      this.mutatedPlot = this.plot
+    } else {
       // Initialise Editor
-      this.mutatedPlot = this.storyEditor.boardProxy.story
-      this.totalNoNodes = this.storyEditor.boardProxy.totalNoNodes
+      this.plot = JSON.parse(JSON.stringify(sessionStoragePlot))
+      this.mutatedPlot = this.plot;
     }
 
-    if (this.mutatedPlot?.content) {
-      // Initialise d3 hierarchy graph.
-      // this.root = d3.hierarchy(this.mutatedPlot.content, (d) => d.children);
+    this.buildD3Tree().then((canvas: Selection<SVGGElement, unknown, HTMLElement, any> | undefined) => {
+      if (canvas && updatingGraph) this.graphRefreshed = true;
+    })
+  }
 
-      //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-      //Add 'implements OnInit' to the class.
+  /**
+   * Sub-function - Initialise the D3 graph. This function will call the necessary function to create the D3 canvas and 
+   * add the data needed to build the graph.
+   * If there exists a graph. It will be wiped and reset.
+   */
+  buildD3Tree = async (): Promise<Selection<SVGGElement, unknown, HTMLElement, any> | undefined> => {
+    // Initialise d3 hierarchy graph.
+    // this.root = d3.hierarchy(this.mutatedPlot.content, (d) => d.children);
 
-      this.treeMap.size();
-
-      if (this.svg) {
-        // Remove existing svg
-        this.svg.remove();
-
-        // Remove duplicate svg
-        const SVG = document.getElementById("d3-svg");
-        this.D3HierarchyInputRef?.nativeElement.removeChild(SVG);
-      }
-      // if (this.treeMap) this.treeMap.
-      this.createCanvas().then(() => this.initialize());
+    // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    // Add 'implements OnInit' to the class.
+    this.treeMap.size();
+    if (this.svg) {
+      this.svg.remove();
+      const SVG = document.getElementById("d3-svg");
+      this.D3HierarchyInputRef?.nativeElement.removeChild(SVG);
     }
+
+    const svg = await this.createCanvas();
+    // Initialise d3 hierarchy graph.
+    if (!this.mutatedPlot) {
+      // TODO: log errors
+      console.error("Mutated plot is undefined.");
+      return;
+    }
+
+    this.root = d3.hierarchy(this.mutatedPlot.content, (d: PlotContent) => d.children);
+    this.update(this.root);
+    return svg;
   }
 
   /**
    * @description Create svg graph.
-   * @returns svg ; the graph and attaching it to a local value `Promise<d3.Selection<SVGGElement, PlotContent, HTMLElement, any> | undefined>`
+   * @returns svg graph
    */
   async createCanvas(): Promise<Selection<SVGGElement, unknown, HTMLElement, any>> {
     // this.treeMap = d3.tree().size([this.width, this.height]);
@@ -135,53 +170,28 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description 
-   * @return {void}
-   */
-  initialize(): void {
-    // Initialise d3 hierarchy graph.
-    if (this.mutatedPlot?.content) {
-      console.log("function call initialize")
-      this.root = d3.hierarchy(this.mutatedPlot.content, (d) => d.children);
-    }
-    if (!this.mutatedPlot) {
-      console.error("mutated plot is undefined.")
-      return
-    }
-    // if (!this.root) {
-    //   // Collapse after second level
-    //   this.root.children.forEach(this.collapse);
-    //   this.root.x0 = 0;
-    //   this.root.y0 = 0;
-    // }
-
-    this.update(this.root);
-  }
-
-  /**
    * @description Initialise/Update/Rebuild data graph.
-   * 
-   * @param source RootType
+   * @param source RootType 
    * @returns 
    */
   update(source: RootType) {
-    console.log("function call update ::: source ::", source)
-    if (!source) return;
-    // Assigns the x and y position for the nodes
-    // var treeData = this.flexLayout(this.root);
+    // console.log("function call update ::: source ::", source)
+    if (!source) {
+      // TODO: log error
+      return
+    };
 
     // Assigns the x and y position for the nodes
     const treeData = this.treeMap(source);
 
-    // Compute the new tree layout.
     let nodes: HierarchyNode<unknown>[] = treeData.descendants();
     let links: d3.HierarchyPointNode<unknown>[] = treeData.descendants().slice(1);
 
     // ****************** Nodes section ***************************
     // Update the nodes...
     if (!this.svg) {
-      console.warn("Error occurred. this.svg = unknown");
-      new Error("(this) Graph");
+      // TODO: add error handling for UI
+      console.warn("ERROR - Graph couldn't be built");
       return;
     }
 
@@ -275,9 +285,6 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       d.children = d._children;
       d._children = null;
     }
-    console.log(typeof event);
-    console.log(typeof d);
-    console.log("function click", d);
   }
 
   /**
@@ -287,7 +294,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
    * @param { HierarchyNode<unknown | Plot | PlotContent> } d 
    */
   addNode(event: any, d: HierarchyNode<any>): void {
-    console.log("hierarchy component function call add node :::", d);
+    console.log("function call add node, d:", d);
 
     this.plotService.selectInstance({
       instance: {
@@ -301,7 +308,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description Node event. Remove node from graph
+   * @description Node event. Remove node from graph.
    * @param {any} event 
    * @param {HierarchyNode<Plot>} d 
    * @param {SVGRectElement} this
@@ -309,11 +316,25 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   removeNode(event: any, d: HierarchyNode<Plot>): void {
     if (this.storyEditor) {
       this.storyEditor.removeNode(d.data.id);
-      this.storyEditor.boardProxy.saveSession();
-      this.initialiseComponent();
+      // Note: update graph
+      this.initialiseComponent(true);
     } else {
       console.warn("[ERROR] Editor, could not be found.")
     }
+  }
+
+  /**
+   * TODO: description
+   */
+  saveStateInSession() {
+    if (!this.storyEditor) {
+      // TODO: log error on UI
+      console.warn("ERROR. Story Editor controller could not be accessed.");
+      return
+    }
+
+    this.storyEditor.boardProxy.saveSession();
+    this.graphRefreshed = false;
   }
 
   /**
@@ -396,41 +417,37 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   updateNodeContent({ form }: { form: any }) {
     if (
       !this.storyEditor ||
-      !this.storyEditor.board.story
+      !this.storyEditor.getBoardProxyStory()
     ) {
       if (!this.storyEditor) console.error("Editor cant be found. No update was made.")
-      if (!this.storyEditor?.board.story) console.error("Editor Error board.")
+      if (!this.storyEditor?.getBoardProxyStory()) console.error("Editor Error board.")
       return
     };
 
-    this.storyEditor.setNodeContent(
-      form,
-      undefined
-    )
+    this.storyEditor.setNodeContent(form, undefined)
 
-    this.storyEditor.boardProxy.saveSession();
-    this.initialiseComponent();
+    // Note: update graph
+    this.initialiseComponent(true);
   }
 
   addNodeContent({ form, parentNodeId }: { form: any, parentNodeId: string }) {
     if (
       !this.storyEditor ||
-      !this.storyEditor.board.story
+      !this.storyEditor.getBoardProxyStory()
     ) {
       if (!this.storyEditor) console.error("Editor cant be found. No update was made.")
-      if (!this.storyEditor?.board.story) console.error("Editor Error board.")
+      if (!this.storyEditor?.getBoardProxyStory()) console.error("Editor Error board.")
       return
     };
 
-    console.log('function call: add node content', form, parentNodeId);
     // Update story editor
     this.storyEditor.appendAdditionalNodeContent(
       parentNodeId,
       form
     )
 
-    this.storyEditor.boardProxy.saveSession();
-    this.initialiseComponent();
+    // Note: update graph
+    this.initialiseComponent(true);
   }
 }
 

@@ -1,11 +1,14 @@
 import * as uuid from "uuid";
 import { Plot, PlotContent } from '@models/plot';
+import { BehaviorSubject, Subject, distinctUntilChanged } from "rxjs";
 
-type TBoard = {
+type BoardProxy = {
+  previous?: Plot,
   story?: Plot,
   totalNoNodes: number,
   saveSession: () => void,
-  getSession: () => Plot | Error
+  getSession: () => Plot | Error,
+  updated: () => void,
 };
 
 /**
@@ -13,12 +16,19 @@ type TBoard = {
  */
 export default class StoryEditor {
   id: string;
-  // Basic/Original 
-  board: TBoard = {
+  private _edited = new BehaviorSubject<boolean>(false);
+  edited = this._edited.asObservable().pipe(distinctUntilChanged());
+
+  private _totalNodesSubject = new BehaviorSubject<number>(0);
+  totalNodesObservable = this._totalNodesSubject.asObservable().pipe(distinctUntilChanged());
+
+  board: Partial<BoardProxy> = {
+    previous: undefined,
     story: undefined,
-    totalNoNodes: 0,
-    saveSession: () => this.updateSessionStorage(),
+    // CONTINUE... update `edited` state based on when you've updated the graph
+    saveSession: () => this.saveToSessionStorage(),
     getSession: () => this.getSessionStorage(),
+    // updated: () => this.storyUpdate(),
   };
   sessionStorageKey = "board";
   searchingNodes = false;
@@ -32,43 +42,46 @@ export default class StoryEditor {
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy} 
    * @see {@link https://stackoverflow.com/questions/1759987/listening-for-variable-changes-in-javascript} 
    */
-  boardProxy: TBoard = new Proxy(this.board, {
+  boardProxy: BoardProxy = new Proxy(this.board, {
     construct(target: any, args: any) {
-      console.info(`Creating a ${target.name}`);
-      // Expected output: "Creating a monster1"
       return new target(...args);
     },
-    set: function (target: TBoard | any, key: string | symbol, value: Plot) {
+    set: (target: BoardProxy | any, key: string | symbol, value: Plot) => {
+      console.log('proxy-set, key', key)
+      console.log('proxy-set, value', value)
       target[key] = value;
       return true
     },
+    get: (target: BoardProxy | any, p: string | symbol, receiver: any) => {
+      console.log('proxy-get, p', p)
+      console.log('proxy-get, receiver', receiver)
+      // TODO: CONTINUE... reduce the amount of times boardProxy.story is called, 
+      if (p === 'story') {
+        this._edited.next(true)
+      }
 
+      return target[p];
+    }
   });
 
   // TODO: find simpler way to capture and assign {id}. Maybe pass it to this.initialization.
   constructor(id: string, plot?: Plot) {
-    console.log("CALL class story editor.");
+    console.log("Constructor class story editor.");
     this.id = id;
 
     // NOTE: check if storage has information;
     const sessionPlot = this.getSessionStorage();
-    if (sessionPlot instanceof Error) console.warn('session graph error: ', sessionPlot.message);
+    if (sessionPlot instanceof Error) console.warn('Class initialisation, Session graph error: ', sessionPlot.message);
 
     if (plot) {
       this.id = plot.id;
       this.updateBoard(plot);
-      // if (this.getSessionStorage()) {
-      //   this.updateBoard(this.getSessionStorage() as Plot)
-      // } else {
-      //   this.updateBoard(plot);
-      // }
     } else {
       this.initialization();
     }
 
     // NOTE: Enable "confirm before you leave"
     this.enableBeforeunload()
-
     if (plot?.content) {
       this.countNode(plot.content)
     }
@@ -76,12 +89,11 @@ export default class StoryEditor {
 
   /**
    * @description Initialise Project. If no story data exists. 
-   * @returns { Function updateBoard } void
    * @example 
    * StoryEditor.initialization()
    */
   initialization(): void {
-    const board = {
+    return this.updateBoard({
       id: this.id,
       title: '',
       description: '',
@@ -89,23 +101,28 @@ export default class StoryEditor {
         id: uuid.v4(),
         name: '',
       },
-    }
-
-    return this.updateBoard(board);
+    });
   };
 
   /**
-   * @description Update story board with updated plot object.
-   * @param update 
+   * Update story board with updated plot object.
+   * @param update Plot object. Information that will be updating the board with.
    * @returns
    */
   updateBoard(update: Plot): void {
     // NOTE: in case content is null
-    if (!update.content) {
-      update.content = {
-        id: uuid.v4(),
-        name: '',
-      }
+    if (!update.content) update.content = { id: uuid.v4(), name: '' };
+    const proxyStory = this.boardProxy.story;
+
+    // console.log('function call update board, story', this.boardProxy.story);
+    // console.log('function call update board, update', update);
+    if (
+      proxyStory &&
+      proxyStory != update
+    ) {
+      // console.log('function call update board. inconsistency, story', this.boardProxy.story);
+      // console.log('function call update board. inconsistency, update', update);
+      // this._edited.next(true);
     }
 
     this.boardProxy.story = update;
@@ -113,13 +130,19 @@ export default class StoryEditor {
   }
 
   /**
-   * @description Save board changes to browser session storage.
+   * Save board changes to browser session storage. 
+   * Show console warning if information couldn't be saved to session storage. 
+   * @returns {void}
    */
-  updateSessionStorage() {
-    console.log("function call update session storage");
+  saveToSessionStorage(): void {
+    const story = this.boardProxy.story;
 
-    if (typeof this.board.story === 'object') {
-      sessionStorage.setItem(this.sessionStorageKey, JSON.stringify(this.board.story));
+    if (typeof story === 'object') {
+      sessionStorage.setItem(this.sessionStorageKey, JSON.stringify(story))
+      this._edited.next(false);
+    } else {
+      // TODO: log error in UI
+      console.warn("ERROR. Cant save changes to session storage.");
     }
   }
 
@@ -136,12 +159,12 @@ export default class StoryEditor {
    */
   getSessionStorage(): Plot | Error {
     console.log("function call get session storage.")
-    const storageInaccessible = this.sessionStorageInaccessible(); 
-    if (storageInaccessible instanceof Error) throw new Error(storageInaccessible.message); 
+    const storageInaccessible = this.sessionStorageInaccessible();
+    if (storageInaccessible instanceof Error) throw new Error(storageInaccessible.message);
 
     const storage: string | null = sessionStorage.getItem(this.sessionStorageKey);
     let restructured: Plot;
-    
+
     if (storage) {
       restructured = JSON.parse(storage);
       console.log("function get session storage ::: restructured ::", restructured, storage)
@@ -169,10 +192,6 @@ export default class StoryEditor {
     }
   }
 
-  clearSessionStorage = () => {
-    sessionStorage.clear();
-  }
-
   /**
    * @description Make sure user confirms before closing unsaved information
    */
@@ -184,7 +203,8 @@ export default class StoryEditor {
   }
 
   /**
-   * @description ... TODO: create description
+   * Create an Event Listener. A precaution. Prevent user from cancelling changes they've made, by mistake.
+   * Prevent users from removing, going back or reloading the page, if they haven't saved the changes they have made.
    * @example
    * this.disableBeforeunload()
    */
@@ -201,7 +221,10 @@ export default class StoryEditor {
    * @returns void
    */
   countNode = (node: PlotContent) => {
-    this.boardProxy.totalNoNodes = this.boardProxy.totalNoNodes + 1;
+    let nodes = this.getTotalNodes();
+    nodes = nodes + 1
+    this._totalNodesSubject.next(nodes)
+    // this.boardProxy.totalNoNodes = this.boardProxy.totalNoNodes + 1;
     if (!node.children) return;
     node.children.forEach((child: PlotContent) => this.countNode(child));
   }
@@ -212,7 +235,7 @@ export default class StoryEditor {
    * @param level 
    */
   setNodeContent(change: PlotContent, level: number = 0, passthrough?: PlotContent) {
-    const full = this.boardProxy.story;
+    // const full = this.boardProxy.story;
     let node = undefined;
 
     if (level === 0) {
@@ -283,11 +306,12 @@ export default class StoryEditor {
     }
   }
 
+  // TODO: UPDATE function. Combined prompts into one function parameter. 
   /**
    * @description Recursive function. Remove node and update story object.
    * @param nodeId 
-   * @param lvl 
-   * @param passthrough 
+   * @param lvl Recursive counter. Determines the number of times the function has called itself.
+   * @param passthrough (optional) ``
    * @param parentPassthrough 
    */
   removeNode(nodeId: string, lvl: number = 0, passthrough?: PlotContent, parentPassthrough?: PlotContent) {
@@ -296,9 +320,9 @@ export default class StoryEditor {
     if (lvl === 0) {
       node = this.boardProxy.story?.content
       this.searchingNodes = true
+    } else {
+      node = passthrough;
     }
-
-    if (lvl > 0) node = passthrough;
 
     if (
       parentPassthrough?.children &&
@@ -328,18 +352,36 @@ export default class StoryEditor {
     }
   };
 
-  searchNodes(node: PlotContent, id: string): PlotContent | void {
+  searchNodesForId(node: PlotContent, id: string): PlotContent | void {
     if (id === node.id) return node
-    node.children?.forEach((child: PlotContent) => this.searchNodes(child, id));
+    node.children?.forEach((child: PlotContent) => this.searchNodesForId(child, id));
   };
+
+  clearSessionStorage = () => sessionStorage.clear();
+  getTotalNodes = (): number => this._totalNodesSubject.value;
+  getBoardProxyStory = (): Plot | undefined => this.boardProxy.story
 }
 
 /**
- * @description 
- * @param event 
- * @returns {string} 
+ * In tandem with `this.disableBeforeunload()`. Confirm if user wants to erase current changes 
+ * before. Prevent possible user miss-clicks.
+ * @param event Event bus.
+ * @returns {string} Text we want users to see, in the prompt.
  */
 function beforeUnload(event: Event): string {
   console.log("function beforeunload", event);
   return "Changes are unsaved";
+}
+
+/**
+ * Create a shallow copy of a object.
+ * @param source Object that needs to be copied
+ * 
+ * @see {@link https://blog.logrocket.com/copy-objects-in-javascript-complete-guide/}
+ * @returns source
+ */
+function shallow<T extends object>(source: T): T {
+  return {
+    ...source,
+  }
 }

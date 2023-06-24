@@ -74,7 +74,7 @@ export class PlotService {
   }
 
   /**
-   * @description 
+   * Request to get all Stories. These are false data. Stored in `/data`.
    * @param {string} id 
    * @returns {void}
    */
@@ -112,7 +112,6 @@ export class PlotService {
   };
 
   closeInstancePanel() {
-    console.log("function call close instance panel.")
     this.instanceEditSubject.next(undefined);
   };
 }

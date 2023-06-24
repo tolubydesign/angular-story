@@ -41,10 +41,13 @@ export class EditorComponent implements OnInit {
   };
 
   populateList(): void {
-    this._FetchDataSubscription = this.storiesService.fetchAllStories().subscribe((response: HTTPSuccessResponse) => {
-      this.cards = response?.data;
-      return response;
-    })
+    this._FetchDataSubscription = this.storiesService.fetchAllStories().subscribe(
+      (response: HTTPSuccessResponse) => {
+        this.cards = response?.data;
+        return response;
+      }
+    );
+
     // this._FetchDataSubscription = this.storiesService.fetchAllStories().subscribe((response) => {
     //   console.log("(!!!) stories service fetch all stories subscribe", response)
     //   const fullList = response.data
@@ -117,7 +120,7 @@ export class EditorComponent implements OnInit {
    * 
    */
   editPlot(id: string) {
-    this.plotService.UpdateStoryBehavior(id);
+    // this.plotService.UpdateStoryBehavior(id);
     // direct user to panel dashboard.
     this.router.navigate([`/editing/${id}`])
   }

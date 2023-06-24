@@ -83,7 +83,7 @@ export class PanelComponent implements OnInit, OnDestroy {
     return this.activatedRoute.paramMap.subscribe((value: ParamMap | { params: { id: string } } | any) => {
       if (value && value.params && value.params.id) {
         this.parameterID = value.params.id;
-        this.updateStory(value.params.id);
+        // this.updateStory(value.params.id);
         this.displayDendrogram = true;
       }
     });

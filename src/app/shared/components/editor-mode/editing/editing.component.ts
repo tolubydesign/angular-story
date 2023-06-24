@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { falsy } from '@models/tree.model';
 import { URLParameters } from '@helpers/parameter';
-import StoryEditor from '@lib/story-editor';
 import { Plot } from '@models/plot';
 import { Falsy, Subscription, Observable, Observer, } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -38,7 +37,6 @@ const THUMB_ICON =
 export class EditingComponent implements OnInit, OnDestroy {
   parameterId: string | falsy;
   parameters = new URLParameters(this.activatedRoute);
-  storyEditor: StoryEditor | undefined;
   plot: Plot | Falsy;
   private _FetchStoriesSubscriber: Subscription | undefined;
   private _EditingStorySubscriber: Subscription | undefined;
@@ -64,9 +62,6 @@ export class EditingComponent implements OnInit, OnDestroy {
     this._FetchStoriesSubscriber?.unsubscribe();
     this._EditingStorySubscriber?.unsubscribe();
     this.storiesService.updateEditingStory("")
-    if (this.storyEditor) {
-      this.storyEditor = undefined;
-    }
   }
 
   // TODO: The `this.storiesService.editingStory.subscribe()` request is made twice per load.
@@ -117,7 +112,6 @@ export class EditingComponent implements OnInit, OnDestroy {
   }
 
   updateStoryParameterId(id: string) {
-    // this.storyEditor = new StoryEditor(id);
     this.updateStory(id);
   }
 }

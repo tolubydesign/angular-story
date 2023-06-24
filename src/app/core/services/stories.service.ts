@@ -9,7 +9,6 @@ import {
   catchError,
   throwError,
   finalize,
-  retry
 } from "rxjs";
 import { Plot } from '@shared/models/plot';
 
@@ -136,6 +135,11 @@ export class StoriesService {
       )
   }
 
+  /**
+   * Remove selected narrative object.
+   * @param id the narrative string
+   * @returns 
+   */
   deleteStory(id: string): Observable<HTTPSuccessResponse> {
     const url = `${this._url}/story`;
     const header = new HttpHeaders()
@@ -152,6 +156,11 @@ export class StoriesService {
       )
   };
 
+  /**
+   * Update what story we is being edited. Track what the user is using.
+   * @param id root base story id
+   * @returns
+   */
   updateEditingStory(id: string) {
     this._EditingStoryIDSubject.next(id);
     console.log('function call update editing story');
@@ -190,12 +199,12 @@ function handleError(error: HttpErrorResponse, caught: Observable<any>) {
   // throw new Error(error.message);
   if (error.status === 0) {
     // A client-side or network error occurred. Handle it accordingly.
-    console.error('An error occurred:', error.error);
+    console.error('ERROR:', error.error);
   } else {
     // The backend returned an unsuccessful response code.
     // The response body may contain clues as to what went wrong.
     console.error(
-      `Backend returned code ${error.status}, body was: `, error.error);
+      `Backend returned code "${error.status}", body was: `, error.error);
   }
   // Return an observable with a user-facing error message.
   return throwError(() => new Error('Something bad happened; please try again later.'));

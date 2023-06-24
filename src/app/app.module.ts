@@ -43,7 +43,7 @@ import { OptionalSelectionCardComponent } from './shared/components/ui/optional-
 import { InteractionDashboardComponent } from './shared/components/interaction-mode/interaction-dashboard/interaction-dashboard.component';
 import { StoryBoardComponent } from './shared/components/interaction-mode/story-board/story-board.component';
 import { EditingComponent } from './shared/components/editor-mode/editing/editing.component';
-import { PanelInstanceComponent } from './shared/components/editor-mode/panel-instance/panel-instance.component';
+import { NodeFormComponent } from './shared/components/editor-mode/node-form/node-form.component';
 
 
 
@@ -72,7 +72,7 @@ import { PanelInstanceComponent } from './shared/components/editor-mode/panel-in
     InteractionDashboardComponent,
     StoryBoardComponent,
     EditingComponent,
-    PanelInstanceComponent,
+    NodeFormComponent,
   ],
   imports: [
     BrowserModule,

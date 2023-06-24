@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PanelInstanceComponent } from './panel-instance.component';
+import { NodeFormComponent } from './node-form.component';
 
-describe('PanelInstanceComponent', () => {
-  let component: PanelInstanceComponent;
-  let fixture: ComponentFixture<PanelInstanceComponent>;
+describe('NodeFormComponent', () => {
+  let component: NodeFormComponent;
+  let fixture: ComponentFixture<NodeFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PanelInstanceComponent ]
+      declarations: [ NodeFormComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PanelInstanceComponent);
+    fixture = TestBed.createComponent(NodeFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

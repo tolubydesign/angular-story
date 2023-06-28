@@ -48,8 +48,6 @@ export default class StoryEditor {
       return true
     },
     get: (target: BoardProxy | any, p: string | symbol, receiver: any) => {
-      // console.log('proxy-get, p', p)
-      // console.log('proxy-get, receiver', receiver)
       if (p === 'story') {
         this._edited.next(true)
       }

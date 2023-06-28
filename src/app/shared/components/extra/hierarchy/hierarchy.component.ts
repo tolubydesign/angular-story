@@ -3,7 +3,7 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@ang
 import * as d3 from "d3";
 import { HierarchyNode, Selection, svg, drag, ValueFn } from "d3";
 import { BaseType } from 'd3-selection';
-import { Falsy, Subscription, tap } from 'rxjs';
+import { Falsy, Subscription } from 'rxjs';
 import { Plot, PlotContent } from '@models/plot';
 import StoryEditor from "@lib/story-editor";
 import * as uuid from "uuid";

@@ -10,7 +10,7 @@ import {
   throwError,
   finalize,
 } from "rxjs";
-import { Plot } from '@shared/models/plot';
+import { Plot, PlotContent } from '@shared/models/plot';
 
 export type HTTPSuccessResponse<T = any> = {
   type: string,
@@ -106,15 +106,15 @@ export class StoriesService {
    * @param body 
    * @returns Observable<HTTPSuccessResponse>
    */
-  updateStory(headers: { id: string, description: string, title: string }, body: { content: any }): Observable<HTTPSuccessResponse> {
+  updateStoryRequest({ id, description, title, body }: { id: string, description: string, title: string, body: PlotContent }): Observable<HTTPSuccessResponse> {
     const url = `${this._url}/story`
 
     const header = new HttpHeaders()
-      .set("id", headers.id)
-      .set("description", headers.description)
-      .set("title", headers.title);
+      .set("id", id)
+      .set("description", description)
+      .set("title", title);
 
-    return this.http.put<HTTPSuccessResponse>(url, body, { headers: header })
+    return this.http.put<HTTPSuccessResponse>(url, { content: body }, { headers: header })
       // Error Handling
       .pipe(catchError(this.handleError))
 
@@ -140,7 +140,7 @@ export class StoriesService {
    * @param id the narrative string
    * @returns 
    */
-  deleteStory(id: string): Observable<HTTPSuccessResponse> {
+  deleteStoryRequest(id: string): Observable<HTTPSuccessResponse> {
     const url = `${this._url}/story`;
     const header = new HttpHeaders()
       .set("id", id)

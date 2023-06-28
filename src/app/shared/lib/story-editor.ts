@@ -1,14 +1,13 @@
 import * as uuid from "uuid";
 import { Plot, PlotContent } from '@models/plot';
 import { BehaviorSubject, Subject, distinctUntilChanged } from "rxjs";
+import { StoriesService } from "../../core/services/stories.service";
 
 type BoardProxy = {
   previous?: Plot,
   story?: Plot,
-  totalNoNodes: number,
-  saveSession: () => void,
+  saveSession: () => boolean,
   getSession: () => Plot | Error,
-  updated: () => void,
 };
 
 /**
@@ -22,13 +21,11 @@ export default class StoryEditor {
   private _totalNodesSubject = new BehaviorSubject<number>(0);
   totalNodesObservable = this._totalNodesSubject.asObservable().pipe(distinctUntilChanged());
 
-  board: Partial<BoardProxy> = {
+  board: BoardProxy = {
     previous: undefined,
     story: undefined,
-    // CONTINUE... update `edited` state based on when you've updated the graph
     saveSession: () => this.saveToSessionStorage(),
     getSession: () => this.getSessionStorage(),
-    // updated: () => this.storyUpdate(),
   };
   sessionStorageKey = "board";
   searchingNodes = false;
@@ -47,15 +44,10 @@ export default class StoryEditor {
       return new target(...args);
     },
     set: (target: BoardProxy | any, key: string | symbol, value: Plot) => {
-      console.log('proxy-set, key', key)
-      console.log('proxy-set, value', value)
       target[key] = value;
       return true
     },
     get: (target: BoardProxy | any, p: string | symbol, receiver: any) => {
-      console.log('proxy-get, p', p)
-      console.log('proxy-get, receiver', receiver)
-      // TODO: CONTINUE... reduce the amount of times boardProxy.story is called, 
       if (p === 'story') {
         this._edited.next(true)
       }
@@ -65,10 +57,12 @@ export default class StoryEditor {
   });
 
   // TODO: find simpler way to capture and assign {id}. Maybe pass it to this.initialization.
-  constructor(id: string, plot?: Plot) {
+  constructor(
+    id: string,
+    plot?: Plot
+  ) {
     console.log("Constructor class story editor.");
     this.id = id;
-
     // NOTE: check if storage has information;
     const sessionPlot = this.getSessionStorage();
     if (sessionPlot instanceof Error) console.warn('Class initialisation, Session graph error: ', sessionPlot.message);
@@ -132,17 +126,19 @@ export default class StoryEditor {
   /**
    * Save board changes to browser session storage. 
    * Show console warning if information couldn't be saved to session storage. 
-   * @returns {void}
+   * @returns {boolean} Boolean. True if data was saved successfully.
    */
-  saveToSessionStorage(): void {
+  saveToSessionStorage(): boolean {
     const story = this.boardProxy.story;
 
     if (typeof story === 'object') {
-      sessionStorage.setItem(this.sessionStorageKey, JSON.stringify(story))
+      sessionStorage.setItem(this.sessionStorageKey, JSON.stringify(story));
       this._edited.next(false);
+      return true;
     } else {
       // TODO: log error in UI
       console.warn("ERROR. Cant save changes to session storage.");
+      return false;
     }
   }
 

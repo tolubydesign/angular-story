@@ -3,10 +3,11 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@ang
 import * as d3 from "d3";
 import { HierarchyNode, Selection, svg, drag, ValueFn } from "d3";
 import { BaseType } from 'd3-selection';
-import { Falsy, Subscription } from 'rxjs';
+import { Falsy, Subscription, tap } from 'rxjs';
 import { Plot, PlotContent } from '@models/plot';
 import StoryEditor from "@lib/story-editor";
 import * as uuid from "uuid";
+import { StoriesService } from '@services/stories.service';
 
 type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any[], x0: any, y0: any } | any;
 
@@ -25,6 +26,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
 
   constructor(
     private plotService: PlotService,
+    private storiesService: StoriesService,
   ) { }
 
   storyEditor?: StoryEditor;
@@ -39,7 +41,6 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     if (this.plot) {
       this.storyEditor = new StoryEditor(this.plot.id, this.plot);
       this._editedSubscription = this.storyEditor?.edited.subscribe((state: boolean) => {
-        console.log("(!!!!) state", state);
         this.narrativeEdited = state
       });
     }
@@ -324,7 +325,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * TODO: description
+   * Save narrative data to Session Storage.
    */
   saveStateInSession() {
     if (!this.storyEditor) {
@@ -333,8 +334,18 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       return
     }
 
-    this.storyEditor.boardProxy.saveSession();
-    this.graphRefreshed = false;
+    const isSaved = this.storyEditor.boardProxy.saveSession();
+    const story = this.storyEditor?.boardProxy?.story;
+
+    if (story && isSaved) {
+      const { id, title, description, content } = story;
+
+      this.storiesService.updateStoryRequest(
+        { id, description, title, body: content },
+      ).subscribe((response) => {
+        this.graphRefreshed = !!response;
+      });
+    };
   }
 
   /**

@@ -13,11 +13,11 @@ export class StoryBoardComponent implements OnInit {
   @Input() fullStory: Plot | falsy = undefined;
 
   id: string = '';
-  board: StoryBoard | falsy = undefined;
+  board: StoryBoard | falsy;
   description: string = '';
   title: string = '';
   optionalSelection: PlotContent[] = [];
-  narrative: PlotContent | undefined = undefined;
+  narrative: PlotContent | undefined;
   level: number = 0
 
   constructor(private router: Router) { }

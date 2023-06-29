@@ -8,6 +8,9 @@ import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatListModule } from "@angular/material/list";
 import { MatIconModule } from "@angular/material/icon";
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 /* router */
 import { AppRoutingModule } from "./app-routing.module";
@@ -19,7 +22,7 @@ import { HttpClientModule } from "@angular/common/http";
 // import { NgxEchartsModule } from 'ngx-echarts';
 
 /* form */
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 /* components */
 import { AppComponent } from "./app.component";
@@ -44,9 +47,7 @@ import { InteractionDashboardComponent } from './shared/components/interaction-m
 import { StoryBoardComponent } from './shared/components/interaction-mode/story-board/story-board.component';
 import { EditingComponent } from './shared/components/editor-mode/editing/editing.component';
 import { NodeFormComponent } from './shared/components/editor-mode/node-form/node-form.component';
-
-
-
+import { SnackBarNotificationComponent } from './core/snack-bar-notification/snack-bar-notification.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import { NodeFormComponent } from './shared/components/editor-mode/node-form/nod
     StoryBoardComponent,
     EditingComponent,
     NodeFormComponent,
+    SnackBarNotificationComponent,
   ],
   imports: [
     BrowserModule,
@@ -87,8 +89,11 @@ import { NodeFormComponent } from './shared/components/editor-mode/node-form/nod
     // NgxEchartsModule.forRoot({
     //   echarts: () => import('echarts')
     // }),
-    FormsModule, 
+    FormsModule,
     ReactiveFormsModule,
+    MatSnackBarModule,
+    MatInputModule,
+    MatFormFieldModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

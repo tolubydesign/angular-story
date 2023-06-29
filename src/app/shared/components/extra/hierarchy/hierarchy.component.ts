@@ -8,6 +8,7 @@ import { Plot, PlotContent } from '@models/plot';
 import StoryEditor from "@lib/story-editor";
 import * as uuid from "uuid";
 import { StoriesService } from '@services/stories.service';
+import { NotificationService } from '@services/notification.service';
 
 type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any[], x0: any, y0: any } | any;
 
@@ -27,6 +28,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   constructor(
     private plotService: PlotService,
     private storiesService: StoriesService,
+    private notificationService: NotificationService,
   ) { }
 
   storyEditor?: StoryEditor;

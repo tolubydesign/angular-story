@@ -1,6 +1,8 @@
 <!-- https://stackoverflow.com/questions/46851399/how-to-generate-components-in-a-specific-folder-with-angular-cli -->
 <!-- https://stackoverflow.com/a/58485993/10569815 -->
 
+# Angular CLI Documentation and Resource
+
 Angular CLI provides all the commands you need in your app development. For your specific requirement, you can easily use ng g (ng generate) to get the work done.
 
 `ng g c directory/component-name` will generate component-name component in the directory folder.

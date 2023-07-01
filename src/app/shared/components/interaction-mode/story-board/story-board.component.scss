@@ -1,0 +1,54 @@
+
+.board--description,
+.board--title {
+  text-align: center;
+  margin: {
+    bottom: 1rem;
+  }
+}
+
+.board-card--base {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.board--header--group {
+  margin-bottom: 1.5rem;
+}
+
+.board--options--group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+
+  max-width: 970px;
+  width: 100%;
+  margin: auto;
+}
+
+.board--description--group {
+  text-align: center;
+  margin: {
+    bottom: 2rem;
+  }
+}
+
+.board--graphics--group {
+  width: 100%;
+  min-height: 150px;
+  margin: {
+    bottom: 1.5rem;
+  }
+}
+
+.board--base--group {
+  max-width: 94vw;
+  margin: auto
+}
+
+.board-button--option {
+  margin: 10px 16px
+}

@@ -1,0 +1,15 @@
+<a class="fixed-position top-[10px] left-[10px]" mat-stroked-button routerLink="/" routerLinkActive="active">Home</a>
+
+<slot data-component="Editor Component" class="editor-component--section">
+  <div class="editor--section--cards">
+    <!-- loop this element. based on data -->
+    <app-optional-selection-card [stories]="cards" [primaryText]="'DELETE'" [secondaryText]="'EDIT'"
+      (PrimaryClick)="deletePlot($event)" (SecondaryClick)="editPlot($event)">
+    </app-optional-selection-card>
+  </div>
+
+  <!-- create new story -->
+  <div class="mt-10">
+    <button mat-raised-button (click)="createStory()">Create</button>
+  </div>
+</slot>

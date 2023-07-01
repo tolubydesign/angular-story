@@ -50,20 +50,23 @@
 
 # # Use official node image as the base image
 # # Initializes a new build stage, and sets the latest node image from DockerHub registry as the base image for executing subsequent instructions relevant to the angular app’s configuration. The stage is arbitrarily named as build, to reference this stage in the nginx configuration stage.
-FROM node:lts as angular-story-app-build
+FROM node:14 as angular-story-app-build
 
 # # Set the working directory
 # # Sets the default working directory in which the subsequent instructions are executed. The directory is created, if the path is not found. In the above snippet, an arbitrary path of usr/local/app is chosen as the directory to move the angular source code into.
 WORKDIR /usr/src/app
 
-COPY package.json package-lock.json ./
-
-RUN npm i
-
+# COPY package.json package-lock.json ./
 COPY . .
 
+RUN npm ci
+
 # RUN npm run build
-ENTRYPOINT ["npm", "run", "build"]
+ENTRYPOINT ["ng", "build"]
+
+# EXPOSE ports
+EXPOSE 80
+EXPOSE 4200
 
 # STAGE 2
 

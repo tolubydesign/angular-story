@@ -1,3 +1,17 @@
-<div data-component="Hierarchy Component">
-  <div id="d3-hierarchy"></div>
+<!-- TODO: Move component to another folder  -->
+<div data-component="Hierarchy Component" class="overflow-auto">
+  <div #D3HierarchyInputRef id="d3-hierarchy"></div>
 </div>
+
+<div data-element="Save" *ngIf="narrativeEdited && graphRefreshed" class="save-content--group absolute top-[10px] right-[10px]">
+  <button mat-raised-button class="save--button text-[10px]" (click)="saveStateInSession()">save</button>
+</div>
+
+<!-- TODO: to be deleted in the future -->
+<div *ngIf="plot" data-element="Hierarchy component json plot"
+  class="fixed bottom-[20px] left-0 bg-white shadow-md max-h-[100px] max-w-[92vw] w-full translate-x-[4vw] overflow-y-auto px-2 py-2">
+  <p class="text-[8px]">{{ plot | json }}</p>
+</div>
+
+<app-node-form (updateNodeContent)="updateNodeContent($event)"
+  (addNodeContent)="addNodeContent($event)"></app-node-form>

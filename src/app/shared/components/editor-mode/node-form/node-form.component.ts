@@ -3,6 +3,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Plot, PlotContent } from '@models/plot';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { NotificationService } from '@services/notification.service';
 
 @Component({
   selector: 'app-node-form',
@@ -34,6 +35,7 @@ export class NodeFormComponent {
 
   constructor(
     private plotService: PlotService,
+    private notificationService: NotificationService,
   ) { }
 
   ngOnInit(): void {
@@ -61,14 +63,13 @@ export class NodeFormComponent {
   }
 
   onSubmit(): void {
-    if (this.form && !this.form.valid) console.error("form not valid.");
-
+    if (!this.form) return this.notificationService.notifyUser("Form information could not be captured.");
+    if (this.form && !this.form.valid) return this.notificationService.notifyUser('Form invalid.');
+    
     const mergedForm = {
       ...this.form.value,
       id: this.instanceContent?.id
     }
-
-    console.log('function call on submit', this.form, this.instanceParentId);
 
     if (this.instanceParentId) {
       this.addNodeContent.emit({ form: mergedForm, parentNodeId: this.instanceParentId })

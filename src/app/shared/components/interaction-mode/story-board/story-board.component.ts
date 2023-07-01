@@ -3,6 +3,7 @@ import { Plot, PlotContent } from '@models/plot';
 import { falsy } from '@models/tree.model';
 import StoryBoard from '@lib/story-board';
 import { Router } from '@angular/router';
+import { NotificationService } from '@services/notification.service';
 
 @Component({
   selector: 'app-story-board',
@@ -13,19 +14,21 @@ export class StoryBoardComponent implements OnInit {
   @Input() fullStory: Plot | falsy = undefined;
 
   id: string = '';
-  board: StoryBoard | falsy = undefined;
+  board: StoryBoard | falsy;
   description: string = '';
   title: string = '';
   optionalSelection: PlotContent[] = [];
-  narrative: PlotContent | undefined = undefined;
+  narrative: PlotContent | undefined;
   level: number = 0
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private notificationService: NotificationService,
+  ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     // Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
     // Add '${implements OnChanges}' to the class.
-    console.log('changes', changes);
   }
 
   ngOnInit(): void {
@@ -39,10 +42,7 @@ export class StoryBoardComponent implements OnInit {
       this.board = new StoryBoard(this.fullStory);
     }
 
-    if (!this.board) {
-      console.warn("Initialization of board was unsuccessful.");
-      return
-    }
+    if (!this.board) return this.notificationService.notifyUser("Initialization of board was unsuccessful.");
 
     // Assign title and description
     this.title = this.board.title;
@@ -60,7 +60,6 @@ export class StoryBoardComponent implements OnInit {
   }
 
   selectionOption(option: PlotContent) {
-    // console.log("fn selectionOption", option);
     this.updateBoard(option)
   }
 

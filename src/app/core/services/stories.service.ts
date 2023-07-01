@@ -11,6 +11,7 @@ import {
   finalize,
 } from "rxjs";
 import { Plot, PlotContent } from '@shared/models/plot';
+import { NotificationService } from '@services/notification.service';
 
 export type HTTPSuccessResponse<T = any> = {
   type: string,
@@ -40,7 +41,10 @@ export class StoriesService {
   private _EditingStoryIDSubject = new BehaviorSubject<string>("");
   editingStoryId = this._EditingStoryIDSubject.asObservable().pipe(distinctUntilChanged());
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private notificationService: NotificationService,
+  ) {
     http.head(this._url)
     http.options(
       this._url
@@ -49,7 +53,7 @@ export class StoriesService {
 
   /**
    * @description Request to get all stories. 
-   * @returns 
+   * @returns HTTP GET request response.
    */
   fetchAllStories(): Observable<any> {
     const url = `${this._url}/stories`
@@ -163,7 +167,6 @@ export class StoriesService {
    */
   updateEditingStory(id: string) {
     this._EditingStoryIDSubject.next(id);
-    console.log('function call update editing story');
 
     if (id === "") {
       this._EditingStorySubject.next(undefined)
@@ -187,7 +190,23 @@ export class StoriesService {
     });
   };
 
-  private handleError = handleError;
+  private handleError(error: HttpErrorResponse, caught: Observable<any>) {
+    this.notificationService.notifyUser(error.message);
+
+    if (error.status === 0) {
+      // A client-side or network error occurred. Handle it accordingly.
+      console.warn('ERROR:', error.error);
+    } else {
+      // The backend returned an unsuccessful response code.
+      // The response body may contain clues as to what went wrong.
+      console.warn(
+        `Backend returned code "${error.status}", body was: `, error.error);
+    }
+
+    // Return an observable with a user-facing error message.
+    return throwError(() => new Error('Something bad happened; please try again later.'));
+  };
+
   AllStoriesState = (): Plot[] | undefined => this._AllStoriesSubject.value;
   EditingStoryState = (): Plot | undefined => this._EditingStorySubject.value;
   EditingStoryIdState = (): string | null => this._EditingStoryIDSubject.value;

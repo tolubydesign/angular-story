@@ -8,6 +8,7 @@ import { Plot, PlotContent } from '@models/plot';
 import StoryEditor from "@lib/story-editor";
 import * as uuid from "uuid";
 import { StoriesService } from '@services/stories.service';
+import { NotificationService } from '@services/notification.service';
 
 type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any[], x0: any, y0: any } | any;
 
@@ -27,6 +28,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   constructor(
     private plotService: PlotService,
     private storiesService: StoriesService,
+    private notificationService: NotificationService,
   ) { }
 
   storyEditor?: StoryEditor;
@@ -40,7 +42,11 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     // TODO: rename `plot` to `narrative`
     if (this.plot) {
       this.storyEditor = new StoryEditor(this.plot.id, this.plot);
-      this._editedSubscription = this.storyEditor?.edited.subscribe((state: boolean) => {
+
+      if (!this.storyEditor) return this.notificationService.notifyUser("Board couldn't be made.");
+      if (this.storyEditor?.errorMessage) return this.notificationService.notifyUser(this.storyEditor.errorMessage)
+
+      this._editedSubscription = this.storyEditor.edited.subscribe((state: boolean) => {
         this.narrativeEdited = state
       });
     }
@@ -96,7 +102,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     const plotIdProp = this.plot?.id;
 
     if (!this.plot || !this.storyEditor) {
-      console.warn("ERROR Plot or Story Editor can not be found.");
+      this.notificationService.notifyUser("Plot or Story Editor can not be found.");
       console.warn("ERROR Story Editor:", this.storyEditor);
       console.warn("ERROR Plot:", this.plot);
       return;
@@ -112,7 +118,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       this.mutatedPlot = this.plot;
     }
 
-    this.buildD3Tree().then((canvas: Selection<SVGGElement, unknown, HTMLElement, any> | undefined) => {
+    this.buildD3Tree().then((canvas: Selection<SVGGElement, unknown, HTMLElement, any> | undefined | void) => {
       if (canvas && updatingGraph) this.graphRefreshed = true;
     })
   }
@@ -122,7 +128,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
    * add the data needed to build the graph.
    * If there exists a graph. It will be wiped and reset.
    */
-  buildD3Tree = async (): Promise<Selection<SVGGElement, unknown, HTMLElement, any> | undefined> => {
+  buildD3Tree = async (): Promise<Selection<SVGGElement, unknown, HTMLElement, any> | undefined | void> => {
     // Initialise d3 hierarchy graph.
     // this.root = d3.hierarchy(this.mutatedPlot.content, (d) => d.children);
 
@@ -137,11 +143,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
 
     const svg = await this.createCanvas();
     // Initialise d3 hierarchy graph.
-    if (!this.mutatedPlot) {
-      // TODO: log errors
-      console.error("Mutated plot is undefined.");
-      return;
-    }
+    if (!this.mutatedPlot) return this.notificationService.notifyUser("Mutated plot is undefined.");
 
     this.root = d3.hierarchy(this.mutatedPlot.content, (d: PlotContent) => d.children);
     this.update(this.root);
@@ -176,10 +178,8 @@ export class HierarchyComponent implements OnInit, OnDestroy {
    * @returns 
    */
   update(source: RootType) {
-    // console.log("function call update ::: source ::", source)
     if (!source) {
-      // TODO: log error
-      return
+      return this.notificationService.notifyUser("Graph board couldn't be updated.")
     };
 
     // Assigns the x and y position for the nodes
@@ -191,8 +191,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     // ****************** Nodes section ***************************
     // Update the nodes...
     if (!this.svg) {
-      // TODO: add error handling for UI
-      console.warn("ERROR - Graph couldn't be built");
+      this.notificationService.notifyUser("Graph couldn't be built");
       return;
     }
 
@@ -267,7 +266,6 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       // .attr('d', this.diagonal)
       // .attr('d', d3.linkVertical())
       .attr("d", (d: any, al: any) => {
-        // console.log("link.enter():(d|al|le)", {d}, {al});
         return diagonal(d.parent ? d.parent : source, d) as any;
       });
   }
@@ -320,7 +318,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       // Note: update graph
       this.initialiseComponent(true);
     } else {
-      console.warn("[ERROR] Editor, could not be found.")
+      this.notificationService.notifyUser("Point to could not be removed. Graph has errored out.");
     }
   }
 
@@ -328,14 +326,13 @@ export class HierarchyComponent implements OnInit, OnDestroy {
    * Save narrative data to Session Storage.
    */
   saveStateInSession() {
-    if (!this.storyEditor) {
-      // TODO: log error on UI
-      console.warn("ERROR. Story Editor controller could not be accessed.");
-      return
-    }
+    if (!this.storyEditor) return this.notificationService.notifyUser("Board could not be saved. Graph board could not be accessed");
 
     const isSaved = this.storyEditor.boardProxy.saveSession();
     const story = this.storyEditor?.boardProxy?.story;
+
+    if (!story) return this.notificationService.notifyUser("Board information couldn't be captured.");
+    if (!isSaved) return this.notificationService.notifyUser("Changes could not be saved.");
 
     if (story && isSaved) {
       const { id, title, description, content } = story;
@@ -355,7 +352,6 @@ export class HierarchyComponent implements OnInit, OnDestroy {
    * @param { HierarchyNode<unknown | Plot | PlotContent> } d
    */
   editNode(event: any, d: any): void {
-    // console.log("hierarchy component function call plot service :::", this.plotService);
     this.plotService.selectInstance({
       instance: d.data,
     });
@@ -426,14 +422,8 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   }
 
   updateNodeContent({ form }: { form: any }) {
-    if (
-      !this.storyEditor ||
-      !this.storyEditor.getBoardProxyStory()
-    ) {
-      if (!this.storyEditor) console.error("Editor cant be found. No update was made.")
-      if (!this.storyEditor?.getBoardProxyStory()) console.error("Editor Error board.")
-      return
-    };
+    if (!this.storyEditor) return this.notificationService.notifyUser("Editor cant be found. No update was made.");
+    if (!this.storyEditor?.getBoardProxyStory()) return this.notificationService.notifyUser("Editor Error board.");
 
     this.storyEditor.setNodeContent(form, undefined)
 
@@ -442,14 +432,8 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   }
 
   addNodeContent({ form, parentNodeId }: { form: any, parentNodeId: string }) {
-    if (
-      !this.storyEditor ||
-      !this.storyEditor.getBoardProxyStory()
-    ) {
-      if (!this.storyEditor) console.error("Editor cant be found. No update was made.")
-      if (!this.storyEditor?.getBoardProxyStory()) console.error("Editor Error board.")
-      return
-    };
+    if (!this.storyEditor) return this.notificationService.notifyUser("Editor cant be found. No update was made.");
+    if (!this.storyEditor?.getBoardProxyStory()) return this.notificationService.notifyUser("Editor Error board.");
 
     // Update story editor
     this.storyEditor.appendAdditionalNodeContent(

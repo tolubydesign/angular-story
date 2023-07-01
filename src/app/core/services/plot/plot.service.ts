@@ -9,15 +9,7 @@ import { data } from '@models/tree-data.model';
 import * as JSON5 from 'json5';
 import * as uuid from "uuid";
 
-// import json5 from "json5";
-// import { readFile } from "fs/promises";
-
-// (async () => {
-//     const text = await fs.readFile("./path/to/config.json5"); // path to config.json5 from entry point
-
-//     const config = json5.parse(text);
-// })();
-
+// TODO: move function and variables still used to stories-service.
 @Injectable({
   providedIn: 'root'
 })

@@ -15,7 +15,7 @@ export class PlotModel {
   }
 
   initialize(): void {
-    console.log("(initialize)", this.plots);
+    console.info("initialize", this.plots);
     this.selectedPlot = null;
     /** attach nodes and links */
   }

@@ -1,7 +1,6 @@
 import * as uuid from "uuid";
 import { Plot, PlotContent } from '@models/plot';
-import { BehaviorSubject, Subject, distinctUntilChanged } from "rxjs";
-import { StoriesService } from "../../core/services/stories.service";
+import { BehaviorSubject, distinctUntilChanged } from "rxjs";
 
 type BoardProxy = {
   previous?: Plot,
@@ -20,6 +19,7 @@ export default class StoryEditor {
 
   private _totalNodesSubject = new BehaviorSubject<number>(0);
   totalNodesObservable = this._totalNodesSubject.asObservable().pipe(distinctUntilChanged());
+  errorMessage: string | undefined;
 
   board: BoardProxy = {
     previous: undefined,
@@ -61,12 +61,12 @@ export default class StoryEditor {
     id: string,
     plot?: Plot
   ) {
-    console.log("Constructor class story editor.");
+    console.info("Constructor class story editor.");
     this.id = id;
     // NOTE: check if storage has information;
     const sessionPlot = this.getSessionStorage();
-    if (sessionPlot instanceof Error) console.warn('Class initialisation, Session graph error: ', sessionPlot.message);
-
+    if (sessionPlot instanceof Error) this.errorMessage = `Class initialisation, Session graph error:  ${sessionPlot.message}`;
+    
     if (plot) {
       this.id = plot.id;
       this.updateBoard(plot);
@@ -108,8 +108,6 @@ export default class StoryEditor {
     if (!update.content) update.content = { id: uuid.v4(), name: '' };
     const proxyStory = this.boardProxy.story;
 
-    // console.log('function call update board, story', this.boardProxy.story);
-    // console.log('function call update board, update', update);
     if (
       proxyStory &&
       proxyStory != update
@@ -136,8 +134,6 @@ export default class StoryEditor {
       this._edited.next(false);
       return true;
     } else {
-      // TODO: log error in UI
-      console.warn("ERROR. Cant save changes to session storage.");
       return false;
     }
   }
@@ -163,7 +159,7 @@ export default class StoryEditor {
 
     if (storage) {
       restructured = JSON.parse(storage);
-      console.log("function get session storage ::: restructured ::", restructured, storage)
+      // console.log("function get session storage ::: restructured ::", restructured, storage)
       if (restructured) return restructured;
     }
 

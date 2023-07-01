@@ -9,6 +9,7 @@ import { data } from '@models/tree-data.model';
 import * as JSON5 from 'json5';
 import * as uuid from "uuid";
 
+// TODO: move function and variables still used to stories-service.
 @Injectable({
   providedIn: 'root'
 })

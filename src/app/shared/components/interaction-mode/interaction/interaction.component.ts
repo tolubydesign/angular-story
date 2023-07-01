@@ -22,7 +22,6 @@ export class InteractionComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log('Component - interaction');
     this.fetchStoriesContent();
   }
 

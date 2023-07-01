@@ -43,7 +43,7 @@ export class StoriesService {
 
   constructor(
     private http: HttpClient,
-    private notificationService: NotificationService  
+    private notificationService: NotificationService,
   ) {
     http.head(this._url)
     http.options(
@@ -167,7 +167,6 @@ export class StoriesService {
    */
   updateEditingStory(id: string) {
     this._EditingStoryIDSubject.next(id);
-    console.log('function call update editing story');
 
     if (id === "") {
       this._EditingStorySubject.next(undefined)
@@ -192,19 +191,18 @@ export class StoriesService {
   };
 
   private handleError(error: HttpErrorResponse, caught: Observable<any>) {
-    console.warn(error.message);
-    // throw new Error(error.message);
+    this.notificationService.notifyUser(error.message);
+
     if (error.status === 0) {
       // A client-side or network error occurred. Handle it accordingly.
-      console.error('ERROR:', error.error);
-      this.notificationService.notifyUser(error.message)
+      console.warn('ERROR:', error.error);
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong.
-      console.error(
+      console.warn(
         `Backend returned code "${error.status}", body was: `, error.error);
-        this.notificationService.notifyUser(error.message)
     }
+
     // Return an observable with a user-facing error message.
     return throwError(() => new Error('Something bad happened; please try again later.'));
   };

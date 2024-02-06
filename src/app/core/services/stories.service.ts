@@ -12,6 +12,8 @@ import {
 } from "rxjs";
 import { Plot, PlotContent } from '@shared/models/plot';
 import { NotificationService } from '@services/notification.service';
+import * as uuid from "uuid";
+import { environment } from '@environment/environment';
 
 export type HTTPSuccessResponse<T = any> = {
   type: string,
@@ -28,7 +30,7 @@ type HTTPErrorResponse = {
   providedIn: 'root'
 })
 export class StoriesService {
-  private _url = "http://127.0.0.1:2100";
+  private _url = environment.baseUrl;
 
   private _loading = new BehaviorSubject<boolean>(false);
   isLoading = this._loading.asObservable().pipe(distinctUntilChanged());
@@ -36,8 +38,10 @@ export class StoriesService {
   private _AllStoriesSubject = new BehaviorSubject<Plot[] | undefined>(undefined);
   stories = this._AllStoriesSubject.asObservable().pipe(distinctUntilChanged());
 
+  // Current Narrative that's being edited
   private _EditingStorySubject = new BehaviorSubject<Plot | undefined>(undefined);
   editingStory = this._EditingStorySubject.asObservable().pipe(distinctUntilChanged());
+  // ID of the current
   private _EditingStoryIDSubject = new BehaviorSubject<string>("");
   editingStoryId = this._EditingStoryIDSubject.asObservable().pipe(distinctUntilChanged());
 
@@ -56,7 +60,7 @@ export class StoriesService {
    * @returns HTTP GET request response.
    */
   fetchAllStories(): Observable<any> {
-    const url = `${this._url}/stories`
+    const url = `${this._url}/list-stories`
     this._loading.next(true)
     return this.http.get<HTTPSuccessResponse<Plot[]>>(url)
       // Error Handling
@@ -174,13 +178,13 @@ export class StoriesService {
     }
 
     if (!this._AllStoriesSubject?.value) {
-      // NOTE: fetch data from database. Then search for story with id
+      // NOTE: fetch data from database. Then 
       this.fetchAllStories().pipe(tap((response: HTTPSuccessResponse<Plot[]>) => {
         const stories = response.data;
+        // Searching for story with id
         const story = stories.find((story: Plot) => (story.id === id) ? story : undefined);
         this._EditingStorySubject.next(story)
       }));
-
       return;
     }
 
@@ -189,6 +193,29 @@ export class StoriesService {
       if (story.id === id) this._EditingStorySubject.next(story)
     });
   };
+
+  /**
+   * @description Create a brand new story graph.
+   */
+  async createNewStoryGraph(): Promise<string> {
+    const id = uuid.v4();
+    const story: Plot = {
+      id,
+      description: "Description text needed",
+      title: "Title of Story",
+      content: {
+        id: uuid.v4(),
+        name: "Initial Content for story",
+        description: "Description not yet provided.",
+        children: undefined,
+        graphics: undefined,
+        characters: undefined,
+      }
+    }
+    this._EditingStoryIDSubject.next(id);
+    this._EditingStorySubject.next(story)
+    return id
+  }
 
   private handleError(error: HttpErrorResponse, caught: Observable<any>) {
     this.notificationService.notifyUser(error.message);

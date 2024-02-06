@@ -130,9 +130,7 @@ export class EditorComponent implements OnInit {
    * @return {void} 
    */
   createStory(): void {
-    // Utilize uuid v4 => uuid.v4();
-    const id = uuid.v4();
-    this.plotService.createStoryGraph(id)
+    const id = this.storiesService.createNewStoryGraph()
     this.router.navigate([`/editing/${id}`])
   }
 }

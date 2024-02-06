@@ -93,8 +93,8 @@ export class PanelComponent implements OnInit, OnDestroy {
    * @description descriptive text 
    * @param {string} id 
    */
-  updateStory(id: string) {
-    // We have the relevant parameter id. Make a request to back-end.
-    this.plotService.UpdateStoryBehavior(id);
-  }
+  // updateStory(id: string) {
+  //   // We have the relevant parameter id. Make a request to back-end.
+  //   this.plotService.UpdateStoryBehavior(id);
+  // }
 }

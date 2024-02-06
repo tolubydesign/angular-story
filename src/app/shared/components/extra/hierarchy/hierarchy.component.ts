@@ -19,6 +19,9 @@ type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any
 })
 export class HierarchyComponent implements OnInit, OnDestroy {
 
+  // Note.
+  // `plot` is a is a "prop" 
+  // TODO: [optional] rename `plot` to `narrative`
   @Input() plot?: Plot;
   @ViewChild('D3HierarchyInputRef') D3HierarchyInputRef: ElementRef | undefined;
   private _HierarchySubscriber?: Subscription;
@@ -39,7 +42,6 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   HierarchyElement = `div#${this.name}`;
 
   ngOnInit(): void {
-    // TODO: rename `plot` to `narrative`
     if (this.plot) {
       this.storyEditor = new StoryEditor(this.plot.id, this.plot);
 
@@ -51,12 +53,10 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       });
     }
 
-    // Get information from store.
     this.initialiseComponent();
   }
 
   ngOnDestroy(): void {
-    // UNSUBSCRIBE
     this._HierarchySubscriber?.unsubscribe();
     this._editedSubscription?.unsubscribe();
   }
@@ -90,7 +90,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   nodeEnterRectRepoY = (this.nodeEnterRectHeight - (this.nodeEnterRectHeight * 2)) / 2;
 
   /**
-   * @description Start up D3 graph.
+   * @description Get information from store. Start up D3 graph.
    * @returns
    */
   initialiseComponent(updatingGraph: boolean = false): void {
@@ -109,8 +109,9 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     }
 
     if (plotIdProp !== sessionStorageId) {
-      // Note: work with the prop-plot. There is a different plot to what has been stored.
-      // Note: update session storage plot with prop-plot
+      // Note.
+      // Working with the prop-plot. There is a different plot to what has been stored.
+      // Update session storage plot with prop-plot
       this.mutatedPlot = this.plot
     } else {
       // Initialise Editor

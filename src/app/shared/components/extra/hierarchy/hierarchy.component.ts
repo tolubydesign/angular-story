@@ -299,8 +299,8 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     this.plotService.selectInstance({
       instance: {
         id: uuid.v4(),
-        name: "not set",
-        description: "not set",
+        name: "Name of node",
+        description: "Description of node",
         children: undefined,
       },
       parentInstanceId: d.data.id

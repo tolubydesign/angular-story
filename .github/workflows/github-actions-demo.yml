@@ -39,6 +39,7 @@ jobs:
           touch .env.production
           echo AUTHENTICATION_TOKEN="$AUTHENTICATION_TOKEN" >> .env.production
           echo BASE_API_URL="$BASE_API_URL" >> .env.production
+          echo ENV="something to be added to the environment" >> .env.production
           echo "cat .env.production"
           cat .env.production
 
@@ -50,8 +51,6 @@ jobs:
           touch .env.development
           echo AUTHENTICATION_TOKEN="$AUTHENTICATION_TOKEN" >> .env.development
           echo BASE_API_URL="$BASE_API_URL" >> .env.development
-          echo "cat .env.development"
-          cat .env.development
           echo "cat .env.development"
           cat .env.development
 

@@ -13,7 +13,6 @@ on:
       - main
 env:
   # Setting an environment variable with the value of a configuration variable
-  env_var: ${{ vars.ENV_CONTEXT_VAR }}
   AUTHENTICATION_TOKEN: ${{ vars.AUTHENTICATION_TOKEN }}
   BASE_API_URL: ${{ vars.BASE_API_URL }}
 
@@ -44,8 +43,8 @@ jobs:
           touch .env.production
           echo AUTHENTICATION_TOKEN='$AUTHENTICATION_TOKEN' >> .env.production
           echo BASE_API_URL='$BASE_API_URL' >> .env.production
-          echo "AUTHENTICATION_TOKEN : $AUTHENTICATION_TOKEN"
-          echo "BASE_API_URL : $BASE_API_URL"
+          echo "AUTHENTICATION_TOKEN: $AUTHENTICATION_TOKEN"
+          echo "BASE_API_URL: $BASE_API_URL"
 
       - name: Create and populate development env file
         # env:

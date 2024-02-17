@@ -127,12 +127,12 @@ export class EditorComponent implements OnInit {
 
   /**
    * @description Redirect to create a new story, in edit more.
-   * @return {void} 
+   * @return {Promise<void>} 
    */
-  createStory(): void {
-    // Utilize uuid v4 => uuid.v4();
-    const id = uuid.v4();
-    this.plotService.createStoryGraph(id)
+  async createStory(): Promise<void> {
+    // TODO: call loading component
+    const id = await this.storiesService.createNewStoryGraph()
+    // TODO: cancel loading component
     this.router.navigate([`/editing/${id}`])
   }
 }

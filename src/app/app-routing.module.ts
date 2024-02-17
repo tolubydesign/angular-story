@@ -9,6 +9,10 @@ import { DashboardPanelComponent } from './shared/components/extra/dashboard-pan
 import { InteractionDashboardComponent } from '@shared/components/interaction-mode/interaction-dashboard/interaction-dashboard.component';
 import { EditingComponent } from '@shared/components/editor-mode/editing/editing.component'
 
+// TODO: Refactor routing names
+// TODO: Combine "editor"/"editing" routes to just 'edit' and 'edit/:id
+// TODO: Rethink route names
+// TODO: [?] Alter folder structure
 const routes: Routes = [
   { path: "", component: StartScreenComponent },
   { path: "editor", component: EditorComponent },

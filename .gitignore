@@ -47,3 +47,9 @@ Thumbs.db
 
 # angular cache
 /.angular
+
+# env
+.env
+.env.*
+/src/environments/environment.prod.ts
+/src/environments/environment.development.ts

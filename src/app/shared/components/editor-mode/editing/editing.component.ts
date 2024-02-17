@@ -104,8 +104,8 @@ export class EditingComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Update selected story.
-   * @param {string} id 
+   * Update selected story. Sends update id to Stories Service
+   * @param id Narrative id
    */
   updateStory(id: string) {
     this.storiesService.updateEditingStory(id);

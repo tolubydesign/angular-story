@@ -20,10 +20,9 @@ jobs:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
-        # run: echo "Check out repository code"
         uses: actions/checkout@v4
       
-      - name: Use Node 20.x
+      - name: Using Node 20.x
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -31,50 +30,36 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Create and populate .env file
+      # TODO: find a better way
+      - name: Create and populate production env file
         env:
           AUTHENTICATION_TOKEN: ${{ secrets.AUTHENTICATION_TOKEN }}
           BASE_API_URL: ${{ secrets.BASE_API_URL }}
-
         run: |
-          cat <<EOF > .env.production
-          BASE_API_URL="$BASE_API_URL"
-          AUTHENTICATION_TOKEN="$AUTHENTICATION_TOKEN"
-          EOF
-
-          cat <<EOF > .env.development
-          BASE_API_URL="$BASE_API_URL"
-          AUTHENTICATION_TOKEN="$AUTHENTICATION_TOKEN"
-          EOF
-
+          touch .env.production
+          echo AUTHENTICATION_TOKEN="$AUTHENTICATION_TOKEN" >> .env.production
+          echo BASE_API_URL="$BASE_API_URL" >> .env.production
           echo "cat .env.production"
+          cat .env.production
+
+      - name: Create and populate development env file
+        env:
+          AUTHENTICATION_TOKEN: ${{ secrets.AUTHENTICATION_TOKEN }}
+          BASE_API_URL: ${{ secrets.BASE_API_URL }}
+        run: |
+          touch .env.development
+          echo AUTHENTICATION_TOKEN="$AUTHENTICATION_TOKEN" >> .env.development
+          echo BASE_API_URL="$BASE_API_URL" >> .env.development
           echo "cat .env.development"
           cat .env.development
-          cat .env.production
+          echo "cat .env.development"
+          cat .env.development
 
       - name: Build Environment Files
         run: npm run env
 
       - name: Build Project
-        run: npm run build
-      # - name: Test
-      #   run: npm run 
-      # - name: Build Docker Project - Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v1
-      
-      # - name: Archive build
-      #   if: success()
-      #   uses: actions/upload-artifact@v1
-      #   with:
-      #     name: deploy_dist
-      #     path: dist
-
-      # - name: Archive code coverage result
-      #   if: success()
-      #   uses: actions/upload-artifact@v1
-      #   with:
-      #     name: deploy_coverage
-      #     path: coverage
+        run: npm run prod-build
       
       - name: List files in the repository
         run: |

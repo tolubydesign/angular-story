@@ -13,8 +13,8 @@ on:
       - main
 env:
   # Setting an environment variable with the value of a configuration variable
-  AUTHENTICATION_TOKEN: ${{ secrets.AUTHENTICATION_TOKEN }}
-  BASE_API_URL: ${{ secrets.BASE_API_URL }}
+  AUTHENTICATION_TOKEN: ${{ vars.AUTHENTICATION_TOKEN }}
+  BASE_API_URL: ${{ vars.BASE_API_URL }}
 
 jobs:
   build_project:

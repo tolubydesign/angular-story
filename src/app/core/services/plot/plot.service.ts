@@ -6,8 +6,6 @@ import { map, tap, retry, catchError } from 'rxjs/operators';
 import { Plot, PlotContent, PlotInstanceType } from '@models/plot';
 import { PlotModel } from "@models/plot.model";
 import { data } from '@models/tree-data.model';
-import * as JSON5 from 'json5';
-import * as uuid from "uuid";
 
 // TODO: move function and variables still used to stories-service.
 // TODO: Rename this Service. Something like "NodeService" as it may be handling Graph Node related changes

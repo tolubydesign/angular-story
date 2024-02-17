@@ -5,7 +5,8 @@ import { Environment } from "./environment.model";
 
 export const environment: Environment = {
   production: false,
-  baseUrl: "about:blank"
+  BASE_API_URL: "about:blank",
+  AUTHENTICATION_TOKEN: "unset"
 };
 
 /*

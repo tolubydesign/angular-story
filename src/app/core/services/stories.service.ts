@@ -30,8 +30,7 @@ type HTTPErrorResponse = {
   providedIn: 'root'
 })
 export class StoriesService {
-  private _url = environment.baseUrl;
-
+  private _url = environment.BASE_API_URL;
   private _loading = new BehaviorSubject<boolean>(false);
   isLoading = this._loading.asObservable().pipe(distinctUntilChanged());
 

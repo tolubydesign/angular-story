@@ -1,4 +1,5 @@
 export type Environment = {
   production: boolean,
-  baseUrl: string,
+  BASE_API_URL: string,
+  AUTHENTICATION_TOKEN: string,
 }

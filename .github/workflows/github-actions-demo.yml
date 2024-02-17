@@ -6,6 +6,7 @@ on:
       - master
       - development
       - main
+      - "feature/git-action"
   pull_request:
     branches:
       - development

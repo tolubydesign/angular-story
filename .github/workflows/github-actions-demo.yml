@@ -31,6 +31,27 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Create and populate .env file
+        env:
+          AUTHENTICATION_TOKEN: ${{ secrets.AUTHENTICATION_TOKEN }}
+          BASE_API_URL: ${{ secrets.BASE_API_URL }}
+
+        run: |
+          cat <<EOF > .env.production
+          BASE_API_URL="$BASE_API_URL"
+          AUTHENTICATION_TOKEN="$AUTHENTICATION_TOKEN"
+          EOF
+
+          cat <<EOF > .env.development
+          BASE_API_URL="$BASE_API_URL"
+          AUTHENTICATION_TOKEN="$AUTHENTICATION_TOKEN"
+          EOF
+
+          echo "cat .env.production"
+          echo "cat .env.development"
+          cat .env.development
+          cat .env.production
+
       - name: Build Environment Files
         run: npm run env
 

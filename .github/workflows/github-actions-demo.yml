@@ -36,9 +36,6 @@ jobs:
 
       # TODO: find a better way
       - name: Create and populate production env file
-        # env:
-        #   AUTHENTICATION_TOKEN: ${{ secrets.AUTHENTICATION_TOKEN }}
-        #   BASE_API_URL: ${{ secrets.BASE_API_URL }}
         run: |
           touch .env.production
           echo AUTHENTICATION_TOKEN='$AUTHENTICATION_TOKEN' >> .env.production
@@ -47,9 +44,6 @@ jobs:
           echo "BASE_API_URL: $BASE_API_URL"
 
       - name: Create and populate development env file
-        # env:
-        #   AUTHENTICATION_TOKEN: ${{ secrets.AUTHENTICATION_TOKEN }}
-        #   BASE_API_URL: ${{ secrets.BASE_API_URL }}
         run: |
           touch .env.development
           echo AUTHENTICATION_TOKEN="$AUTHENTICATION_TOKEN" >> .env.development

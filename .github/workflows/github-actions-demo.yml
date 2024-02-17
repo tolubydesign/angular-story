@@ -37,9 +37,8 @@ jobs:
           BASE_API_URL: ${{ secrets.BASE_API_URL }}
         run: |
           touch .env.production
-          echo AUTHENTICATION_TOKEN="$AUTHENTICATION_TOKEN" >> .env.production
-          echo BASE_API_URL="$BASE_API_URL" >> .env.production
-          echo ENV="something to be added to the environment" >> .env.production
+          echo AUTHENTICATION_TOKEN='$AUTHENTICATION_TOKEN' >> .env.production
+          echo BASE_API_URL='$BASE_API_URL' >> .env.production
           echo "cat .env.production"
           cat .env.production
 

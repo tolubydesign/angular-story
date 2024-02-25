@@ -35,10 +35,8 @@ fs.readFile(productionFile, 'utf8', (error, data) => {
 function SplitKeyValues(buffer) {
   const obj = {};
   const envKeyValues = buffer.split('\n');
-  // console.log(envKeyValues);
   envKeyValues.forEach((keyValue, index) => {
     const keyVal = keyValue.split('=');
-    console.log(keyVal[0])
     const key = keyVal[0];
     const val = keyVal[1];
     if (key && !key.startsWith('#')) {
@@ -72,6 +70,6 @@ export const environment: Environment = {
 
   fs.writeFile(fileName, fileContent, function (err) {
     if (err) return console.log(err); ''
-    console.log("The file was saved!");
+    console.log(type, " environment file has been created.");
   });
 }

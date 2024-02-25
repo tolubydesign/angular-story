@@ -1,25 +1,61 @@
 name: Angular Story Build
-# on: [push]
+
 on:
   push:
     branches:
-      - "master"
+      - master
+      - development
+      - main
+  pull_request:
+    branches:
+      - development
+      - main
+env:
+  # Setting an environment variable with the value of a configuration variable
+  AUTHENTICATION_TOKEN: ${{ vars.AUTHENTICATION_TOKEN }}
+  BASE_API_URL: ${{ vars.BASE_API_URL }}
 
 jobs:
-  docker:
+  build_project:
     runs-on: ubuntu-latest
     steps:
       - run: echo "Running Build for project."
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
-        # run: echo "Check out repository code"
-        uses: actions/checkout@v2
-      - name: Build Docker Project - Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Build Docker Project
+        uses: actions/checkout@v4
+      
+      - name: Using Node 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      # TODO: find a better way
+      - name: Create and populate production env file
         run: |
-          docker build -t angular-story-app .
+          touch .env.production
+          echo AUTHENTICATION_TOKEN='$AUTHENTICATION_TOKEN' >> .env.production
+          echo BASE_API_URL='$BASE_API_URL' >> .env.production
+          echo "AUTHENTICATION_TOKEN: $AUTHENTICATION_TOKEN"
+          echo "BASE_API_URL: $BASE_API_URL"
+
+      - name: Create and populate development env file
+        run: |
+          touch .env.development
+          echo AUTHENTICATION_TOKEN="$AUTHENTICATION_TOKEN" >> .env.development
+          echo BASE_API_URL="$BASE_API_URL" >> .env.development
+          echo "cat .env.development"
+          cat .env.development
+
+      - name: Build Environment Files
+        run: npm run env
+
+      - name: Build Project
+        run: npm run prod-build
+      
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}

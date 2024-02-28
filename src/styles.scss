@@ -5,6 +5,9 @@
 // For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
 @import './app/style/fonts/fonts';
+@import "./app/style/variables";
+@import "./app/style/animation";
+
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
@@ -19,20 +22,6 @@
 // @import "tailwindcss/base";
 // @import "tailwindcss/components";
 // @import "tailwindcss/utilities";
-
-html,
-body {
-  height: 100%;
-}
-
-body {
-  font-family: 'Roboto-Mono', 'Helvetica Neue', sans-serif;
-  padding: 0;
-  margin: 0;
-  max-width: unset;
-  width: 100%;
-  height: 100%;
-}
 
 $defined-font: '"Roboto-Mono", "Helvetica Neue", sans-serif;';
 
@@ -125,6 +114,3 @@ $dark-theme: mat.define-dark-theme(
 }
 
 @import './app/style/global.scss';
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

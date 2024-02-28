@@ -1,3 +1,4 @@
+@import './variables.scss';
 
 .fixed-position {
   position: fixed !important;
@@ -6,3 +7,15 @@
 .absolute-position {
   position: absolute !important;
 }
+
+html, body { height: 100%; }
+body {
+  font-family: $defined-font;
+  background-color: var(--vt-c-background-colour);
+  padding: 0;
+  margin: 0;
+  max-width: unset;
+  width: 100%;
+  height: 100%;
+}
+

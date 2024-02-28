@@ -1,0 +1,22 @@
+@use "../../style/variables.scss";
+
+.component {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  
+  height: 100%;
+  padding: 32px 12px;
+
+  background-color: #E6E4D5;
+  border: 2px solid #FAF9F1;
+}
+
+.component--content {
+  display: flex;
+}

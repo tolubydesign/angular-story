@@ -1,16 +1,21 @@
 import { Component } from '@angular/core';
+import { Router, RouterLink, RouterModule } from "@angular/router";
 
 @Component({
   selector: 'app-navigation',
   standalone: true,
-  imports: [],
+  imports: [RouterLink, RouterModule],
   templateUrl: './navigation.component.html',
   styleUrl: './navigation.component.scss'
 })
 export class NavigationComponent {
+  navigationLinkClassName = 'block cursor-pointer mb-2 rounded-full hover:bg-[#fff] z-10';
 
-  navigationLinkClassName = 'cursor-pointer mb-2 rounded-full hover:bg-[#fff]';
+  constructor(
+    private router: Router,
+  ) { }
 
-
-
+  redirect(path: string) {
+    this.router.navigate([path])
+  }
 }

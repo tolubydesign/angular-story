@@ -1,9 +1,13 @@
 import { Component, OnInit } from "@angular/core";
-import { Subscription, Observable } from "rxjs";
+import { Subscription } from "rxjs";
 import { StoryService } from "@services/story/story.service";
 import { MockStoryStructure } from "@models/mock-story-structure";
+import { NgFor } from "@angular/common";
+import { CharacterPortraitComponent } from "../../ui/character-portrait/character-portrait.component";
 
 @Component({
+  standalone: true,
+  imports: [NgFor, CharacterPortraitComponent],
   selector: "app-dashboard",
   templateUrl: "./dashboard.component.html",
   styleUrls: ["./dashboard.component.scss"],
@@ -63,10 +67,6 @@ export class DashboardComponent implements OnInit {
         }
       );
   }
-
-  // updateDialogue(): void {
-  //   this.updateStory();
-  // }
 
   /* an action a reader has decide to pick */
   makeChoice(action: number): void {

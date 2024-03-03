@@ -1,17 +1,20 @@
 import { PlotService } from '@services/plot/plot.service';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Plot, PlotContent } from '@models/plot';
+import { PlotContent } from '@models/plot';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NotificationService } from '@services/notification.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule, NgIf } from '@angular/common';
 
 @Component({
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, NgIf, CommonModule],
   selector: 'app-node-form',
   templateUrl: './node-form.component.html',
   styleUrls: ['./node-form.component.scss']
 })
 export class NodeFormComponent {
-
   @Output() updateNodeContent: EventEmitter<any> = new EventEmitter();
   @Output() addNodeContent: EventEmitter<any> = new EventEmitter();
 
@@ -65,7 +68,7 @@ export class NodeFormComponent {
   onSubmit(): void {
     if (!this.form) return this.notificationService.notifyUser("Form information could not be captured.");
     if (this.form && !this.form.valid) return this.notificationService.notifyUser('Form invalid.');
-    
+
     const mergedForm = {
       ...this.form.value,
       id: this.instanceContent?.id

@@ -4,8 +4,13 @@ import { falsy } from '@models/tree.model';
 import StoryBoard from '@lib/story-board';
 import { Router } from '@angular/router';
 import { NotificationService } from '@services/notification.service';
+import { MatCard, MatCardContent, MatCardSubtitle, MatCardTitle } from '@angular/material/card';
+import { RouterModule } from '@angular/router';
+import { NgIf } from '@angular/common';
 
 @Component({
+  standalone: true,
+  imports: [MatCardTitle, MatCard, MatCardSubtitle, MatCardContent, RouterModule, NgIf],
   selector: 'app-story-board',
   templateUrl: './story-board.component.html',
   styleUrls: ['./story-board.component.scss']
@@ -65,8 +70,7 @@ export class StoryBoardComponent implements OnInit {
 
   updateBoard(option: PlotContent): Error | undefined {
     if (!this.board) return new Error('Error. Attempted to update Story Board. Cant find board.')
-    const {state, level}: {state: any, level: any} = this.board.SelectOption(option);
-    
+    const { state, level }: { state: any, level: any } = this.board.SelectOption(option);
     this.narrative = state;
     this.level = level;
     return

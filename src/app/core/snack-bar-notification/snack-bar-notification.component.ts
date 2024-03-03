@@ -4,6 +4,8 @@ import { NotificationService, Notification } from '@services/notification.servic
 import { Subscription } from 'rxjs';
 
 @Component({
+  standalone: true,
+  imports: [],
   selector: 'app-snack-bar-notification',
   templateUrl: './snack-bar-notification.component.html',
   styleUrls: ['./snack-bar-notification.component.scss'],
@@ -37,17 +39,3 @@ export class SnackBarNotificationComponent implements OnInit, OnDestroy {
     }
   }
 }
-
-@Component({
-  selector: 'snack-bar-component-notification',
-  template: "",
-  styles: [
-    `
-    .example-pizza-party {
-      color: hotpink;
-    }
-  `,
-  ],
-  standalone: true,
-})
-export class SnackBarComponentNotification { }

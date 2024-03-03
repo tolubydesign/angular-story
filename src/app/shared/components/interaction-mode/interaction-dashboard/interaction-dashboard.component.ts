@@ -5,8 +5,12 @@ import { URLParameters } from '@helpers/parameter';
 import { Subscription } from 'rxjs';
 import { Plot } from '@models/plot';
 import { HTTPSuccessResponse, StoriesService } from '@services/stories.service';
+import { StoryBoardComponent } from '../story-board/story-board.component';
+import { CommonModule, NgIf } from '@angular/common';
 
 @Component({
+  standalone: true,
+  imports: [StoryBoardComponent, NgIf, CommonModule],
   selector: 'app-interaction-dashboard',
   templateUrl: './interaction-dashboard.component.html',
   styleUrls: ['./interaction-dashboard.component.scss']

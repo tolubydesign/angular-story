@@ -5,8 +5,11 @@ import { Subscription } from "rxjs";
 import { Plot } from "@models/plot";
 import { StoriesService } from "@services/stories.service";
 import { HTTPSuccessResponse } from "@services/stories.service";
+import { OptionalSelectionCardComponent } from "@shared/components/ui/optional-selection-card/optional-selection-card.component";
 
 @Component({
+  standalone: true,
+  imports: [OptionalSelectionCardComponent],
   selector: "app-interaction",
   templateUrl: "./interaction.component.html",
   styleUrls: ["./interaction.component.scss"],
@@ -43,8 +46,7 @@ export class InteractionComponent implements OnInit {
    */
   interact(id: string) {
     this.plotService.UpdateStoryBehavior(id);
-
     // direct user to panel dashboard
-    this.router.navigate([`/dashboard/${id}`]);
+    this.router.navigate([`/interact/${id}`]);
   }
 }

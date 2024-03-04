@@ -10,13 +10,13 @@ import { MainComponent } from "@pages/main/main.component";
 
 export const routes: Routes = [
   // Create. Main, Login, Register.
-  { path: "", component: MainComponent },
-  { path: "editor", component: EditorComponent },
-  { path: "interact", component: InteractionComponent },
+  { path: "", title: 'Home', component: MainComponent },
+  { path: "editor", title: 'Editor', component: EditorComponent },
+  { path: "interact", title: 'Interaction', component: InteractionComponent },
   { path: 'interact/:id', component: InteractionDashboardComponent },
   { path: 'editor/:id', component: EditingComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'login', component: LoginComponent },
-  { path: '404', component: NotFoundComponent },
+  { path: 'register', title: 'Register Account', component: RegisterComponent },
+  { path: 'login', title: 'Login', component: LoginComponent },
+  { path: '404', title: 'Page Not Found', component: NotFoundComponent },
   { path: '**', redirectTo: '404' },
 ];

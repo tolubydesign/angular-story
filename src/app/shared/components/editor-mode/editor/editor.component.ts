@@ -1,11 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { PlotService } from "@services/plot/plot.service";
 import { HTTPSuccessResponse, StoriesService } from "@services/stories.service";
-import { Subscription, Observable, tap, map } from "rxjs";
+import { Subscription } from "rxjs";
 import { Plot } from "@models/plot";
 import { Router } from "@angular/router";
-import * as uuid from "uuid";
-import { HttpHeaders } from "@angular/common/http";
 import { OptionalSelectionCardComponent } from "../../ui/optional-selection-card/optional-selection-card.component";
 
 @Component({

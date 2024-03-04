@@ -1,10 +1,11 @@
+import { HttpClientModule } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterModule } from "@angular/router";
 
 @Component({
   selector: 'app-navigation',
   standalone: true,
-  imports: [RouterLink, RouterModule],
+  imports: [RouterLink, RouterModule, HttpClientModule],
   templateUrl: './navigation.component.html',
   styleUrl: './navigation.component.scss'
 })

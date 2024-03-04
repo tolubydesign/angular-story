@@ -13,13 +13,10 @@ export const routes: Routes = [
   { path: "", component: MainComponent },
   { path: "editor", component: EditorComponent },
   { path: "interact", component: InteractionComponent },
-  // { path: 'dashboard', component: InteractionDashboardComponent },
   { path: 'interact/:id', component: InteractionDashboardComponent },
-  // { path: 'editing', component: EditingComponent },
   { path: 'editor/:id', component: EditingComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
-  // 404 must be last
   { path: '404', component: NotFoundComponent },
   { path: '**', redirectTo: '404' },
 ];

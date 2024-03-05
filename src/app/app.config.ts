@@ -1,8 +1,7 @@
-import { ApplicationConfig, Injectable, importProvidersFrom } from '@angular/core';
+import { ApplicationConfig, Injectable } from '@angular/core';
 import { RouterStateSnapshot, TitleStrategy, provideRouter } from '@angular/router';
 import { routes } from '@app/app.routes';
 import { Title, provideClientHydration } from '@angular/platform-browser';
-import { AppRoutingModule } from './app-routing.module';
 import { provideHttpClient } from '@angular/common/http';
 
 @Injectable({providedIn: 'root'})
@@ -22,8 +21,8 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     {provide: TitleStrategy, useClass: TemplatePageTitleStrategy},
+    provideClientHydration(),
     // importProvidersFrom(AppRoutingModule),
     provideHttpClient(),
-    provideClientHydration(),
   ]
 };

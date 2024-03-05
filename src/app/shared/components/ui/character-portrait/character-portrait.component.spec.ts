@@ -8,8 +8,8 @@ describe("CharacterPortraitComponent", () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [CharacterPortraitComponent],
-    }).compileComponents();
+    imports: [CharacterPortraitComponent],
+}).compileComponents();
   }));
 
   beforeEach(() => {

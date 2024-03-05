@@ -1,5 +1,7 @@
-<main data-component="App" class="app-router--group">
+<main data-component="App" class="app-router--group" [class.nav-bar-expanded]="!navExpanded">
   <app-navigation></app-navigation>
-  <router-outlet></router-outlet>
+  <div class="h-screen w-full">
+    <router-outlet></router-outlet>
+  </div>
   <app-snack-bar-notification></app-snack-bar-notification>
 </main>

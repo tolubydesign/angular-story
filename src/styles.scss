@@ -4,9 +4,9 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
-@import './app/style/fonts/fonts';
-@import "./app/style/variables";
-@import "./app/style/animation";
+@use './app/style/fonts/fonts';
+@use "./app/style/variables";
+@use "./app/style/animation";
 
 
 // Include the common styles for Angular Material. We include this here so that you only

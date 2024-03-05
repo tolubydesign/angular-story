@@ -13,4 +13,5 @@ import { SnackBarNotificationComponent } from "@core/snack-bar-notification/snac
 })
 export class AppComponent {
   title = "angular-story";
+  navExpanded = false;
 }

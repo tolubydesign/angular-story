@@ -2,8 +2,17 @@
 // @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 .app-router--group {
   display: grid;
-  justify-content: center;
-  align-content: center;
+  column-gap: 10px;
+  grid-template-columns: 64px 1fr;
+  grid-template-rows: 1fr;
   height: 100vh;
   width: auto;
+}
+
+.app-router--group {
+  &.nav-bar-expanded {
+    // margin: {
+    //   left: auto;
+    // }
+  }
 }

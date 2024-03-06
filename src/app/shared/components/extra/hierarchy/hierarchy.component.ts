@@ -1,5 +1,6 @@
 import { PlotService } from '@services/plot/plot.service';
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { CommonModule, JsonPipe, NgIf } from '@angular/common';
 import * as d3 from "d3";
 import { HierarchyNode, Selection, svg, drag, ValueFn } from "d3";
 import { BaseType } from 'd3-selection';
@@ -9,20 +10,23 @@ import StoryEditor from "@lib/story-editor";
 import * as uuid from "uuid";
 import { StoriesService } from '@services/stories.service';
 import { NotificationService } from '@services/notification.service';
+import { NodeFormComponent } from '../../editor-mode/node-form/node-form.component';
 
 type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any[], x0: any, y0: any } | any;
 
 @Component({
+  standalone: true,
+  imports: [JsonPipe, NodeFormComponent, NgIf, CommonModule],
   selector: 'app-hierarchy',
   templateUrl: './hierarchy.component.html',
-  styleUrls: ['./hierarchy.component.scss']
+  styleUrls: ['./hierarchy.component.scss'],
 })
 export class HierarchyComponent implements OnInit, OnDestroy {
 
   // Note.
   // `plot` is a is a "prop" 
   // TODO: [optional] rename `plot` to `narrative`
-  @Input() plot?: Plot;
+  @Input({required: true}) plot?: Plot = undefined;
   @ViewChild('D3HierarchyInputRef') D3HierarchyInputRef: ElementRef | undefined;
   private _HierarchySubscriber?: Subscription;
 

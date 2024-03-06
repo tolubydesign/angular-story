@@ -8,8 +8,8 @@ describe('SnackBarNotificationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [SnackBarNotificationComponent]
-    });
+    imports: [SnackBarNotificationComponent]
+});
     fixture = TestBed.createComponent(SnackBarNotificationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

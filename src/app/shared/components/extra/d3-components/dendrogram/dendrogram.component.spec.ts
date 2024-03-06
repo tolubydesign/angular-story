@@ -8,8 +8,8 @@ describe("DendrogramComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DendrogramComponent],
-    }).compileComponents();
+    declarations: [DendrogramComponent],
+}).compileComponents();
   });
 
   beforeEach(() => {

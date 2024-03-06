@@ -2,11 +2,14 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import { PlotService } from "@services/plot/plot.service";
-import { Falsy, Observable, Observer, Subscription } from "rxjs";
-import { Plot, PlotContent } from "@models/plot";
-import { ActivatedRoute, NavigationStart, Router, ParamMap } from '@angular/router';
-import { data } from "@models/tree-data.model";
+import { Falsy, Subscription } from "rxjs";
+import { Plot } from "@models/plot";
+import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { falsy } from "@models/tree.model";
+import { LoaderComponent } from "../../ui/loader/loader.component";
+import { HierarchyComponent } from "../hierarchy/hierarchy.component";
+import { NodeFormComponent } from "../../editor-mode/node-form/node-form.component";
+import { NgIf } from "@angular/common";
 
 // Create Mat Icons.
 const CloseIcon = `
@@ -29,6 +32,8 @@ const THUMB_ICON =
 `;
 
 @Component({
+  standalone: true,
+  imports: [LoaderComponent, HierarchyComponent, NodeFormComponent, NgIf],
   selector: "app-panel",
   templateUrl: "./panel.component.html",
   styleUrls: ["./panel.component.scss"],

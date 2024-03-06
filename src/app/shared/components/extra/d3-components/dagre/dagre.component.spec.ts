@@ -8,8 +8,8 @@ describe("DagreComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DagreComponent],
-    }).compileComponents();
+    declarations: [DagreComponent],
+}).compileComponents();
   });
 
   beforeEach(() => {

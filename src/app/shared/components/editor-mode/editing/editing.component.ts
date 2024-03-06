@@ -1,12 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { falsy } from '@models/tree.model';
 import { URLParameters } from '@helpers/parameter';
 import { Plot } from '@models/plot';
-import { Falsy, Subscription, Observable, Observer, } from 'rxjs';
+import { Falsy, Subscription } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import { StoriesService } from '@services/stories.service';
+import { LoaderComponent } from '../../ui/loader/loader.component';
+import { HierarchyComponent } from '../../extra/hierarchy/hierarchy.component';
+import { NgIf } from '@angular/common';
 
 // Create Mat Icons.
 const CloseIcon = `
@@ -29,6 +32,8 @@ const THUMB_ICON =
 `;
 
 @Component({
+  standalone: true,
+  imports: [LoaderComponent, HierarchyComponent, NgIf],
   selector: 'app-editing',
   templateUrl: './editing.component.html',
   styleUrls: ['./editing.component.scss']
@@ -37,7 +42,7 @@ const THUMB_ICON =
 export class EditingComponent implements OnInit, OnDestroy {
   parameterId: string | falsy;
   parameters = new URLParameters(this.activatedRoute);
-  plot: Plot | Falsy;
+  plot: Plot | undefined;
   private _FetchStoriesSubscriber: Subscription | undefined;
   private _EditingStorySubscriber: Subscription | undefined;
 

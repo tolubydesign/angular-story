@@ -8,8 +8,8 @@ describe('InteractionDashboardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ InteractionDashboardComponent ]
-    })
+    imports: [InteractionDashboardComponent]
+})
     .compileComponents();
   });
 

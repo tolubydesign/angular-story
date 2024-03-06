@@ -8,8 +8,8 @@ describe("SankeyComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SankeyComponent],
-    }).compileComponents();
+    declarations: [SankeyComponent],
+}).compileComponents();
   });
 
   beforeEach(() => {

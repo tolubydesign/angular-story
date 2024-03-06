@@ -8,8 +8,8 @@ describe("NarrativeComponent", () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [NarrativeComponent],
-    }).compileComponents();
+    declarations: [NarrativeComponent],
+}).compileComponents();
   }));
 
   beforeEach(() => {

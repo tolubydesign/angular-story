@@ -1,9 +1,9 @@
 @use "../../style/variables.scss";
 
 .component {
-  position: block;
-  // top: 0;
-  // left: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
   z-index: 10;
 
   display: flex;

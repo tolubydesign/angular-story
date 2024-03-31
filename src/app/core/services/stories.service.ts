@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 import {
   Observable,
-  of, Subscription,
   BehaviorSubject,
   distinctUntilChanged,
   tap,
@@ -14,6 +13,7 @@ import { Plot, PlotContent } from '@shared/models/plot';
 import { NotificationService } from '@services/notification.service';
 import * as uuid from "uuid";
 import { environment } from '@environment/environment';
+import { FakeCardContent } from '@shared/models/recent';
 
 export type HTTPSuccessResponse<T = any> = {
   type: string,
@@ -25,6 +25,18 @@ type HTTPErrorResponse = {
   errorMessage: string,
   code: number,
 }
+
+const fakeCardContent: FakeCardContent = {
+  title: "Title",
+  description: "Description of content",
+  content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ac varius mi. Curabitur viverra nunc eget ullamcorper venenatis.",
+  image: {
+    url: '/assets/images/false-content-card-placeholder.jpg', // or data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=
+    alt: 'Information describing the image being passed.'
+  }
+}
+
+const blankJson = '/assets/data/blank.json';
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +55,10 @@ export class StoriesService {
   // ID of the current
   private _EditingStoryIDSubject = new BehaviorSubject<string>("");
   editingStoryId = this._EditingStoryIDSubject.asObservable().pipe(distinctUntilChanged());
+
+  // Recent Narratives the user has engaged in.
+  private _RecentExperiencesSubject = new BehaviorSubject<FakeCardContent[]>([]);
+  recentExperiences = this._RecentExperiencesSubject.asObservable().pipe(distinctUntilChanged())
 
   constructor(
     private http: HttpClient,
@@ -233,10 +249,51 @@ export class StoriesService {
     return throwError(() => new Error('Something bad happened; please try again later.'));
   };
 
+  /**
+   * Get a list of recent narrative visits that the user has interacted with
+   * TODO: switch to using real api request
+   */
+  fetchRecentVisited(): Observable<FakeCardContent[]> {
+    const content: FakeCardContent[] = []
+    this._loading.next(true);
+    const headers = new HttpHeaders()
+      .set("id", '0000')
+    const url = blankJson;
+    for (let index = 0; index < 3; index++) {
+      content[index] = fakeCardContent
+    }
+
+    // await timeout(6000);
+    return this.http.get<FakeCardContent[]>(url, { headers: headers })
+      // Error Handling
+      .pipe(catchError(this.handleError))
+
+      // Handle Response
+      .pipe(tap((response: FakeCardContent[]) => {
+        this._RecentExperiencesSubject.next(content);
+        console.log(content)
+        return content;
+      }))
+
+      // Handle finalise
+      .pipe(
+        finalize(() => {
+          this._loading.next(false);
+        })
+      );
+  };
+  /**
+   * 
+   */
+  fetchRecentDrafts() {
+
+  }
+
   AllStoriesState = (): Plot[] | undefined => this._AllStoriesSubject.value;
   EditingStoryState = (): Plot | undefined => this._EditingStorySubject.value;
   EditingStoryIdState = (): string | null => this._EditingStoryIDSubject.value;
   isLoadingState = (): boolean => this._loading.value;
+  getRecentVisits = (): FakeCardContent[] | undefined => this._RecentExperiencesSubject.value
 }
 
 function handleError(error: HttpErrorResponse, caught: Observable<any>) {
@@ -253,4 +310,8 @@ function handleError(error: HttpErrorResponse, caught: Observable<any>) {
   }
   // Return an observable with a user-facing error message.
   return throwError(() => new Error('Something bad happened; please try again later.'));
+}
+
+function timeout(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }

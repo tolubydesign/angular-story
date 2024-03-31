@@ -1,6 +1,9 @@
-<section class="start-screen-component--section h-screen flex flex-col justify-center items-center">
+<section data-component="Main" class="start-screen-component--section h-screen flex flex-col">
   <app-welcome-mat></app-welcome-mat>
-  <mat-card class="px-10 py-3">
+
+  <app-continue-card-row></app-continue-card-row>
+  <app-draft-card-row></app-draft-card-row>
+  <!-- <mat-card class="px-10 py-3">
     <div class="start-screen--navigation--group">
       <a class="start-screen--navigation--link" mat-stroked-button routerLink="/interact">
         Interaction
@@ -9,5 +12,5 @@
         Editor
       </a>
     </div>
-  </mat-card>
+  </mat-card> -->
 </section>

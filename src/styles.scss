@@ -5,19 +5,14 @@
 // For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
 @use './app/style/fonts/fonts';
-@use "./app/style/variables";
+@use "./app/style/variables" as variables;
 @use "./app/style/animation";
+@import './app/style/global.scss';
 
 // Tailwind
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-// @import "tailwindcss/base";
-// @import "tailwindcss/components";
-// @import "tailwindcss/utilities";
-$defined-font: "Roboto-Mono", Roboto, "Helvetica Neue", sans-serif;
-@import './app/style/global.scss';
-
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
@@ -30,17 +25,19 @@ $defined-font: "Roboto-Mono", Roboto, "Helvetica Neue", sans-serif;
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $my-primary: mat.define-palette(mat.$indigo-palette, 500);
+// TODO: mod accent palette 
 $my-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
 // The "warn" palette is optional and defaults to red if not specified.
 // The warn palette is optional (defaults to red).
 $my-warn: mat.define-palette(mat.$red-palette);
+$my-axolotl: mat.define-palette(variables.$axolotl-palette, 800);
 
 // You can define a typography level with the define-typography-config Sass function.
 // This function accepts, in order, CSS values for font-size, line-height, font-weight,
 // font-family, and letter-spacing. You can also specify the parameters by name,
 // as demonstrated in the example below.
 $custom-typography-level: mat.define-typography-level(
-  $font-family: $defined-font,
+  $font-family: variables.$defined-font,
   $font-weight: 400,
   $font-size: 0.8rem,
   $line-height: 1,
@@ -48,17 +45,17 @@ $custom-typography-level: mat.define-typography-level(
 );
 
 $custom-typography-config: mat.define-typography-config(
-  $font-family: $defined-font,
+  $font-family: variables.$defined-font,
   $headline-1: mat.define-typography-level(112px, 112px, 300, $letter-spacing: -0.05em),
   $headline-2: mat.define-typography-level(56px, 56px, 400, $letter-spacing: -0.02em),
-  $headline-3: mat.define-typography-level(45px, 48px, 400, $letter-spacing: -0.005em),
-  $headline-4: mat.define-typography-level(34px, 40px, 400),
+  $headline-3: mat.define-typography-level(45px, 48px, 700, $letter-spacing: -0.005em),
+  $headline-4: mat.define-typography-level(34px, 40px, 800),
   $headline-5: mat.define-typography-level(24px, 32px, 400),
-  $headline-6: mat.define-typography-level(18px, null, 800),
+  $headline-6: mat.define-typography-level($font-size: 18px, $line-height: null, $font-weight: 800, $font-family: variables.$defined-font, $letter-spacing: null),
   $subtitle-1: mat.define-typography-level(16px, null, 600),
   $subtitle-2: mat.define-typography-level(16px, null, 600),
-  $body-1: mat.define-typography-level(14px, null, 500),
-  $body-2: mat.define-typography-level(14px, null, 500),
+  $body-1: mat.define-typography-level(14px, null, 500, $letter-spacing: null),
+  $body-2: mat.define-typography-level(14px, null, 500, $letter-spacing: null),
 );
 
 // Define a light theme
@@ -66,7 +63,7 @@ $custom-typography-config: mat.define-typography-config(
 // theming systems such as "color" or "typography".
 $light-theme: mat.define-light-theme((
   color: (
-    primary: $my-primary,
+    primary: $my-axolotl,
     accent: $my-accent,
     warn: $my-warn,
   ),
@@ -112,4 +109,21 @@ $dark-theme: mat.define-dark-theme((
   // typography and density styles.
   // @include mat.core-color($dark-theme);
   // @include mat.button-color($dark-theme);
+}
+
+body {
+  .mdc-button.mat-axolotl {
+    // color: #16e78c;
+    // background-color: #ddd31b;
+  }
+
+  .mat-mdc-raised-button.mat-axolotl {
+    color: var(--vt-c-text);
+    background-color: var(--vt-c-background);
+  }
+
+  .mat-mdc-icon-button.mat-axolotl {
+    // color: #17d1bf;
+    // background-color: #cc2445;
+  }
 }

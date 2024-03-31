@@ -1,4 +1,4 @@
-@import './variables.scss';
+@use './variables.scss' as v;
 
 .fixed-position {
   position: fixed !important;
@@ -10,7 +10,7 @@
 
 html, body { height: 100%; }
 body {
-  font-family: $defined-font;
+  font-family: v.$defined-font;
   background-color: var(--vt-c-background-colour);
   padding: 0;
   margin: 0;

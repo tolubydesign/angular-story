@@ -26,7 +26,7 @@ type HTTPErrorResponse = {
   code: number,
 }
 
-const fakeCardContent: FakeCardContent = {
+export const fakeCardContent: FakeCardContent = {
   title: "Title",
   description: "Description of content",
   content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ac varius mi. Curabitur viverra nunc eget ullamcorper venenatis.",
@@ -184,7 +184,7 @@ export class StoriesService {
    * @param id root base story id
    * @returns
    */
-  updateEditingStory(id: string) {
+  async updateEditingStory(id: string) {
     this._EditingStoryIDSubject.next(id);
 
     if (id === "") {
@@ -194,7 +194,7 @@ export class StoriesService {
 
     if (!this._AllStoriesSubject?.value) {
       // NOTE: fetch data from database. Then 
-      this.fetchAllStories().pipe(tap((response: HTTPSuccessResponse<Plot[]>) => {
+      await this.fetchAllStories().pipe(tap((response: HTTPSuccessResponse<Plot[]>) => {
         const stories = response.data;
         // Searching for story with id
         const story = stories.find((story: Plot) => (story.id === id) ? story : undefined);
@@ -282,11 +282,40 @@ export class StoriesService {
         })
       );
   };
+
   /**
-   * 
+   * Request to get recent content drafts the user has created.
+   * Works that haven't been categorized as completed.
+   * TODO: swap out function content. Use actual data.
    */
   fetchRecentDrafts() {
+    const content: FakeCardContent[] = []
+    this._loading.next(true);
+    const headers = new HttpHeaders()
+      .set("id", '0000')
+    const url = blankJson;
+    for (let index = 0; index < 3; index++) {
+      content[index] = fakeCardContent
+    }
 
+    // await timeout(6000);
+    return this.http.get<FakeCardContent[]>(url, { headers: headers })
+      // Error Handling
+      .pipe(catchError(this.handleError))
+
+      // Handle Response
+      .pipe(tap((response: FakeCardContent[]) => {
+        this._RecentExperiencesSubject.next(content);
+        console.log(content)
+        return content;
+      }))
+
+      // Handle finalise
+      .pipe(
+        finalize(() => {
+          this._loading.next(false);
+        })
+      );
   }
 
   AllStoriesState = (): Plot[] | undefined => this._AllStoriesSubject.value;

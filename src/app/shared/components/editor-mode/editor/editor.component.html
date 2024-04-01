@@ -1,13 +1,17 @@
-<a class="fixed-position top-[10px] left-[10px]" mat-stroked-button routerLink="/" routerLinkActive="active">Home</a>
+<div data-component="Editor" class="relative h-lvh flex items-center justify-center">
+  <a class="absolute-position top-[10px] left-[10px]" mat-stroked-button routerLink="/" routerLinkActive="active">Home</a>
 
-<slot data-component="Editor Component" class="editor-component--section">
-  <div class="editor--section--cards">
-    <!-- loop this element. based on data -->
-    <app-optional-selection-card [stories]="cards" [primaryText]="'DELETE'" [secondaryText]="'EDIT'"
-      (PrimaryClick)="deletePlot($event)" (SecondaryClick)="editPlot($event)">
-    </app-optional-selection-card>
-  </div>
+  <!-- TODO: add welcoming mat. inform user of the page they are currently on -->
 
-  <!-- create new story -->
-  <button mat-raised-button data-element="Create Button Story" class="mt-10 mx-auto" (click)="createStory()">Create</button>
-</slot>
+  <slot data-component="Editor Component" class="editor-component--section">
+    <div class="editor--section--cards">
+      <!-- loop this element. based on data -->
+      <app-optional-selection-card [stories]="cards" [primaryText]="'DELETE'" [secondaryText]="'EDIT'"
+        (PrimaryClick)="deletePlot($event)" (SecondaryClick)="editPlot($event)">
+      </app-optional-selection-card>
+    </div>
+  
+    <!-- create new story -->
+    <button mat-raised-button data-element="Create Button Story" class="mt-10 mx-auto" (click)="createStory()">Create</button>
+  </slot>
+</div>

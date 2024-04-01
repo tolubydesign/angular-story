@@ -1,4 +1,4 @@
-<ng-template data-component="Optional Selection Cards" *ngIf="stories" ngFor let-item [ngForOf]="stories" let-i="index">
+<div data-component="Optional Selection Cards" *ngFor="let item of stories" class="mb-4">
   <mat-card *ngIf="item.title && item.description" class="editor-card">
     <mat-card-content class="card-header">
       <div>
@@ -17,4 +17,4 @@
       </mat-card-actions>
     </mat-card-content>
   </mat-card>
-</ng-template>
+</div>

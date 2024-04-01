@@ -1,4 +1,4 @@
-import { StoriesService } from '@core/services/stories.service';
+import { StoriesService, fakeCardContent } from '@core/services/stories.service';
 import { NgFor } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -33,7 +33,6 @@ export class DraftCardRowComponent {
   }
 
   requestContent() {
-    
     this._FetchDraftsSubject = this.storiesService.recentExperiences.subscribe((resp) => {
       this.content.push(...resp)
     })
@@ -44,18 +43,8 @@ export class DraftCardRowComponent {
    * Implement pagination style request.
    */
   loadMoreDrafts() {
-    const fakeContent: FakeCardContent = {
-      title: "Title",
-      description: "Description of content",
-      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ac varius mi. Curabitur viverra nunc eget ullamcorper venenatis.",
-      image: {
-        url: '/assets/images/false-content-card-placeholder.jpg', // or data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=
-        alt: 'Information describing the image being passed.'
-      }
-    }
-
     for (let index = 0; index < 3; index++) {
-      this.content.push(fakeContent)
+      this.content.push(fakeCardContent)
     }
   }
 }

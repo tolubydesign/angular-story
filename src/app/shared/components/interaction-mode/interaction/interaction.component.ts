@@ -1,15 +1,24 @@
 import { PlotService } from "@services/plot/plot.service";
 import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { Router, RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from "@angular/router";
 import { Subscription } from "rxjs";
 import { Plot } from "@models/plot";
 import { StoriesService } from "@services/stories.service";
 import { HTTPSuccessResponse } from "@services/stories.service";
 import { OptionalSelectionCardComponent } from "@shared/components/ui/optional-selection-card/optional-selection-card.component";
+import { CommonModule } from "@angular/common";
+import { HttpClientModule } from "@angular/common/http";
+import { MatIconModule } from "@angular/material/icon";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   standalone: true,
-  imports: [OptionalSelectionCardComponent],
+  imports: [
+    OptionalSelectionCardComponent,
+    RouterLink, RouterModule, CommonModule, RouterOutlet, RouterLinkActive, HttpClientModule,
+    MatButtonModule, MatDividerModule, MatIconModule
+  ],
   selector: "app-interaction",
   templateUrl: "./interaction.component.html",
   styleUrls: ["./interaction.component.scss"],

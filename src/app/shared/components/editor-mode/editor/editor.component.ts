@@ -2,12 +2,20 @@ import { Component, OnInit } from "@angular/core";
 import { HTTPSuccessResponse, StoriesService } from "@services/stories.service";
 import { Subscription } from "rxjs";
 import { Plot } from "@models/plot";
-import { Router } from "@angular/router";
+import { Router, RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from "@angular/router";
 import { OptionalSelectionCardComponent } from "../../ui/optional-selection-card/optional-selection-card.component";
+import { HttpClientModule } from "@angular/common/http";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatIconModule } from "@angular/material/icon";
 
 @Component({
   standalone: true,
-  imports: [OptionalSelectionCardComponent],
+  imports: [
+    OptionalSelectionCardComponent,
+    RouterLink, RouterModule, RouterOutlet, RouterLinkActive, HttpClientModule,
+    MatButtonModule, MatDividerModule, MatIconModule
+  ],
   selector: "app-editor",
   templateUrl: "./editor.component.html",
   styleUrls: ["./editor.component.scss"],

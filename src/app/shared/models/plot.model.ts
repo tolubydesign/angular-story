@@ -2,7 +2,7 @@ import { Plot, PlotContent } from "@models/plot";
 import { GraphNode, GraphLink } from "@models/nodes-links";
 
 export class PlotModel {
-  originalValue: Plot[];
+  plots: Plot[];
 
   private nodes: GraphNode[] = [];
   private links: GraphLink[] = [];
@@ -10,12 +10,12 @@ export class PlotModel {
   public selectedPlot: Plot | null = null;
 
   constructor(data: Plot[]) {
-    this.originalValue = data;
+    this.plots = data;
     this.initialize();
   }
 
   initialize(): void {
-    console.log("(initialize)", this.originalValue);
+    console.info("initialize", this.plots);
     this.selectedPlot = null;
     /** attach nodes and links */
   }
@@ -36,7 +36,7 @@ export class PlotModel {
       }
     });
 
-    console.log("(setNodesAndLinks)", this.selectedPlot, this.nodes);
+    console.log("(set nodes and links)", this.selectedPlot, this.nodes);
   }
 
   /**
@@ -45,9 +45,8 @@ export class PlotModel {
    * @returns
    */
   selectPlot(ID: string): Plot | null {
-    // console.log("(selectPlot)", ID)
     // Loop though plot to find the selected plot
-    this.originalValue.forEach((val) => {
+    this.plots.forEach((val) => {
       if (val.id === ID) {
         this.selectedPlot = val;
       }

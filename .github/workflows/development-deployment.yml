@@ -1,0 +1,87 @@
+name: Build and Deploy Narration Story Application to AWS 
+
+on:
+  # push:
+  #   branches:
+  #     - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  # Setting an environment variable with the value of a configuration variable
+  AUTHENTICATION_TOKEN: ${{ vars.AUTHENTICATION_TOKEN }}
+  BASE_API_URL: ${{ vars.BASE_API_URL }}
+
+jobs:
+  build_project:
+    runs-on: ubuntu-latest
+    steps:
+      # Basic introductions
+      - run: echo "Running Build for project."
+      - run: echo "Event Name - ${{ github.event_name }}"
+      - run: echo "Ref - ${{ github.ref }}"
+      
+      # Configure AWS credentials      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # Checkout Repository.
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      # Setup Node Version.
+      - name: Using Node 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Setup Cache.
+      - name: Setup Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Install Project.
+      - name: Install dependencies
+        run: npm ci
+
+      # Setup Environmental Variables.
+      - name: Create production env file
+        run: |
+          touch .env.production
+          echo AUTHENTICATION_TOKEN='$AUTHENTICATION_TOKEN' >> .env.production
+          echo BASE_API_URL='$BASE_API_URL' >> .env.production
+          echo "AUTHENTICATION_TOKEN: $AUTHENTICATION_TOKEN"
+          echo "BASE_API_URL: $BASE_API_URL"
+      - run: |
+          touch .env.development
+          echo AUTHENTICATION_TOKEN="$AUTHENTICATION_TOKEN" >> .env.development
+          echo BASE_API_URL="$BASE_API_URL" >> .env.development
+          echo "cat .env.development"
+          cat .env.development
+
+      # Build Project Environmental files.
+      - name: Build Environment Files
+        run: npm run env
+
+      - name: Build Project
+        run: ng build --configuration=production
+      
+      # Copy to S3 bucket.
+      - name: Copy to S3 Bucket
+        run: |
+          aws s3 sync dist/angular-interaction/browser s3://${{ secrets.AWS_S3_BUCKET_NAME }}/
+
+      # # (Optional) Invalidate CloudFront.
+      # - name: Invalidate CloudFront
+      #   run: |
+      #     aws cloudfront create-invalidation --distribution-id <CLOUDFRONT DISTRIBUTION ID> --paths "/*"
+

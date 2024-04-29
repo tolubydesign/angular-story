@@ -1,7 +1,11 @@
 {
   "cSpell.words": [
-    "Dendrogram",
-    "Initialise"
+    "dagre",
+    "dendrogram",
+    "echarts",
+    "initialise",
+    "newclass",
+    "sankey"
   ],
   "editor.tabSize": 2
 }

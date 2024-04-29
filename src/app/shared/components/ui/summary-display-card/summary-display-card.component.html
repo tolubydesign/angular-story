@@ -1,0 +1,25 @@
+<mat-card data-component="Continue Display Card" class="w-full sm:w-1/4 sm:min-w-[330px] max-w-[350px] overflow-hidden">
+  <div class="flex items-center h-[100px] w-full overflow-hidden">
+    <img mat-card-image class="h-auto w-full" [src]="imageUrl ? imageUrl : 'about:blank'" width="auto" height="auto"
+      [alt]="imageAlt" />
+  </div>
+
+  <mat-card-header class="mb-4">
+    <mat-card-title>{{ title }}</mat-card-title>
+    <mat-card-subtitle>{{ description }}</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content class="mb-4">
+    <p class="mat-body-2 text-[#867979]">{{ content }}</p>
+  </mat-card-content>
+
+  <mat-card-actions class="grid gap-2">
+    @if (contentType === 'continuation') {
+    <button mat-raised-button>View</button>
+    }
+    @if (contentType === 'draft') {
+    <button mat-raised-button (click)="null">Edit</button>
+    <button mat-raised-button (click)="null">Delete</button>
+    }
+  </mat-card-actions>
+</mat-card>

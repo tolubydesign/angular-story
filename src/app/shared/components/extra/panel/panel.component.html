@@ -1,24 +1,23 @@
-<section data-component="Panel Component" [ngClass]="{ 'panel--component': true }">
-  <!-- <button mat-mini-fab color="primary" aria-label="close icon" class="mat-mini--button" (click)="closePanel()">
-    <mat-icon svgIcon="close" aria-hidden="false" aria-label="Example thumbs up SVG icon" style="width: 18px; height: auto; margin: auto"></mat-icon>
-  </button> -->
-
+<!-- TODO: remove file in future. No longer in use (production) -->
+<!-- DELETE FILE -->
+<slot data-component="Panel Component" [class]="{ 'panel--component': true }">
   <div class="loader--group" *ngIf="!this.displayDendrogram">
     <app-loader></app-loader>
   </div>
 
-  <div class="display-dendrogram--group" >
+  <div class="display-dendrogram--group" *ngIf="this.displayDendrogram">
     <!-- TODO: render dendrogram here or pass data into child component -->
-    <app-hierarchy *ngIf="this.displayDendrogram">
+    <app-hierarchy *ngIf="plot" [plot]="plot">
       <!-- src/app/shared/components/hierarchy/hierarchy.component.html -->
       <!-- This component is in /components/d3/ -->
     </app-hierarchy>
-
-    <mat-card class="test-mat-card">
-      <div class="test--mat-card--group">
-        <p class="test--mat-card--text"><b>panel works!</b></p>
-        <p class="test--mat-card--text">{{ selectedPlot | json }}</p>
-      </div>
-    </mat-card>
+    
+    <div *ngIf="!plot">
+      <p class="text-sm text-center text-rose-500">Story information couldn't be fetched.</p>
+    </div>
   </div>
-</section>
+
+  <!-- Handle form changes -->
+  <app-node-form></app-node-form>
+
+</slot>

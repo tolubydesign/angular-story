@@ -1,12 +1,19 @@
-@import "./style/variables";
-@import "./style/animation";
-@import "./style/fonts/fonts";
 // import google material icons for Material Icons
 // @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+.app-router--group {
+  display: grid;
+  margin: {
+    left: 60px;
+  };
+  column-gap: 10px;
+  height: 100vh;
+  width: auto;
+}
 
 .app-router--group {
-  height: 100vh;
-  display: grid;
-  justify-content: center;
-  align-content: center;
+  &.nav-bar-expanded {
+    // margin: {
+    //   left: auto;
+    // }
+  }
 }

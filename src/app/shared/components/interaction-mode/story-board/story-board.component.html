@@ -1,0 +1,44 @@
+<slot data-component="Story Board Component" class="story-board--section">
+  <article *ngIf="fullStory" class="board--base--group">
+    <div class="board--header--group">
+      <p class="" style="margin: auto auto 10px; text-align: center">level: {{ level }}</p>
+      <mat-card-title class="board--title">{{ title }}</mat-card-title>
+      <mat-card-subtitle class="board--description">{{ description }}</mat-card-subtitle>
+    </div>
+
+    <mat-card class="board-card--base">
+      <mat-card-content class="board--content--group" *ngIf="narrative" data-element="Story Board Narrative Details and Optional Choices.">
+        <div class="board--graphics--group" [style]="!narrative.graphics ? 'background-color: #d4d4d4' : ''"></div>
+
+        <div class="board--description--group">
+          {{ narrative.description }}
+        </div>
+
+        <div class="board--options--group">
+          <!-- loop - optional selections -->
+          <ng-template #button *ngIf="narrative" ngFor let-child [ngForOf]="narrative.children" let-i="index">
+            <button class="board-button--option" mat-stroked-button *ngIf="child.name" data-id="{{ child.id }}" (click)="selectionOption(child)">
+              {{ child.name }}
+            </button>
+          </ng-template>
+        </div>
+
+        <div *ngIf="narrative && !narrative.children" class="">
+          <p class="board-button--option" style="text-align:center">Story Ended</p>
+          <div>
+            <a class="hover:cursor-pointer" [routerLink]="['/interact']" [queryParams]="{debug: true}" queryParamsHandling="merge">
+              Go to Interaction Page.
+            </a>
+            <br />
+            <a class="hover:cursor-pointer" (click)="reload()">
+              Return to start.
+            </a>
+          </div>
+          
+        </div>
+        
+        
+      </mat-card-content>
+    </mat-card>
+  </article>
+</slot>

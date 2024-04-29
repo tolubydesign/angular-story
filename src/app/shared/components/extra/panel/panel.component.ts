@@ -1,12 +1,15 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import { PlotService } from "@services/plot/plot.service";
-import { Observable, Observer, Subscription } from "rxjs";
-import { Plot, PlotContent } from "@models/plot";
-import { ActivatedRoute, NavigationStart, Router, ParamMap } from '@angular/router';
-import { data } from "@models/tree-data.model";
+import { Falsy, Subscription } from "rxjs";
+import { Plot } from "@models/plot";
+import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { falsy } from "@models/tree.model";
+import { LoaderComponent } from "../../ui/loader/loader.component";
+import { HierarchyComponent } from "../hierarchy/hierarchy.component";
+import { NodeFormComponent } from "../../editor-mode/node-form/node-form.component";
+import { NgIf } from "@angular/common";
 
 // Create Mat Icons.
 const CloseIcon = `
@@ -18,7 +21,7 @@ const CloseIcon = `
   </g>
 </svg>
 `
-const THUMBUP_ICON =
+const THUMB_ICON =
   `
   <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px">
     <path d="M0 0h24v24H0z" fill="none"/>
@@ -29,13 +32,13 @@ const THUMBUP_ICON =
 `;
 
 @Component({
+  standalone: true,
+  imports: [LoaderComponent, HierarchyComponent, NodeFormComponent, NgIf],
   selector: "app-panel",
   templateUrl: "./panel.component.html",
   styleUrls: ["./panel.component.scss"],
 })
-export class PanelComponent implements OnInit {
-  // VARIABLES
-  requestSubscription: Subscription | falsy;
+export class PanelComponent implements OnInit, OnDestroy {
   parameterID: string | unknown;
   panelError: { type: 'unknown error' | 'not found' | falsy, error: boolean } = {
     type: undefined,
@@ -43,9 +46,11 @@ export class PanelComponent implements OnInit {
   };
 
   // SUBSCRIPTIONS
-  plotSelectionSubscription: Subscription | undefined = undefined;
   selectedPlot: Plot | undefined = undefined;
   displayDendrogram: boolean = false;
+
+  plot?: Plot;
+  private _HierarchySubscriber?: Subscription;
 
   constructor(
     private plotService: PlotService,
@@ -57,73 +62,44 @@ export class PanelComponent implements OnInit {
     // Note that we provide the icon here as a string literal here due to a limitation in
     // Stackblitz. If you want to provide the icon from a URL, you can use:
     // `iconRegistry.addSvgIcon('thumbs-up', sanitizer.bypassSecurityTrustResourceUrl('icon.svg'));`
-    iconRegistry.addSvgIconLiteral('thumbs-up', sanitizer.bypassSecurityTrustHtml(THUMBUP_ICON));
+    iconRegistry.addSvgIconLiteral('thumbs-up', sanitizer.bypassSecurityTrustHtml(THUMB_ICON));
     iconRegistry.addSvgIconLiteral('close', sanitizer.bypassSecurityTrustHtml(CloseIcon));
   }
 
   ngOnInit(): void {
     this.getParameterID();
+
+    this._HierarchySubscriber = this.plotService.storyBehaviorSubject.subscribe((plot: Plot | Falsy) => {
+      if (plot && plot.content) this.plot = plot;
+    });
   }
 
   ngOnDestroy(): void {
-    // UNSUBSCRIBE
-    // this.plotService.storyBehavior.unsubscribe();
-    this.requestSubscription?.unsubscribe();
+    this._HierarchySubscriber?.unsubscribe();
   }
 
   /**
    * 
-   * @param
    * @description Get id from url. Page route
-   * @return void
+   * @return {void}
    */
   getParameterID() {
     // Route
-    this.activatedRoute.paramMap.subscribe((value: ParamMap | { params: { id: string } } | any) => {
+    return this.activatedRoute.paramMap.subscribe((value: ParamMap | { params: { id: string } } | any) => {
       if (value && value.params && value.params.id) {
         this.parameterID = value.params.id;
-
-        // We have the relevant parameter id. Make a request to back-end.
-        this.initializeComponent();
+        // this.updateStory(value.params.id);
+        this.displayDendrogram = true;
       }
     });
-
-    // const state = this.router.routerState;
-    // const currentNavigation = this.router.getCurrentNavigation();
-  }
+  };
 
   /**
-   * @param
-   * @description Initialise component. Get and set the necessary data
-   * @return void
+   * @description descriptive text 
+   * @param {string} id 
    */
-  initializeComponent(): void {
-    this.requestSubscription = this.plotService.GetStory().subscribe((response: Plot[]) => {
-
-      if (response && response.length) {
-        this.selectedPlot = response.find((ob: Plot) => ob.id === this.parameterID);
-
-        if (this.selectedPlot) {
-          // Update store.
-          this.plotService.storyBehaviorSubject.next(this.selectedPlot);
-          // Show dendrogram.
-          this.displayDendrogram = true;
-        } else {
-          // Update store.
-          // this.plotService.storySubject.next(undefined);
-          // Hide dendrogram.
-          this.displayDendrogram = false;
-        };
-      }
-
-      console.log("Generated:", data)
-      console.log("SUB:storyBehaviorSubject", this.plotService.storyBehaviorSubject.getValue());
-    });
-
-    // subscribe to values in service
-    // this.plotService.storyBehavior.subscribe((response: PlotContent | undefined) => {
-    //   console.log("this.plotService.storyBehavior.subscribe", response);
-    //   return response
-    // });
-  }
+  // updateStory(id: string) {
+  //   // We have the relevant parameter id. Make a request to back-end.
+  //   this.plotService.UpdateStoryBehavior(id);
+  // }
 }

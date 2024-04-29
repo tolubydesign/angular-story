@@ -1,3 +1,7 @@
-<section data-component="App" class="app-router--group">
-  <router-outlet data-route="outlet"></router-outlet>
-</section>
+<main data-component="App" class="app-router--group" [class.nav-bar-expanded]="!navExpanded">
+  <app-navigation></app-navigation>
+  <div>
+    <router-outlet></router-outlet>
+  </div>
+  <app-snack-bar-notification></app-snack-bar-notification>
+</main>

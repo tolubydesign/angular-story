@@ -37,7 +37,6 @@ export class StoryService {
       }
     } else if (event === "next") {
       if (position < narrative.length - 1) {
-        console.log("", position);
         this.updateCurrentPosition(position + 1);
       } else {
         return;

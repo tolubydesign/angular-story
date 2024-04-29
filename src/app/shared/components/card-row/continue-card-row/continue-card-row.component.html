@@ -1,0 +1,16 @@
+<section data-component="Continue Card Row" class="mx-12 my-6">
+  <div class="continue-card-row--header mb-5">
+    <h4 class="mat-headline-6">Continue</h4>
+    <p class="text-sm font-medium text-[#413F5A]">Continue with the stories you were busy with.</p>
+  </div>
+  <div class="continue-display-card--content flex flex-wrap gap-4" >
+    <app-summary-display-card  *ngFor="let item of content"
+      [contentType]="'continuation'"
+      [imageAlt]="item.image.alt"
+      [imageUrl]="item.image.url"
+      [content]="item.content"
+      [description]="item.description"
+      [title]="item.title"
+    ></app-summary-display-card>
+  </div>
+</section>

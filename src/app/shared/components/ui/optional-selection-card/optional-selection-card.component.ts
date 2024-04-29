@@ -1,11 +1,14 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
 import { Plot } from '@models/plot';
 import { falsy } from '@models/tree.model';
 import { PlotService } from "@services/plot/plot.service";
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { MatCard, MatCardActions, MatCardContent, MatCardSubtitle, MatCardTitle } from '@angular/material/card';
+import { CommonModule, NgFor, NgForOf, NgIf, NgTemplateOutlet } from '@angular/common';
 
 @Component({
+  standalone: true,
+  imports: [MatCard, MatCardSubtitle, MatCardTitle, MatCardContent, MatCardActions, NgIf, CommonModule, NgFor, NgForOf, NgTemplateOutlet],
   selector: 'app-optional-selection-card',
   templateUrl: './optional-selection-card.component.html',
   styleUrls: ['./optional-selection-card.component.scss']

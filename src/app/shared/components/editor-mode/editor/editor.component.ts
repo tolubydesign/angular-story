@@ -1,13 +1,21 @@
 import { Component, OnInit } from "@angular/core";
-import { PlotService } from "@services/plot/plot.service";
 import { HTTPSuccessResponse, StoriesService } from "@services/stories.service";
-import { Subscription, Observable, tap, map } from "rxjs";
+import { Subscription } from "rxjs";
 import { Plot } from "@models/plot";
-import { Router } from "@angular/router";
-import * as uuid from "uuid";
-import { HttpHeaders } from "@angular/common/http";
+import { Router, RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from "@angular/router";
+import { OptionalSelectionCardComponent } from "../../ui/optional-selection-card/optional-selection-card.component";
+import { HttpClientModule } from "@angular/common/http";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatIconModule } from "@angular/material/icon";
 
 @Component({
+  standalone: true,
+  imports: [
+    OptionalSelectionCardComponent,
+    RouterLink, RouterModule, RouterOutlet, RouterLinkActive, HttpClientModule,
+    MatButtonModule, MatDividerModule, MatIconModule
+  ],
   selector: "app-editor",
   templateUrl: "./editor.component.html",
   styleUrls: ["./editor.component.scss"],
@@ -20,7 +28,6 @@ export class EditorComponent implements OnInit {
   cards: Plot[] = [];
 
   constructor(
-    private plotService: PlotService,
     private router: Router,
     private storiesService: StoriesService
   ) { }
@@ -122,7 +129,7 @@ export class EditorComponent implements OnInit {
   editPlot(id: string) {
     // this.plotService.UpdateStoryBehavior(id);
     // direct user to panel dashboard.
-    this.router.navigate([`/editing/${id}`])
+    this.router.navigate([`/editor/${id}`])
   }
 
   /**
@@ -133,6 +140,6 @@ export class EditorComponent implements OnInit {
     // TODO: call loading component
     const id = await this.storiesService.createNewStoryGraph()
     // TODO: cancel loading component
-    this.router.navigate([`/editing/${id}`])
+    this.router.navigate([`/editor/${id}`])
   }
 }

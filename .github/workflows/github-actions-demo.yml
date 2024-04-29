@@ -5,11 +5,11 @@ on:
     branches:
       - master
       - development
-      - main
+      # - main
   pull_request:
     branches:
       - development
-      - main
+      # - main
 env:
   # Setting an environment variable with the value of a configuration variable
   AUTHENTICATION_TOKEN: ${{ vars.AUTHENTICATION_TOKEN }}

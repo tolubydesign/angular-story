@@ -26,7 +26,7 @@
         <div *ngIf="narrative && !narrative.children" class="">
           <p class="board-button--option" style="text-align:center">Story Ended</p>
           <div>
-            <a class="hover:cursor-pointer" [routerLink]="['/interaction']" [queryParams]="{debug: true}" queryParamsHandling="merge">
+            <a class="hover:cursor-pointer" [routerLink]="['/interact']" [queryParams]="{debug: true}" queryParamsHandling="merge">
               Go to Interaction Page.
             </a>
             <br />

@@ -8,8 +8,8 @@ describe('NodeFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NodeFormComponent ]
-    })
+    imports: [NodeFormComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(NodeFormComponent);

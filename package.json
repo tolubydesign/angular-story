@@ -51,7 +51,7 @@
     "@types/node": "^18.19.31",
     "autoprefixer": "^10.4.13",
     "browser-sync": "^3.0.0",
-    "codelyzer": "^6.0.0",
+    "codelyzer": "^0.0.28",
     "dotenv": "^16.4.5",
     "eslint-config-prettier": "^8.5.0",
     "jasmine-core": "~4.0.0",

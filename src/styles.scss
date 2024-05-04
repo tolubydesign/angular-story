@@ -126,4 +126,14 @@ body {
     // color: #17d1bf;
     // background-color: #cc2445;
   }
+
+  .mat-mdc-raised-button[disabled],
+  .mat-mdc-raised-button.mat-mdc-button-disabled {
+    color: var(--vt-c-button-disabled-label-text);
+    background-color: var(--vt-c-button-disabled-container);
+  }
+
+  .mat-mdc-raised-button.mat-primary {
+    
+  }
 }

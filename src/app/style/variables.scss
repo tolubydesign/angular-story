@@ -109,7 +109,10 @@ $axolotl-palette: (
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
-  
+
+  // Overwrites
+  --vt-c-button-disabled-label-text: rgba(0, 0, 0, 0.38);
+  --vt-c-button-disabled-container: rgba(0, 0, 0, 0.12);
 }
 
 
@@ -155,4 +158,3 @@ $axolotl-palette: (
     */
   }
 }
-

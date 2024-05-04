@@ -9,7 +9,6 @@ import { LoginComponent } from "@pages/login/login.component";
 import { MainComponent } from "@pages/main/main.component";
 
 export const routes: Routes = [
-  // Create. Main, Login, Register.
   { path: "", title: 'Home', component: MainComponent },
   { path: "editor", title: 'Editor', component: EditorComponent },
   { path: "interact", title: 'Interaction', component: InteractionComponent },
@@ -20,3 +19,5 @@ export const routes: Routes = [
   { path: '404', title: 'Page Not Found', component: NotFoundComponent },
   { path: '**', redirectTo: '404' },
 ];
+
+export const invalidNavigationBarRoutes: string[] = ['/login', '/register'];

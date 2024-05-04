@@ -1,1 +1,12 @@
-<p>register works!</p>
+<div data-page="Register" class="sign-up--page relative overflow-y-scroll md:overflow-y-auto flex flex-col-reverse md:flex-row">
+  <img class="w-[34px] h-auto fixed top-4 left-4" height="32" width="32" src="/assets/logo-light.svg"
+    alt="Narration font logo." />
+
+  <div class="flex justify-center items-center min-h-[calc(100vh-10vh)] h-auto my-8 md:my-0  w-full md:w-1/2">
+    <app-register-form class="w-full"></app-register-form>
+  </div>
+
+  <div class="sign-up--side-image--panel w-full md:w-1/2 min-h-[10vh]"
+    [style.background-image]="'url(/assets/images/sign-up-screen-asset-collage.jpg)'">
+  </div>
+</div>

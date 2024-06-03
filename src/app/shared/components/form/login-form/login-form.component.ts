@@ -1,8 +1,10 @@
 import { Component, signal } from '@angular/core';
-import { FormGroup, FormControl, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
+import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Validators } from '@angular/forms';
+import { UserService } from '@core/services/user/user.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login-form',
@@ -18,6 +20,7 @@ export class LoginFormComponent {
   invisibleEyeIcon = "/assets/icons/visibility_off_24.svg";
   eyeIcon = signal<string>(this.visibleEyeIcon);
   passwordType = signal<'password' | 'text'>("password");
+  loading = signal<boolean>(false);
 
   loginForm = new FormGroup({
     email: new FormControl('', [
@@ -31,8 +34,27 @@ export class LoginFormComponent {
     rememberMe: new FormControl(false),
   });
 
+  constructor(
+    private userService: UserService,
+  ) { }
+
   onSubmit() {
-    console.log('form submitted', this.loginForm);
+    const { email, password } = this.loginForm.value
+    this.loading.set(true)
+    if (!email || email.trim() === "" || !password || password.trim() === "") {
+      console.warn('Invalid login details provided')
+      this.loading.set(false)
+      return
+    }
+
+    return this.userService.login({
+      email,
+      password
+    })
+    .pipe(finalize(() => {
+      this.loading.set(false)
+    }))
+    .subscribe()
   }
 
   switchPasswordType() {

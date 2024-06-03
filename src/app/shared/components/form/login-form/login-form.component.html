@@ -71,7 +71,7 @@
       <!-- <label for="rememberMe"></label> -->
     </div>
 
-    <button mat-raised-button color="axolotl" class="font-bold text-base" type="submit" [disabled]="!loginForm.valid">
+    <button mat-raised-button color="axolotl" class="font-bold text-base" type="submit" [disabled]="!loginForm.valid || loading()">
       Login
     </button>
 

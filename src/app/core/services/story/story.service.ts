@@ -1,10 +1,8 @@
 import { Injectable } from "@angular/core";
-import { Observable, of, Subscription, BehaviorSubject } from "rxjs";
+import { Observable, Subscription, BehaviorSubject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { HttpErrorResponse } from "@angular/common/http";
-import { map, tap, retry } from "rxjs/operators";
+import { tap } from "rxjs/operators";
 import { MockStoryStructure } from "@models/mock-story-structure";
-import { computeMsgId } from "@angular/compiler";
 
 @Injectable({
   providedIn: "root",
@@ -18,8 +16,6 @@ export class StoryService {
 
   fullNarrative = new BehaviorSubject<MockStoryStructure[] | null>(null);
   fullNarrative$ = this.fullNarrative.asObservable();
-
-  // fullNarrative: object[] = null;
 
   constructor(private http: HttpClient) {}
 

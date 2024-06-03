@@ -14,6 +14,7 @@ import { NotificationService } from '@services/notification.service';
 import * as uuid from "uuid";
 import { environment } from '@environment/environment';
 import { FakeCardContent } from '@shared/models/recent';
+import { handleServiceError } from '@shared/utils/error-notification-handler';
 
 export type HTTPSuccessResponse<T = any> = {
   type: string,
@@ -70,6 +71,8 @@ export class StoriesService {
     )
   }
 
+  private handleError = handleServiceError
+
   /**
    * @description Request to get all stories. 
    * @returns HTTP GET request response.
@@ -79,7 +82,7 @@ export class StoriesService {
     this._loading.next(true)
     return this.http.get<HTTPSuccessResponse<Plot[]>>(url)
       // Error Handling
-      .pipe(catchError(this.handleError))
+      .pipe(catchError(this.handleError(this.notificationService)))
 
       .pipe(
         finalize(() => {
@@ -104,7 +107,7 @@ export class StoriesService {
     this._loading.next(true)
     return this.http.post<HTTPSuccessResponse>(url, body)
       // Error Handling
-      .pipe(catchError(this.handleError))
+      .pipe(catchError(this.handleError(this.notificationService)))
 
       // Handle finalise
       .pipe(
@@ -139,7 +142,7 @@ export class StoriesService {
 
     return this.http.put<HTTPSuccessResponse>(url, { content: body }, { headers: header })
       // Error Handling
-      .pipe(catchError(this.handleError))
+      .pipe(catchError(this.handleError(this.notificationService)))
 
       // Handle finalise
       .pipe(
@@ -232,23 +235,6 @@ export class StoriesService {
     return id
   }
 
-  private handleError(error: HttpErrorResponse, caught: Observable<any>) {
-    this.notificationService.notifyUser(error.message);
-
-    if (error.status === 0) {
-      // A client-side or network error occurred. Handle it accordingly.
-      console.warn('ERROR:', error.error);
-    } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong.
-      console.warn(
-        `Backend returned code "${error.status}", body was: `, error.error);
-    }
-
-    // Return an observable with a user-facing error message.
-    return throwError(() => new Error('Something bad happened; please try again later.'));
-  };
-
   /**
    * Get a list of recent narrative visits that the user has interacted with
    * TODO: switch to using real api request
@@ -266,7 +252,7 @@ export class StoriesService {
     // await timeout(6000);
     return this.http.get<FakeCardContent[]>(url, { headers: headers })
       // Error Handling
-      .pipe(catchError(this.handleError))
+      .pipe(catchError(this.handleError(this.notificationService)))
 
       // Handle Response
       .pipe(tap((response: FakeCardContent[]) => {
@@ -301,7 +287,7 @@ export class StoriesService {
     // await timeout(6000);
     return this.http.get<FakeCardContent[]>(url, { headers: headers })
       // Error Handling
-      .pipe(catchError(this.handleError))
+      .pipe(catchError(this.handleError(this.notificationService)))
 
       // Handle Response
       .pipe(tap((response: FakeCardContent[]) => {
@@ -323,22 +309,6 @@ export class StoriesService {
   EditingStoryIdState = (): string | null => this._EditingStoryIDSubject.value;
   isLoadingState = (): boolean => this._loading.value;
   getRecentVisits = (): FakeCardContent[] | undefined => this._RecentExperiencesSubject.value
-}
-
-function handleError(error: HttpErrorResponse, caught: Observable<any>) {
-  console.warn(error.message);
-  // throw new Error(error.message);
-  if (error.status === 0) {
-    // A client-side or network error occurred. Handle it accordingly.
-    console.error('ERROR:', error.error);
-  } else {
-    // The backend returned an unsuccessful response code.
-    // The response body may contain clues as to what went wrong.
-    console.error(
-      `Backend returned code "${error.status}", body was: `, error.error);
-  }
-  // Return an observable with a user-facing error message.
-  return throwError(() => new Error('Something bad happened; please try again later.'));
 }
 
 function timeout(ms: number) {

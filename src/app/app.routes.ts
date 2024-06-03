@@ -7,15 +7,20 @@ import { EditingComponent } from '@shared/components/editor-mode/editing/editing
 import { RegisterComponent } from "@pages/register/register.component";
 import { LoginComponent } from "@pages/login/login.component";
 import { MainComponent } from "@pages/main/main.component";
+import { routeGuard } from "@core/guard/route.guard";
+import { HomeComponent } from "@pages/home/home.component";
 
 export const routes: Routes = [
-  { path: "", title: 'Home', component: MainComponent },
-  { path: "editor", title: 'Editor', component: EditorComponent },
-  { path: "interact", title: 'Interaction', component: InteractionComponent },
-  { path: 'interact/:id', component: InteractionDashboardComponent },
-  { path: 'editor/:id', component: EditingComponent },
+  { path: "", title: 'Home', component: HomeComponent, canActivate: [routeGuard] },
+  { path: "main", title: 'Main', component: MainComponent },
   { path: 'register', title: 'Register Account', component: RegisterComponent },
   { path: 'login', title: 'Login', component: LoginComponent },
+  // Work pagers
+  { path: "editor", title: 'Editor', component: EditorComponent, canActivate: [routeGuard] },
+  { path: 'editor/:id', title: 'Interaction With ', component: EditingComponent, canActivate: [routeGuard], },
+  { path: "interact", title: 'Interaction', component: InteractionComponent, canActivate: [routeGuard], },
+  { path: 'interact/:id', component: InteractionDashboardComponent, canActivate: [routeGuard], },
+  // 404 must be last
   { path: '404', title: 'Page Not Found', component: NotFoundComponent },
   { path: '**', redirectTo: '404' },
 ];

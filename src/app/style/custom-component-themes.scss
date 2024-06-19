@@ -3,3 +3,31 @@
 // you only have to add additional components here (instead of in every theme class)
 @mixin custom-components-theme($theme) {
 }
+
+// Axolotl Theme
+body {
+  .mdc-button.mat-axolotl {
+    // color: #16e78c;
+    // background-color: #ddd31b;
+  }
+
+  .mat-mdc-raised-button.mat-axolotl {
+    color: var(--vt-c-text);
+    background-color: var(--vt-c-background);
+  }
+
+  .mat-mdc-icon-button.mat-axolotl {
+    // color: #17d1bf;
+    // background-color: #cc2445;
+  }
+
+  .mat-mdc-raised-button[disabled],
+  .mat-mdc-raised-button.mat-mdc-button-disabled {
+    color: var(--vt-c-button-disabled-label-text);
+    background-color: var(--vt-c-button-disabled-container);
+  }
+
+  .mat-mdc-raised-button.mat-primary {
+    
+  }
+}

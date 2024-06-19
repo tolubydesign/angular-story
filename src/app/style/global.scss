@@ -1,4 +1,6 @@
 @use './variables.scss' as v;
+@use './fonts/fira-sans-font.scss';
+@use './fonts/fira-mono-font.scss';
 
 .fixed-position {
   position: fixed !important;
@@ -18,4 +20,3 @@ body {
   width: 100%;
   height: 100%;
 }
-

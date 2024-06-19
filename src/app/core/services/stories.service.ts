@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import {
   Observable,
   BehaviorSubject,
@@ -13,19 +13,9 @@ import { Plot, PlotContent } from '@shared/models/plot';
 import { NotificationService } from '@services/notification.service';
 import * as uuid from "uuid";
 import { environment } from '@environment/environment';
-import { FakeCardContent } from '@shared/models/recent';
+import { FakeCardContent } from '@models/recent';
 import { handleServiceError } from '@shared/utils/error-notification-handler';
-
-export type HTTPSuccessResponse<T = any> = {
-  type: string,
-  data: T,
-  message: string,
-}
-
-type HTTPErrorResponse = {
-  errorMessage: string,
-  code: number,
-}
+import { HTTPSuccessResponse } from '@shared/models/http.model';
 
 export const fakeCardContent: FakeCardContent = {
   title: "Title",

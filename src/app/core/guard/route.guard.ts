@@ -1,24 +1,29 @@
-import { Injectable, inject } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot } from '@angular/router';
+import { Injectable, inject } from "@angular/core";
+import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from "@angular/router";
+import { getUserCredentials } from "@shared/helpers/session.storage";
 
-@Injectable()
-class UserToken {}
+@Injectable({ providedIn: 'root' })
+class UserToken { }
 
-@Injectable()
-class PermissionsService {
-  canActivate(currentUser: UserToken, userId: string): boolean {
+@Injectable({ providedIn: 'root' })
+export class PermissionsService {
+  session: Storage = sessionStorage
+
+  constructor(
+    private router: Router
+  ) { }
+
+  canActivate(): boolean {
+    // TODO: implement advanced security
+    const { email, role, token, username } = getUserCredentials();
+    if (!email || !role || !token || !username) {
+      this.router.navigate([''])
+      return false
+    };
     return true;
-  }
-  canMatch(currentUser: UserToken): boolean {
-    return true;
-  }
+  };
 }
 
-export const routeGuard: CanActivateFn = (route: ActivatedRouteSnapshot,  state: RouterStateSnapshot) => {
-  // return true;
-  console.log('route guard: route', route);
-  console.log('route guard: state', state);
-  console.log('route guard: session storage', sessionStorage.length)
-  
-  return inject(PermissionsService).canActivate(inject(UserToken), route.params['id']);
+export const routeGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+  return inject(PermissionsService).canActivate();
 };

@@ -1,4 +1,4 @@
-import { Routes } from "@angular/router";
+import { Route, Routes } from "@angular/router";
 import { EditorComponent } from "@components/editor-mode/editor/editor.component";
 import { InteractionComponent } from "@components/interaction-mode/interaction/interaction.component";
 import { NotFoundComponent } from '@pages/not-found/not-found.component';
@@ -11,10 +11,10 @@ import { routeGuard } from "@core/guard/route.guard";
 import { HomeComponent } from "@pages/home/home.component";
 
 export const routes: Routes = [
-  { path: "", title: 'Home', component: HomeComponent, canActivate: [routeGuard] },
-  { path: "main", title: 'Main', component: MainComponent },
+  { path: '', title: 'Home', component: HomeComponent, pathMatch: "full" },
   { path: 'register', title: 'Register Account', component: RegisterComponent },
   { path: 'login', title: 'Login', component: LoginComponent },
+  { path: "main", title: 'Main', component: MainComponent, canActivate: [routeGuard] },
   // Work pagers
   { path: "editor", title: 'Editor', component: EditorComponent, canActivate: [routeGuard] },
   { path: 'editor/:id', title: 'Interaction With ', component: EditingComponent, canActivate: [routeGuard], },
@@ -25,4 +25,10 @@ export const routes: Routes = [
   { path: '**', redirectTo: '404' },
 ];
 
-export const invalidNavigationBarRoutes: string[] = ['/login', '/register'];
+const noNavigationBarRoutes = routes.map<string>((route: Route) => {
+  if (route.canActivate) return "";
+  return `/${route.path}`;
+}).filter((r: string) => r.length > 0)
+
+export const invalidNavigationBarRoutes: string[] = noNavigationBarRoutes;
+

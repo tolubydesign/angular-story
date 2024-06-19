@@ -5,6 +5,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Validators } from '@angular/forms';
 import { UserService } from '@core/services/user/user.service';
 import { finalize } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-form',
@@ -35,6 +36,7 @@ export class LoginFormComponent {
   });
 
   constructor(
+    private router: Router,
     private userService: UserService,
   ) { }
 
@@ -52,7 +54,9 @@ export class LoginFormComponent {
       password
     })
     .pipe(finalize(() => {
-      this.loading.set(false)
+      this.loading.set(false);
+      const hasLoggedIn = this.userService.isLoggedIn();
+      if (hasLoggedIn) this.router.navigate(['/main']);
     }))
     .subscribe()
   }

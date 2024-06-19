@@ -26,8 +26,17 @@ export function getUserCredentials(): UserCredentials {
  */
 export function setUserCredential(credential: UserCredentials): void {
   if (sessionStorage && credential.token) sessionStorage.setItem(tokenKey, credential.token);
-  if (sessionStorage && credential.email) sessionStorage.setItem(tokenKey, credential.email);
-  if (sessionStorage && credential.role) sessionStorage.setItem(tokenKey, credential.role);
-  if (sessionStorage && credential.username) sessionStorage.setItem(tokenKey, credential.username);
+  if (sessionStorage && credential.email) sessionStorage.setItem(email, credential.email);
+  if (sessionStorage && credential.role) sessionStorage.setItem(role, credential.role);
+  if (sessionStorage && credential.username) sessionStorage.setItem(username, credential.username);
   return;
+}
+
+export function removeUserSessionStorageCredentials(): void {
+  if (sessionStorage) {
+    sessionStorage.removeItem(tokenKey);
+    sessionStorage.removeItem(email);
+    sessionStorage.removeItem(role);
+    sessionStorage.removeItem(username);
+  }
 }

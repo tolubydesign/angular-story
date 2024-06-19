@@ -1,10 +1,12 @@
-import { UserCredentials } from "@shared/models/user.models";
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from '@angular/core';
 import { environment } from '@environment/environment';
 import { BehaviorSubject, catchError, finalize, tap } from "rxjs";
 import { NotificationService } from "@services/notification.service";
 import { handleServiceError } from "@shared/utils/error-notification-handler";
+import { UserCredentials } from "@models/user.models";
+import { setUserCredential, getUserCredentials } from "@helpers/session.storage";
+import { HTTPSuccessResponse } from "@shared/models/http.model";
 
 @Injectable({
   providedIn: 'root'
@@ -34,10 +36,23 @@ export class UserService {
         console.log("Login request finished");
       }))
 
-      .pipe(tap((response: any) => {
+      .pipe(tap((response: HTTPSuccessResponse<UserCredentials>) => {
         console.log('login request response', response);
-        // save response
+        setUserCredential({
+          username: response.data.username,
+          token: response.data.token,
+          email: response.data.email,
+          role: response.data.role,
+        })
         return response
       }));
+  }
+
+  isLoggedIn(): boolean {
+    const { email, role, token, username } = getUserCredentials();
+    if (email && role && token && username) {
+      return true
+    };
+    return false
   }
 }

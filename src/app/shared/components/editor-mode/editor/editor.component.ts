@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { HTTPSuccessResponse, StoriesService } from "@services/stories.service";
+import { StoriesService } from "@services/stories.service";
 import { Subscription } from "rxjs";
 import { Plot } from "@models/plot";
 import { Router, RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from "@angular/router";
@@ -8,6 +8,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { MatButtonModule } from "@angular/material/button";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatIconModule } from "@angular/material/icon";
+import { HTTPSuccessResponse } from "@models/http.model";
 
 @Component({
   standalone: true,
@@ -55,66 +56,6 @@ export class EditorComponent implements OnInit {
       }
     );
 
-    // this._FetchDataSubscription = this.storiesService.fetchAllStories().subscribe((response) => {
-    //   console.log("(!!!) stories service fetch all stories subscribe", response)
-    //   const fullList = response.data
-    //   const newStory = {
-    //     title: "website request title",
-    //     description: "website request description",
-    //     content: {
-    //       id: uuid.v4(),
-    //       name: "Nam blandit magna vel lacinia",
-    //       description: "In aliquet nisi a.",
-    //       children: [
-    //         {
-    //           id: uuid.v4(),
-    //           name: "Porttitor quis ultrices tortor",
-    //           description: "Quisque blandit magna vel lacinia fringilla. Mauris sit amet gravida tellus.",
-    //           children: null
-    //         },
-    //         {
-    //           id: uuid.v4(),
-    //           name: "2 Porttitor quis ultrices tortor",
-    //           description: "2 Quisque blandit magna vel lacinia fringilla. Mauris sit amet gravida tellus.",
-    //           children: [
-    //             {
-    //               id: uuid.v4(),
-    //               name: "Porttitor quis ultrices tortor",
-    //               description: "Quisque blandit magna vel lacinia fringilla. Mauris sit amet gravida tellus.",
-    //               children: null
-    //             },
-    //           ]
-    //         }
-    //       ]
-    //     }
-    //   }
-
-    //   this.storiesService.addStory(newStory).subscribe((response) => {
-    //     console.log("(!!!) stories service add story subscribe", response.data)
-    //     console.log("(!!!) stories service add story subscribe", fullList[fullList.length - 1]);
-    //     const lastStory = fullList[fullList.length - 1];
-    //     const storyId = lastStory.story_id
-    //     const headers = {
-    //       id: storyId,
-    //       description: "UPDATED website request description",
-    //       title: "UPDATED website request title"
-    //     };
-
-    //     const body = { content: newStory.content }
-    //     this.storiesService.updateStory(headers, body).subscribe((response) => {
-    //       console.log("(!!!) stories service update story subscribe", response);
-    //       console.log("(!!!) stories service update story subscribe ::: lastStory", lastStory);
-
-    //       this.storiesService.deleteStory(storyId).subscribe(() => {
-    //         console.log("(!!!) stories service delete story subscribe", response);
-    //       })
-    //     })
-    //   })
-    // })
-
-    // this._GetStoriesSubscription = this.plotService.GetStory().subscribe((database: Plot[] | undefined) => {
-    //   if (database) this.cards = database;
-    // });
   }
 
   deletePlot(editID: string) {

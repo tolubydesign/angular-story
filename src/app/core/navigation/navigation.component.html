@@ -1,13 +1,26 @@
 <div data-component="navigation" class="component">
   <!-- main content for navigation -->
   <div class="component--main-content">
-    <div class="flex justify-center item-center mx-auto">
-      <img class="shadow-lg w-[36px] h-auto" height="32" width="32" src="/assets/logo-light.svg"
-        alt="Icon representing the logo for this project. Currently under construction. TODO: Update in the future." />
+    <div class="flex flex-col justify-center item-center mx-auto">
+      <a routerLink="/">
+        <img class="shadow-lg w-[36px] h-auto" height="32" width="32" src="/assets/logo-light.svg"
+          alt="Icon representing the logo for this project. Currently under construction. TODO: Update in the future." />
+      </a>
+
+      <div data-element="Navigation Dropdown" class="flex flex-col justify-center item-center mt-4">
+        <button [class]="navigationLinkClassName" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+          <img class="w-[34px] h-auto" height="34" width="34" src="/assets/icons/account_circle-icon.svg"
+            alt="Link to the Home Page. Icon in the shape of a house." />
+        </button>
+        <mat-menu #menu="matMenu" class="menu-axolotl bg-[#000]" color="axolotl">
+          <button mat-menu-item>Preferences</button>
+          <button mat-menu-item (click)="logout()">Logout</button>
+        </mat-menu>
+      </div>
     </div>
 
     <div class="flex flex-col justify-center item-center mt-[20px]">
-      <a [class]="navigationLinkClassName" (click)="redirect('/')" routerLink="/">
+      <a [class]="navigationLinkClassName" (click)="redirect('/main')" routerLink="/main">
         <img class="w-[34px] h-auto" height="34" width="34" src="/assets/icons/home-icon.svg"
           alt="Link to the Home Page. Icon in the shape of a house." />
       </a>

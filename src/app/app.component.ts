@@ -15,15 +15,13 @@ import { invalidNavigationBarRoutes } from "./app.routes";
 export class AppComponent {
   title = "narration";
   navExpanded = false;
-  displayNavigation = true;
+  displayNavigation = false;
 
   constructor(
     private router: Router
   ) {
-    router.events.subscribe((event) => {
-      if (event instanceof ResolveEnd) {
-        this.checkRouteAllowsNavigation(event);
-      }
+    this.router.events.subscribe((event) => {
+      if (event instanceof ResolveEnd) this.checkRouteAllowsNavigation(event);
     });
   }
 

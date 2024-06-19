@@ -1,17 +1,73 @@
-<div>
-  <h1>This is the Home Page</h1>
+<div data-page="Home" data-component="Home Component">
+  <app-mini-navbar></app-mini-navbar>
 
-  <br/>
+  <div data-element="Home Content" class="w-full">
+    <div class="flex flex-col md:flex-row bg-[#DDDAC5] py-10 px-12">
+      <div class="w-full md:w-1/2 flex flex-col gap-6 md:gap-8 justify-center items-start">
+        <h1 class="text-xl md:text-[30px] fira-sans-bold">Create</h1>
 
-  <p>page is loaded.</p>
-  <p>changes need to be made.</p>
+        <p class="text-md font-medium w-full md:max-w-2xl">
+          Always keep improving. The site is meant to promote freedom of expression, creative writing and organisation.
+          Create stories and share them with anyone. Let others experience your creative work. Search and engage in
+          stories interactively made by other users.
+        </p>
 
-  <p>Things to do for this page</p>
-  <div>
-    <ul>Hero image</ul>
-    <ul>Provide details about this project.</ul>
-    <ul>Link to login page/sign-up page.</ul>
-    <ul>Screenshots of application in action.</ul>
+        @if (isLoggedIn) {
+        <a routerLink="/main">
+          <button mat-raised-button color="axolotl" class="font-bold text-base">Go to the Main Page</button>
+        </a>
+        } @else {
+        <a routerLink="/register">
+          <button mat-raised-button color="axolotl" class="font-bold text-base">Create an Account</button>
+        </a>
+        }
+
+      </div>
+
+      <div class="w-full md:w-1/2 flex justify-center items-center">
+        <img class="max-w-[520px] w-full h-auto" height="518" width="518"
+          src="/assets/images/hero-building-graphic-collage.svg"
+          alt="Page hero graphical collage. Various shapes as forms stacked on top of each other." />
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row-reverse py-12 px-12">
+      <div class="w-full md:w-1/2 flex flex-col gap-6 md:gap-8 justify-center items-start">
+        <h1 class="text-xl md:text-[30px] fira-sans-bold">Reasoning Behind This Project</h1>
+
+        <p class="text-md font-medium w-full md:max-w-lg">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent at posuere ante. Fusce ultricies leo at
+          ligula tempor, ut pellentesque urna convallis. Sed et ligula a augue suscipit pulvinar in non metus. Fusce in
+          ipsum at urna pharetra tincidunt. Pellentesque habitant morbi tristique senectus et netus et malesuada fames
+          ac turpis egestas. Suspendisse vel dapibus eros. Suspendisse convallis ut erat sit amet varius. Proin eget
+          gravida urna, at porta ante.
+        </p>
+      </div>
+
+      <div class="w-full md:w-1/2 flex justify-center items-center">
+        <img class="max-w-[169px] w-full h-auto" height="169" width="169"
+          src="/assets/images/home/square-image-green-dot.svg" alt="Alt text needed" />
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row py-12 px-12">
+      <div class="w-full md:w-1/2 flex flex-col gap-6 md:gap-8 justify-center items-start">
+        <h1 class="text-xl md:text-[30px] fira-sans-bold">Lorem Ipsum</h1>
+
+        <p class="text-md font-medium w-full md:max-w-lg">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent at posuere ante. Fusce ultricies leo at
+          ligula tempor, ut pellentesque urna convallis. Sed et ligula a augue suscipit pulvinar in non metus. Fusce in
+          ipsum at urna pharetra tincidunt. Pellentesque habitant morbi tristique senectus et netus et malesuada fames
+          ac turpis egestas. Suspendisse vel dapibus eros. Suspendisse convallis ut erat sit amet varius. Proin eget
+          gravida urna, at porta ante.
+        </p>
+      </div>
+
+      <div class="w-full md:w-1/2 flex justify-center items-center">
+        <img class="max-w-[169px] w-full h-auto" height="169" width="169"
+          src="/assets/images/home/green-iconography-circle.svg" alt="Alt text needed" />
+      </div>
+    </div>
   </div>
-  <p>Provide user with a reason to be on this page.</p>
+
 </div>

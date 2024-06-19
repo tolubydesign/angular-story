@@ -1,5 +1,8 @@
-<main data-component="App" class="app-router--group" [class.nav-bar-expanded]="!navExpanded">
-  <app-navigation></app-navigation>
+<!-- <app-index></app-index> -->
+<main data-component="App" class="app-router--group" 
+  [class.nav-bar-expanded]="!navExpanded"
+  [class.navigation--disabled]="!displayNavigation">
+  <app-navigation *ngIf="displayNavigation"></app-navigation>
   <div>
     <router-outlet></router-outlet>
   </div>

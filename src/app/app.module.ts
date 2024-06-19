@@ -5,7 +5,6 @@ import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatListModule } from "@angular/material/list";
 import { MatIconModule } from "@angular/material/icon";
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AppRoutingModule } from "./app-routing.module";
@@ -20,7 +19,6 @@ import { RouterModule } from '@angular/router';
   imports: [
     AppRoutingModule,
     BrowserModule,
-    // BrowserAnimationsModule,
     MatButtonModule,
     MatCheckboxModule,
     MatCardModule,
@@ -29,7 +27,6 @@ import { RouterModule } from '@angular/router';
     MatIconModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSnackBarModule,
     MatInputModule,
     MatFormFieldModule,
     RouterModule

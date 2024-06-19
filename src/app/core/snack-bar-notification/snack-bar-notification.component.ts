@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationService, Notification } from '@services/notification.service';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 
 @Component({
   standalone: true,
-  imports: [],
+  imports: [MatSnackBarModule],
   selector: 'app-snack-bar-notification',
   templateUrl: './snack-bar-notification.component.html',
   styleUrls: ['./snack-bar-notification.component.scss'],

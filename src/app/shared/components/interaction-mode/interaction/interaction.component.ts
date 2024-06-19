@@ -4,13 +4,13 @@ import { Router, RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from
 import { Subscription } from "rxjs";
 import { Plot } from "@models/plot";
 import { StoriesService } from "@services/stories.service";
-import { HTTPSuccessResponse } from "@services/stories.service";
 import { OptionalSelectionCardComponent } from "@shared/components/ui/optional-selection-card/optional-selection-card.component";
 import { CommonModule } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
 import { MatIconModule } from "@angular/material/icon";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatButtonModule } from "@angular/material/button";
+import { HTTPSuccessResponse } from "@models/http.model";
 
 @Component({
   standalone: true,

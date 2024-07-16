@@ -16,7 +16,7 @@ export const handleServiceError = (notificationService: NotificationService) => 
 
   if (error.status === 0) {
     // A client-side or network error occurred. Handle it accordingly.
-    console.warn('ERROR:', error.error);
+    console.warn('client-side or network error', error.error);
   } else {
     // The backend returned an unsuccessful response code.
     // The response body may contain clues as to what went wrong.
@@ -24,5 +24,5 @@ export const handleServiceError = (notificationService: NotificationService) => 
   }
 
   // Return an observable with a user-facing error message.
-  return throwError(() => new Error('Something bad happened; please try again later.'));
+  return throwError(() => error);
 };

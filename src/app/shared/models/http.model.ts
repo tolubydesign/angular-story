@@ -4,8 +4,3 @@ export type HTTPSuccessResponse<T = any> = {
   data: T,
   message: string,
 }
-
-export type HTTPErrorResponse = {
-  errorMessage: string,
-  code: number,
-}

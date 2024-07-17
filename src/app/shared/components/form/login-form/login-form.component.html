@@ -20,13 +20,13 @@
           id="email" type="text" formControlName="email" required />
 
         @if (loginForm.controls.email.invalid && (loginForm.controls.email.dirty || loginForm.controls.email.touched)) {
-        <div class="alert alert-danger text-xs text-red-400 font-bold mt-2">
+        <div class="alert alert-danger text-xs text-red-600 font-bold mt-2">
           @if (loginForm.controls.email.errors?.['required']) {
-          <p>Name is required.</p>
+          <p>Email is required.</p>
           }
 
           @if (loginForm.controls.email.errors?.['minlength']) {
-          <p>Name must be at least 4 characters long.</p>
+          <p>Email must be at least 4 characters long.</p>
           }
         </div>
         }
@@ -41,15 +41,16 @@
 
 
           @if (loginForm.value.password && loginForm.value.password.length > 2) {
-          <button class="absolute top-3 right-3" (click)="switchPasswordType()">
+          <a class="absolute top-3 right-3 hover:cursor-pointer	" (click)="switchPasswordType()">
             <img class="w-5 h-auto" [src]="eyeIcon()"
               alt="Icon to indicate if the password is made visible or incomprehensible.">
-          </button>
+          </a>
           }
 
-          @if (loginForm.controls.password.invalid && (loginForm.controls.password.dirty || loginForm.controls.password.touched))
+          @if (loginForm.controls.password.invalid && (loginForm.controls.password.dirty ||
+          loginForm.controls.password.touched))
           {
-          <div class="alert alert-danger text-xs text-red-400 font-bold mt-2">
+          <div class="alert alert-danger text-xs text-red-600 font-bold mt-2">
             @if (loginForm.controls.password.errors?.['required']) {
             <p>Name is required.</p>
             }
@@ -67,13 +68,19 @@
 
     <div>
       <mat-checkbox [class]="formLabelClassName" color="primary" formControlName="rememberMe">Remember Me</mat-checkbox>
-      <!-- <input class="mr-3" type="checkbox" id="rememberMe" name="remember_login" value="remember"> -->
-      <!-- <label for="rememberMe"></label> -->
     </div>
 
-    <button mat-raised-button color="axolotl" class="font-bold text-base" type="submit" [disabled]="!loginForm.valid || loading()">
+    <button mat-raised-button color="axolotl" class="font-bold text-base" type="submit"
+      [disabled]="!loginForm.valid || loading()">
       Login
     </button>
+
+    @if (errorMessage()) 
+    {
+    <div class="error--message flex flex-row justify-center items-center gap-4 w-full">
+      <p class="text-xs text-center text-red-600 font-bold">{{ errorMessage() }}</p>
+    </div>
+    }
 
     <div class="mt-4">
       <p class="text-sm font-medium text-[#301812]">Don’t have an account? <a class="text-[#6DA34D]"

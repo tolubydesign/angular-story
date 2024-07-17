@@ -4,8 +4,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Validators } from '@angular/forms';
 import { UserService } from '@core/services/user/user.service';
-import { finalize } from 'rxjs';
+import { catchError, finalize, Observable, throwError } from 'rxjs';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login-form',
@@ -22,6 +23,7 @@ export class LoginFormComponent {
   eyeIcon = signal<string>(this.visibleEyeIcon);
   passwordType = signal<'password' | 'text'>("password");
   loading = signal<boolean>(false);
+  errorMessage = signal<string | null>(null);
 
   loginForm = new FormGroup({
     email: new FormControl('', [
@@ -41,6 +43,8 @@ export class LoginFormComponent {
   ) { }
 
   onSubmit() {
+    // clear errors
+    this.resetErrorMessage();
     const { email, password } = this.loginForm.value
     this.loading.set(true)
     if (!email || email.trim() === "" || !password || password.trim() === "") {
@@ -53,6 +57,17 @@ export class LoginFormComponent {
       email,
       password
     })
+    .pipe(catchError((error: HttpErrorResponse, caught: Observable<any>) => {
+      console.log('error response : error', {error});
+      console.log('error response : caught', {caught});
+      if (error.status && error.error && typeof error.error === "string") {
+        // Show error message.
+        this.errorMessage.set(error.error);
+        return throwError(() => error);
+      }
+    
+      return throwError(() => new Error('Something bad happened. Please try again later.'));
+    }))
     .pipe(finalize(() => {
       this.loading.set(false);
       const hasLoggedIn = this.userService.isLoggedIn();
@@ -70,4 +85,6 @@ export class LoginFormComponent {
       this.eyeIcon.set(this.visibleEyeIcon);
     }
   }
+
+  resetErrorMessage = () => this.errorMessage.set(null);
 }

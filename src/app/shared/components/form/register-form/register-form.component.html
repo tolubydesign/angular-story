@@ -15,13 +15,13 @@
 
         @if (registerUserForm.controls.forename.invalid && (registerUserForm.controls.forename.dirty ||
         registerUserForm.controls.forename.touched)) {
-        <div class="alert alert-danger text-xs text-red-400 font-bold mt-2">
+        <div class="alert alert-danger text-xs text-red-600 font-bold mt-2">
           @if (registerUserForm.controls.forename.errors?.['required']) {
-          <p>Name is required.</p>
+          <p>First Name is required.</p>
           }
 
           @if (registerUserForm.controls.forename.errors?.['minlength']) {
-          <p>Name must be at least 4 characters long.</p>
+          <p>First Name must be at least 4 characters long.</p>
           }
         </div>
         }
@@ -36,13 +36,13 @@
 
         @if (registerUserForm.controls.surname.invalid && (registerUserForm.controls.surname.dirty ||
         registerUserForm.controls.surname.touched)) {
-        <div class="alert alert-danger text-xs text-red-400 font-bold mt-2">
+        <div class="alert alert-danger text-xs text-red-600 font-bold mt-2">
           @if (registerUserForm.controls.surname.errors?.['required']) {
-          <p>Name is required.</p>
+          <p>Last Name is required.</p>
           }
 
           @if (registerUserForm.controls.surname.errors?.['minlength']) {
-          <p>Name must be at least 4 characters long.</p>
+          <p>Last Name must be at least 4 characters long.</p>
           }
         </div>
         }
@@ -57,13 +57,13 @@
 
         @if (registerUserForm.controls.email.invalid && (registerUserForm.controls.email.dirty ||
         registerUserForm.controls.email.touched)) {
-        <div class="alert alert-danger text-xs text-red-400 font-bold mt-2">
+        <div class="alert alert-danger text-xs text-red-600 font-bold mt-2">
           @if (registerUserForm.controls.email.errors?.['required']) {
-          <p>Name is required.</p>
+          <p>Email is required.</p>
           }
 
           @if (registerUserForm.controls.email.errors?.['minlength']) {
-          <p>Name must be at least 4 characters long.</p>
+          <p>Email must be at least 4 characters long.</p>
           }
 
           @if (registerUserForm.controls.email.errors?.['forbiddenName']) {
@@ -90,17 +90,29 @@
 
           @if (registerUserForm.controls.password.invalid && (registerUserForm.controls.password.dirty ||
           registerUserForm.controls.password.touched)) {
-          <div class="alert alert-danger text-xs text-red-400 font-bold mt-2">
-            @if (registerUserForm.controls.password.errors?.['required']) {
-            <p>Name is required.</p>
+          <div class="alert alert-danger text-xs text-red-600 font-bold mt-2">
+            @if (registerUserForm.controls.password.errors?.['required'])
+            {
+            <p>Password is required.</p>
             }
 
-            @if (registerUserForm.controls.password.errors?.['minlength']) {
-            <p>Name must be at least 4 characters long.</p>
+            @if (registerUserForm.controls.password.errors?.['minlength'])
+            {
+            <p>Password must be at least 4 characters long.</p>
             }
 
-            @if (registerUserForm.controls.password.errors?.['forbiddenName']) {
+            @if (registerUserForm.controls.password.errors?.['forbiddenName'])
+            {
             <p>Invalid password provided.</p>
+            }
+
+            @if (registerUserForm.controls.password.errors?.['pattern'])
+            {
+            <p>
+              Password must contain at least a number, uppercase and lowercase letters and a minimum of 8 characters.
+              <br />
+              Password cannot contain whitespace.
+            </p>
             }
           </div>
           }
@@ -124,22 +136,41 @@
 
           @if (registerUserForm.controls.confirmPassword.invalid && (registerUserForm.controls.confirmPassword.dirty ||
           registerUserForm.controls.confirmPassword.touched)) {
-          <div class="alert alert-danger text-xs text-red-400 font-bold mt-2">
+          <div class="alert alert-danger text-xs text-red-600 font-bold mt-2">
             @if (registerUserForm.controls.confirmPassword.errors?.['required']) {
-            <p>Name is required.</p>
+            <p>Password is required.</p>
             }
 
             @if (registerUserForm.controls.confirmPassword.errors?.['minlength']) {
-            <p>Name must be at least 4 characters long.</p>
+            <p>Password must be at least 4 characters long.</p>
             }
 
             @if (registerUserForm.controls.confirmPassword.errors?.['forbiddenName']) {
             <p>Invalid password provided.</p>
             }
+
+            @if (registerUserForm.controls.confirmPassword.errors?.['pattern']) {
+            <p>
+              Password must contain at least a number, uppercase and lowercase letters and a minimum of 8 characters.
+              <br />
+              Password cannot contain whitespace.
+            </p>
+            }
+
+            @if (registerUserForm.controls.confirmPassword.errors?.['confirmedValidator'])
+            {
+            <p>
+              Passwords does not match.
+            </p>
+            }
           </div>
           }
         </div>
       </div>
+
+
+
+      {{registerUserForm.errors?.['invalidInputs']}}
     </div>
 
     <div>
@@ -147,9 +178,16 @@
     </div>
 
     <button mat-raised-button color="axolotl" class="font-bold text-base" type="submit"
-      [disabled]="!registerUserForm.valid">
+      [disabled]="!registerUserForm.valid || loading()">
       Sign Up
     </button>
+
+    @if (errorMessage()) {
+    <div class="error--message flex flex-row justify-center items-center gap-4 w-full">
+      <p class="text-xs text-center text-red-600 font-bold">{{ errorMessage() }}</p>
+    </div>
+    }
+
 
     <div class="mt-4">
       <p class="text-sm font-medium text-[#301812]">Already have an account? <a class="text-[#6DA34D]"

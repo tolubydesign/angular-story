@@ -84,10 +84,7 @@ export class UserService {
   }
 
   isLoggedIn(): boolean {
-    const { email, role, token, username } = getUserCredentials();
-    if (email && role && token && username) {
-      return true
-    };
-    return false
+    const { email, token } = getUserCredentials();
+    return !!(email && token);
   }
 }

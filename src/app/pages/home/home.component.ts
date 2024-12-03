@@ -9,18 +9,16 @@ import { UserService } from '@services/user/user.service';
   standalone: true,
   imports: [RouterLink, MiniNavbarComponent, MatButtonModule],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  styleUrl: './home.component.scss',
 })
 export class HomeComponent {
   isLoggedIn: boolean = false;
 
-  constructor(
-    private userService: UserService,
-  ) { 
+  constructor(private userService: UserService) {
     this.hasUserLoggedIn();
   }
 
-  hasUserLoggedIn () {
+  hasUserLoggedIn() {
     this.isLoggedIn = this.userService.isLoggedIn();
   }
 }

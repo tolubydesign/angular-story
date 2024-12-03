@@ -3,12 +3,13 @@ import { Component } from "@angular/core";
 import { ResolveEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { NavigationComponent } from "@core/navigation/navigation.component";
 import { SnackBarNotificationComponent } from "@core/snack-bar-notification/snack-bar-notification.component";
-import { invalidNavigationBarRoutes } from "./app.routes";
+import { invalidNavigationSideBarRoutes } from "./app.routes";
+import { FooterComponent } from "@core/footer/footer.component";
 
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [NavigationComponent, SnackBarNotificationComponent, CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [NavigationComponent, SnackBarNotificationComponent, CommonModule, RouterOutlet, RouterLink, RouterLinkActive, FooterComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -30,6 +31,6 @@ export class AppComponent {
    * @param event Event_2 - Router Event
    */
   checkRouteAllowsNavigation(event: ResolveEnd): void {
-    (invalidNavigationBarRoutes.includes(event.url)) ? this.displayNavigation = false : this.displayNavigation = true;
+    (invalidNavigationSideBarRoutes.includes(event.url)) ? this.displayNavigation = false : this.displayNavigation = true;
   }
 }

@@ -14,9 +14,9 @@ export class PermissionsService {
   ) { }
 
   canActivate(): boolean {
-    // TODO: implement advanced security
-    const { email, role, token, username } = getUserCredentials();
-    if (!email || !role || !token || !username) {
+    const { email, token } = getUserCredentials();
+    if (!email || !token) {
+      console.warn('user has insufficient credentials. preventing access')
       this.router.navigate([''])
       return false
     };

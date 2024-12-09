@@ -31,7 +31,8 @@ export class PermissionsService {
     if (isBrowser) {
       // session storage is undefined in server side render
       // if placed in the same line as isBrowser the page will error out in the terminal
-      // keeping here. confirm that we are in a browser before checking for session storage
+      // keeping here. confirm that we are in a browser before checking for session storage.
+      // Unfortunately, it will still show the warning `user has insufficient credentials. preventing access` in the terminal
       if (sessionStorage) session = sessionStorage;
     }
 

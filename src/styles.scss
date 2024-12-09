@@ -7,6 +7,7 @@
 @use './app/style/fonts/fonts';
 @use "./app/style/variables" as variables;
 @use "./app/style/animation";
+@import './app/style/custom-component-themes.scss';
 @import './app/style/global.scss';
 
 // Tailwind
@@ -109,21 +110,6 @@ $dark-theme: mat.define-dark-theme((
   // typography and density styles.
   // @include mat.core-color($dark-theme);
   // @include mat.button-color($dark-theme);
-}
+};
 
-body {
-  .mdc-button.mat-axolotl {
-    // color: #16e78c;
-    // background-color: #ddd31b;
-  }
 
-  .mat-mdc-raised-button.mat-axolotl {
-    color: var(--vt-c-text);
-    background-color: var(--vt-c-background);
-  }
-
-  .mat-mdc-icon-button.mat-axolotl {
-    // color: #17d1bf;
-    // background-color: #cc2445;
-  }
-}

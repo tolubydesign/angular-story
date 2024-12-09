@@ -5,7 +5,9 @@
     "echarts",
     "initialise",
     "newclass",
+    "ordana",
     "sankey"
   ],
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "cSpell.language": "en-GB"
 }

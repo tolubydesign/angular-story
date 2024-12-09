@@ -1,7 +1,15 @@
-<main data-component="App" class="app-router--group" [class.nav-bar-expanded]="!navExpanded">
-  <app-navigation></app-navigation>
+<!-- <app-index></app-index> -->
+<main data-component="App" class="app-router--group" [class.nav-bar-expanded]="!navExpanded"
+  [class.navigation--disabled]="!displayNavigation || !displayFooter">
   <div>
-    <router-outlet></router-outlet>
+    @if (displayNavigation) {<app-navigation></app-navigation>}
+    @if (!displayNavigation) {<app-mini-navbar></app-mini-navbar>}
+    <div>
+      <router-outlet></router-outlet>
+    </div>
+    @if (!displayFooter) {<app-footer></app-footer>}
   </div>
+
+  <!-- disconnected from rest of page -->
   <app-snack-bar-notification></app-snack-bar-notification>
 </main>

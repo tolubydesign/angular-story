@@ -23,8 +23,11 @@ $gc-black: #0a0a0a;
 $gc-pastel-gray: #CFCDBD !default;
 
 $sys-light-primary: #577D62; // axolotl
-$sys-light-background: #CFCDBD !default;
+$sys-light-background: #E6E4D5 !default; // #CFCDBD
 $sys-light-navigation-background: #E6E4D5 !default;
+
+// ordana
+$medium-vermilion-light-primary: #D36135; // ordana
 
 // @deprecated renamed to $dark-primary-text.
 // @breaking-change 8.0.0
@@ -109,7 +112,10 @@ $axolotl-palette: (
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
-  
+
+  // Overwrites
+  --vt-c-button-disabled-label-text: rgba(0, 0, 0, 0.38);
+  --vt-c-button-disabled-container: rgba(0, 0, 0, 0.12);
 }
 
 
@@ -129,8 +135,13 @@ $axolotl-palette: (
   --section-gap: 160px;
 
   --vt-c-background-colour: #{$sys-light-background};
-  --vt-c-background: #{$sys-light-primary};
   --vt-c-text: #{$light-primary-text};
+
+  // custom: axolotl
+  --vt-c-background: #{$sys-light-primary};
+
+  // custom: ordana
+  --vt-c-ordana-background: #{$medium-vermilion-light-primary};
 }
 
 @media (prefers-color-scheme: dark) {
@@ -155,4 +166,3 @@ $axolotl-palette: (
     */
   }
 }
-

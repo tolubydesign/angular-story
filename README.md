@@ -1,10 +1,25 @@
-# AngularStory
+# Angular Project
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.5.
+
+## Table of contents
+
+- [Table of contents](#table-of-contents)
+- [Development server](#development-server)
+- [Documentation](#documentation)
+- [Code scaffolding](#code-scaffolding)
+- [Build](#build)
+- [Running unit tests](#running-unit-tests)
+- [Running end-to-end tests](#running-end-to-end-tests)
+- [Further help](#further-help)
 
 ## Development server
 
 Run `ng serve --configuration=development` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+
+## Documentation
+
+Read the [documentation](docs/index.md) on how this project was created.
 
 ## Code scaffolding
 
@@ -25,5 +40,3 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
-
-# angular-story

@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, Subscription, BehaviorSubject, Subject, throwError, Falsy } from 'rxjs';
+import { BehaviorSubject, Falsy } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-// import { HttpErrorResponse } from '@angular/common/http';
-import { map, tap, retry, catchError } from 'rxjs/operators';
-import { Plot, PlotContent, PlotInstanceType } from '@models/plot';
+import { Plot, PlotContent } from '@models/plot';
 import { PlotModel } from "@models/plot.model";
 import { data } from '@models/tree-data.model';
 

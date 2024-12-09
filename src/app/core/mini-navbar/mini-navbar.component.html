@@ -1,0 +1,23 @@
+<nav data-component="Mini Navigational Bar"
+  class="w-full flex flex-row align-center justify-between bg-[#DDDAC5] py-4 px-4">
+  <div class="mini-nav--logo flex flex-row justify-center items-center">
+    <a routerLink="/" class="mr-2">
+      <img class="w-[34px] h-auto" height="32" width="32" src="/assets/logo-light.svg" alt="Narration font logo." />
+    </a>
+    <p class="text-[#000] text-[14px] font-bold">Narration</p>
+  </div>
+
+  <div class="flex flex-row gap-4">
+    <a mat-button routerLink="/about" class="text-[#000] font-bold text-base" [disabled]="!!(path === '/about')">
+      About
+    </a>
+    @if (!isLoggedIn) {
+    <a routerLink="/login">
+      <button mat-raised-button color="axolotl" class="font-bold text-base">Login</button>
+    </a>
+    }
+    @else {
+    <button mat-raised-button color="ordana" class="font-bold text-base" (click)="signOut">Sign Out</button>
+    }
+  </div>
+</nav>

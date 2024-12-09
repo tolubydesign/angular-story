@@ -34,3 +34,4 @@ const noNavigationSideBarRoutes = routes.map<string>((route: Route) => {
 }).filter((r: string) => r.length > 0)
 
 export const invalidNavigationSideBarRoutes: string[] = noNavigationSideBarRoutes;
+export const invalidMiniFooterRoutes: string[] = noNavigationSideBarRoutes;

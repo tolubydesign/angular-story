@@ -6,7 +6,6 @@ import {
   distinctUntilChanged,
   tap,
   catchError,
-  throwError,
   finalize,
 } from "rxjs";
 import { Plot, PlotContent } from '@shared/models/plot';

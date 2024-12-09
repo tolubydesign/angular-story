@@ -18,7 +18,8 @@
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
-@include mat.core();
+@include mat.elevation-classes();
+@include mat.app-background();
 // *
 // @include mat.strong-focus-indicators();
 
@@ -95,7 +96,8 @@ $dark-theme: mat.m2-define-dark-theme((
 // Emit theme-dependent styles for common features used across multiple components.
 // *
 // @include mat.core-theme($light-theme);
-@include mat.core-typography($custom-typography-config);
+@include mat.elevation-classes();
+@include mat.app-background();
 
 // Emit styles for MatButton based on `$my-theme`. Because the configuration
 // passed to `define-light-theme` omits typography, `button-theme` will not

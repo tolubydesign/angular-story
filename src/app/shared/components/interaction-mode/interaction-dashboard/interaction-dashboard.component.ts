@@ -7,7 +7,7 @@ import { Plot } from '@models/plot';
 import { StoriesService } from '@services/stories.service';
 import { StoryBoardComponent } from '../story-board/story-board.component';
 import { CommonModule, NgIf } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import {} from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,7 +17,11 @@ import { HTTPSuccessResponse } from '@models/http.model';
   standalone: true,
   imports: [
     StoryBoardComponent, NgIf, CommonModule,
-    RouterLink, RouterModule, RouterOutlet, RouterLinkActive, HttpClientModule,
+    RouterLink, RouterModule, RouterOutlet, RouterLinkActive, 
+// TODO: `HttpClientModule` should not be imported into a component directly.
+// Please refactor the code to add `provideHttpClient()` call to the provider list in the
+// application bootstrap logic and remove the `HttpClientModule` import from this component.
+HttpClientModule,
     MatButtonModule, MatDividerModule, MatIconModule
   ],
   selector: 'app-interaction-dashboard',

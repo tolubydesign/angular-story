@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import {} from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from "@angular/router";
 import { MatMenuModule } from '@angular/material/menu';
@@ -7,11 +7,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { removeUserSessionStorageCredentials } from "@shared/helpers/session.storage";
 
 @Component({
-  selector: 'app-navigation',
-  standalone: true,
-  imports: [RouterLink, RouterModule, CommonModule, RouterOutlet, RouterLinkActive, HttpClientModule, MatButtonModule, MatMenuModule],
-  templateUrl: './navigation.component.html',
-  styleUrl: './navigation.component.scss'
+    selector: 'app-navigation',
+    imports: [RouterLink, RouterModule, CommonModule, RouterOutlet, RouterLinkActive, MatButtonModule, MatMenuModule],
+    templateUrl: './navigation.component.html',
+    styleUrl: './navigation.component.scss'
 })
 export class NavigationComponent {
   navigationLinkClassName = 'block cursor-pointer mb-2 rounded-full hover:bg-[#fff] z-10';

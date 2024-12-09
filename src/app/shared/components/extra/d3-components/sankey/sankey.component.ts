@@ -2,9 +2,10 @@ import { Component, OnInit } from "@angular/core";
 import * as d3 from "d3";
 
 @Component({
-  selector: "app-sankey",
-  templateUrl: "./sankey.component.html",
-  styleUrls: ["./sankey.component.scss"],
+    selector: "app-sankey",
+    templateUrl: "./sankey.component.html",
+    styleUrls: ["./sankey.component.scss"],
+    standalone: false
 })
 export class SankeyComponent implements OnInit {
   constructor() {}

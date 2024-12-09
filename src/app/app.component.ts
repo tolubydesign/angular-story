@@ -8,11 +8,10 @@ import { FooterComponent } from "@core/footer/footer.component";
 import { MiniNavbarComponent } from "@core/mini-navbar/mini-navbar.component";
 
 @Component({
-  selector: "app-root",
-  standalone: true,
-  imports: [NavigationComponent, SnackBarNotificationComponent, CommonModule, RouterOutlet, RouterLink, RouterLinkActive, FooterComponent, MiniNavbarComponent],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+    selector: "app-root",
+    imports: [NavigationComponent, SnackBarNotificationComponent, CommonModule, RouterOutlet, RouterLink, RouterLinkActive, FooterComponent, MiniNavbarComponent],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.scss'
 })
 export class AppComponent {
   title = "narration";

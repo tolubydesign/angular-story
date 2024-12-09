@@ -15,11 +15,10 @@ import { NodeFormComponent } from '../../editor-mode/node-form/node-form.compone
 type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any[], x0: any, y0: any } | any;
 
 @Component({
-  standalone: true,
-  imports: [JsonPipe, NodeFormComponent, NgIf, CommonModule],
-  selector: 'app-hierarchy',
-  templateUrl: './hierarchy.component.html',
-  styleUrls: ['./hierarchy.component.scss'],
+    imports: [JsonPipe, NodeFormComponent, NgIf, CommonModule],
+    selector: 'app-hierarchy',
+    templateUrl: './hierarchy.component.html',
+    styleUrls: ['./hierarchy.component.scss']
 })
 export class HierarchyComponent implements OnInit, OnDestroy {
 

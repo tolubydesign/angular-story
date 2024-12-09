@@ -7,22 +7,21 @@ import { Plot } from '@models/plot';
 import { StoriesService } from '@services/stories.service';
 import { StoryBoardComponent } from '../story-board/story-board.component';
 import { CommonModule, NgIf } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import {} from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { HTTPSuccessResponse } from '@models/http.model';
 
 @Component({
-  standalone: true,
-  imports: [
-    StoryBoardComponent, NgIf, CommonModule,
-    RouterLink, RouterModule, RouterOutlet, RouterLinkActive, HttpClientModule,
-    MatButtonModule, MatDividerModule, MatIconModule
-  ],
-  selector: 'app-interaction-dashboard',
-  templateUrl: './interaction-dashboard.component.html',
-  styleUrls: ['./interaction-dashboard.component.scss']
+    imports: [
+        StoryBoardComponent, NgIf, CommonModule,
+        RouterLink, RouterModule, RouterOutlet, RouterLinkActive,
+        MatButtonModule, MatDividerModule, MatIconModule
+    ],
+    selector: 'app-interaction-dashboard',
+    templateUrl: './interaction-dashboard.component.html',
+    styleUrls: ['./interaction-dashboard.component.scss']
 })
 export class InteractionDashboardComponent implements OnInit, OnDestroy {
 

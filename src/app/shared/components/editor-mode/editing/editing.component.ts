@@ -32,11 +32,10 @@ const THUMB_ICON =
 `;
 
 @Component({
-  standalone: true,
-  imports: [LoaderComponent, HierarchyComponent, NgIf],
-  selector: 'app-editing',
-  templateUrl: './editing.component.html',
-  styleUrls: ['./editing.component.scss']
+    imports: [LoaderComponent, HierarchyComponent, NgIf],
+    selector: 'app-editing',
+    templateUrl: './editing.component.html',
+    styleUrls: ['./editing.component.scss']
 })
 
 export class EditingComponent implements OnInit, OnDestroy {

@@ -6,11 +6,10 @@ import { NgFor } from "@angular/common";
 import { CharacterPortraitComponent } from "../../ui/character-portrait/character-portrait.component";
 
 @Component({
-  standalone: true,
-  imports: [NgFor, CharacterPortraitComponent],
-  selector: "app-dashboard",
-  templateUrl: "./dashboard.component.html",
-  styleUrls: ["./dashboard.component.scss"],
+    imports: [NgFor, CharacterPortraitComponent],
+    selector: "app-dashboard",
+    templateUrl: "./dashboard.component.html",
+    styleUrls: ["./dashboard.component.scss"]
 })
 export class DashboardComponent implements OnInit {
   narrativePosition: number | null = null;

@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { environment } from '@environment/environment';
 import { BehaviorSubject, catchError, finalize, Observable, tap } from "rxjs";
 import { NotificationService } from "@services/notification.service";
@@ -7,6 +7,7 @@ import { handleServiceError } from "@shared/utils/error-notification-handler";
 import { UserCredentials } from "@models/user.models";
 import { setUserCredential, getUserCredentials } from "@helpers/session.storage";
 import { HTTPSuccessResponse } from "@shared/models/http.model";
+import { isPlatformBrowser } from "@angular/common";
 
 type UserRegisterInfo = {
   email: string,
@@ -25,6 +26,7 @@ export class UserService {
   constructor(
     private http: HttpClient,
     private notificationService: NotificationService,
+    @Inject(PLATFORM_ID) public platformId: object
   ) {
     http.head(this._url)
     http.options(
@@ -84,7 +86,13 @@ export class UserService {
   }
 
   isLoggedIn(): boolean {
-    const { email, token } = getUserCredentials();
+    let session: Storage | undefined = undefined;
+    if (isPlatformBrowser(this.platformId)) {
+      session = sessionStorage;
+    } else {
+      return false;
+    };
+    const { email, token } = getUserCredentials(true, session);
     return !!(email && token);
   }
 }

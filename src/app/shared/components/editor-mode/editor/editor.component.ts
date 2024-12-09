@@ -4,22 +4,21 @@ import { Subscription } from "rxjs";
 import { Plot } from "@models/plot";
 import { Router, RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from "@angular/router";
 import { OptionalSelectionCardComponent } from "../../ui/optional-selection-card/optional-selection-card.component";
-import { HttpClientModule } from "@angular/common/http";
+import {} from "@angular/common/http";
 import { MatButtonModule } from "@angular/material/button";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatIconModule } from "@angular/material/icon";
 import { HTTPSuccessResponse } from "@models/http.model";
 
 @Component({
-  standalone: true,
-  imports: [
-    OptionalSelectionCardComponent,
-    RouterLink, RouterModule, RouterOutlet, RouterLinkActive, HttpClientModule,
-    MatButtonModule, MatDividerModule, MatIconModule
-  ],
-  selector: "app-editor",
-  templateUrl: "./editor.component.html",
-  styleUrls: ["./editor.component.scss"],
+    imports: [
+        OptionalSelectionCardComponent,
+        RouterLink, RouterModule, RouterOutlet, RouterLinkActive,
+        MatButtonModule, MatDividerModule, MatIconModule
+    ],
+    selector: "app-editor",
+    templateUrl: "./editor.component.html",
+    styleUrls: ["./editor.component.scss"]
 })
 export class EditorComponent implements OnInit {
   private _AllStoriesSubscription: Subscription | undefined;

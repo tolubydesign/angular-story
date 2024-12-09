@@ -7,11 +7,10 @@ import { FakeCardContent } from '@models/recent';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-draft-card-row',
-  standalone: true,
-  imports: [SummaryDisplayCardComponent, NgFor, MatButtonModule],
-  templateUrl: './draft-card-row.component.html',
-  styleUrl: './draft-card-row.component.scss'
+    selector: 'app-draft-card-row',
+    imports: [SummaryDisplayCardComponent, NgFor, MatButtonModule],
+    templateUrl: './draft-card-row.component.html',
+    styleUrl: './draft-card-row.component.scss'
 })
 export class DraftCardRowComponent {
   content: FakeCardContent[] = []

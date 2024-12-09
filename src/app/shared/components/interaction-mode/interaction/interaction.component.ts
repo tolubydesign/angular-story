@@ -6,22 +6,21 @@ import { Plot } from "@models/plot";
 import { StoriesService } from "@services/stories.service";
 import { OptionalSelectionCardComponent } from "@shared/components/ui/optional-selection-card/optional-selection-card.component";
 import { CommonModule } from "@angular/common";
-import { HttpClientModule } from "@angular/common/http";
+import {} from "@angular/common/http";
 import { MatIconModule } from "@angular/material/icon";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatButtonModule } from "@angular/material/button";
 import { HTTPSuccessResponse } from "@models/http.model";
 
 @Component({
-  standalone: true,
-  imports: [
-    OptionalSelectionCardComponent,
-    RouterLink, RouterModule, CommonModule, RouterOutlet, RouterLinkActive, HttpClientModule,
-    MatButtonModule, MatDividerModule, MatIconModule
-  ],
-  selector: "app-interaction",
-  templateUrl: "./interaction.component.html",
-  styleUrls: ["./interaction.component.scss"],
+    imports: [
+        OptionalSelectionCardComponent,
+        RouterLink, RouterModule, CommonModule, RouterOutlet, RouterLinkActive,
+        MatButtonModule, MatDividerModule, MatIconModule
+    ],
+    selector: "app-interaction",
+    templateUrl: "./interaction.component.html",
+    styleUrls: ["./interaction.component.scss"]
 })
 export class InteractionComponent implements OnInit {
   private _FetchStoriesSubscription?: Subscription;

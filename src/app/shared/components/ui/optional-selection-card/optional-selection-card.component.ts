@@ -7,11 +7,10 @@ import { MatCard, MatCardActions, MatCardContent, MatCardSubtitle, MatCardTitle 
 import { CommonModule, NgFor, NgForOf, NgIf, NgTemplateOutlet } from '@angular/common';
 
 @Component({
-  standalone: true,
-  imports: [MatCard, MatCardSubtitle, MatCardTitle, MatCardContent, MatCardActions, NgIf, CommonModule, NgFor, NgForOf, NgTemplateOutlet],
-  selector: 'app-optional-selection-card',
-  templateUrl: './optional-selection-card.component.html',
-  styleUrls: ['./optional-selection-card.component.scss']
+    imports: [MatCard, MatCardSubtitle, MatCardTitle, MatCardContent, MatCardActions, NgIf, CommonModule, NgFor, NgForOf, NgTemplateOutlet],
+    selector: 'app-optional-selection-card',
+    templateUrl: './optional-selection-card.component.html',
+    styleUrls: ['./optional-selection-card.component.scss']
 })
 export class OptionalSelectionCardComponent implements OnInit {
 

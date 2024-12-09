@@ -1,6 +1,7 @@
-import { UserCredentials } from "@shared/models/user.models";
+import { UserCredentials } from '@shared/models/user.models';
+import { isPlatformBrowser } from '@angular/common';
 
-const sitePrimaryKey = "toa_dev_session_storage_";
+const sitePrimaryKey = 'toa_dev_session_storage_';
 const tokenKey = sitePrimaryKey + 'token';
 const username = sitePrimaryKey + 'username';
 const role = sitePrimaryKey + 'role';
@@ -9,20 +10,32 @@ const email = sitePrimaryKey + 'email';
 /**
  * Get User Credentials from Session Storage.
  * Will return undefined for a value if that value is not available.
+ * @param isBrowser `false` on the server side and `true` on the browser side
  */
-export function getUserCredentials(): UserCredentials {
-  return {
-    token: (!!sessionStorage.getItem(tokenKey)) ? sessionStorage.getItem(tokenKey) : undefined,
-    username: !!sessionStorage.getItem(username) ? sessionStorage.getItem(username) : undefined,
-    role: !!sessionStorage.getItem(role) ? sessionStorage.getItem(role) : undefined,
-    email: !!sessionStorage.getItem(email) ? sessionStorage.getItem(email) : undefined
+export function getUserCredentials(isBrowser: boolean, session?: Storage): UserCredentials {
+  console.log('session storage', session)
+  console.log('get user credentials isBrowser:', isBrowser)
+  if (!isBrowser) {
+    return {
+      token: undefined,
+      username: undefined,
+      role: undefined,
+      email: undefined,
+    }
   }
+
+  return {
+    token: session?.getItem(tokenKey) ? session.getItem(tokenKey) : undefined,
+    username: session ? session.getItem(username) : undefined,
+    role: session ? session.getItem(role) : undefined,
+    email: session ? session.getItem(email) : undefined,
+  };
 }
 
 /**
  * Set credentials to Session Storage.
- * @param credential 
- * @returns 
+ * @param credential
+ * @returns
  */
 export function setUserCredential(credential: UserCredentials): void {
   if (sessionStorage && credential.token) sessionStorage.setItem(tokenKey, credential.token);

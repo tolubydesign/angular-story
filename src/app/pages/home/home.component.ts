@@ -5,11 +5,10 @@ import { MiniNavbarComponent } from '@core/mini-navbar/mini-navbar.component';
 import { UserService } from '@services/user/user.service';
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [RouterLink, MiniNavbarComponent, MatButtonModule],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.scss',
+    selector: 'app-home',
+    imports: [RouterLink, MiniNavbarComponent, MatButtonModule],
+    templateUrl: './home.component.html',
+    styleUrl: './home.component.scss'
 })
 export class HomeComponent {
   isLoggedIn: boolean = false;

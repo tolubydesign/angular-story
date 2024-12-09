@@ -4,11 +4,10 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MiniNavbarComponent } from '@core/mini-navbar/mini-navbar.component';
 
 @Component({
-  standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, MiniNavbarComponent],
-  selector: 'app-not-found',
-  templateUrl: './not-found.component.html',
-  styleUrls: ['./not-found.component.scss']
+    imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, MiniNavbarComponent],
+    selector: 'app-not-found',
+    templateUrl: './not-found.component.html',
+    styleUrls: ['./not-found.component.scss']
 })
 export class NotFoundComponent implements OnInit {
 

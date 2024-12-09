@@ -6,11 +6,10 @@ import { StoriesService } from '@core/services/stories.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-continue-card-row',
-  standalone: true,
-  imports: [SummaryDisplayCardComponent, NgFor, CommonModule],
-  templateUrl: './continue-card-row.component.html',
-  styleUrl: './continue-card-row.component.scss'
+    selector: 'app-continue-card-row',
+    imports: [SummaryDisplayCardComponent, NgFor, CommonModule],
+    templateUrl: './continue-card-row.component.html',
+    styleUrl: './continue-card-row.component.scss'
 })
 export class ContinueCardRowComponent implements OnInit {
   content: FakeCardContent[] = []

@@ -13,15 +13,14 @@ import { MatButtonModule } from "@angular/material/button";
 import { HTTPSuccessResponse } from "@models/http.model";
 
 @Component({
-  standalone: true,
-  imports: [
-    OptionalSelectionCardComponent,
-    RouterLink, RouterModule, CommonModule, RouterOutlet, RouterLinkActive,
-    MatButtonModule, MatDividerModule, MatIconModule
-  ],
-  selector: "app-interaction",
-  templateUrl: "./interaction.component.html",
-  styleUrls: ["./interaction.component.scss"],
+    imports: [
+        OptionalSelectionCardComponent,
+        RouterLink, RouterModule, CommonModule, RouterOutlet, RouterLinkActive,
+        MatButtonModule, MatDividerModule, MatIconModule
+    ],
+    selector: "app-interaction",
+    templateUrl: "./interaction.component.html",
+    styleUrls: ["./interaction.component.scss"]
 })
 export class InteractionComponent implements OnInit {
   private _FetchStoriesSubscription?: Subscription;

@@ -5,11 +5,10 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 
 @Component({
-  standalone: true,
-  imports: [MatSnackBarModule],
-  selector: 'app-snack-bar-notification',
-  templateUrl: './snack-bar-notification.component.html',
-  styleUrls: ['./snack-bar-notification.component.scss'],
+    imports: [MatSnackBarModule],
+    selector: 'app-snack-bar-notification',
+    templateUrl: './snack-bar-notification.component.html',
+    styleUrls: ['./snack-bar-notification.component.scss']
 })
 export class SnackBarNotificationComponent implements OnInit, OnDestroy {
   duration = 5;

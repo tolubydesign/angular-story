@@ -32,11 +32,10 @@ const THUMB_ICON =
 `;
 
 @Component({
-  standalone: true,
-  imports: [LoaderComponent, HierarchyComponent, NodeFormComponent, NgIf],
-  selector: "app-panel",
-  templateUrl: "./panel.component.html",
-  styleUrls: ["./panel.component.scss"],
+    imports: [LoaderComponent, HierarchyComponent, NodeFormComponent, NgIf],
+    selector: "app-panel",
+    templateUrl: "./panel.component.html",
+    styleUrls: ["./panel.component.scss"]
 })
 export class PanelComponent implements OnInit, OnDestroy {
   parameterID: string | unknown;

@@ -8,20 +8,19 @@ import { ContinueCardRowComponent } from '@components/card-row/continue-card-row
 import { DraftCardRowComponent } from '@components/card-row/draft-card-row/draft-card-row.component';
 
 @Component({
-  selector: 'app-main',
-  standalone: true,
-  imports: [
-    MatCardModule,
-    CommonModule,
-    RouterModule,
-    RouterOutlet,
-    RouterLink,
-    RouterLinkActive,
-    WelcomeMatComponent,
-    ContinueCardRowComponent,
-    DraftCardRowComponent,
-  ],
-  templateUrl: './main.component.html',
-  styleUrl: './main.component.scss',
+    selector: 'app-main',
+    imports: [
+        MatCardModule,
+        CommonModule,
+        RouterModule,
+        RouterOutlet,
+        RouterLink,
+        RouterLinkActive,
+        WelcomeMatComponent,
+        ContinueCardRowComponent,
+        DraftCardRowComponent,
+    ],
+    templateUrl: './main.component.html',
+    styleUrl: './main.component.scss'
 })
 export class MainComponent {}

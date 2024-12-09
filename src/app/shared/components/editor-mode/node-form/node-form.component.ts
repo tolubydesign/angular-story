@@ -8,11 +8,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, NgIf } from '@angular/common';
 
 @Component({
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, NgIf, CommonModule],
-  selector: 'app-node-form',
-  templateUrl: './node-form.component.html',
-  styleUrls: ['./node-form.component.scss']
+    imports: [FormsModule, ReactiveFormsModule, NgIf, CommonModule],
+    selector: 'app-node-form',
+    templateUrl: './node-form.component.html',
+    styleUrls: ['./node-form.component.scss']
 })
 export class NodeFormComponent {
   @Output() updateNodeContent: EventEmitter<any> = new EventEmitter();

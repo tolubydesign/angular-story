@@ -4,11 +4,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-welcome-mat',
-  standalone: true,
-  imports: [MatButtonModule],
-  templateUrl: './welcome-mat.component.html',
-  styleUrl: './welcome-mat.component.scss'
+    selector: 'app-welcome-mat',
+    imports: [MatButtonModule],
+    templateUrl: './welcome-mat.component.html',
+    styleUrl: './welcome-mat.component.scss'
 })
 export class WelcomeMatComponent {
 

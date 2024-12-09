@@ -9,11 +9,10 @@ import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'app-login-form',
-  standalone: true,
-  imports: [ReactiveFormsModule, MatCheckboxModule, MatButtonModule],
-  templateUrl: './login-form.component.html',
-  styleUrl: './login-form.component.scss'
+    selector: 'app-login-form',
+    imports: [ReactiveFormsModule, MatCheckboxModule, MatButtonModule],
+    templateUrl: './login-form.component.html',
+    styleUrl: './login-form.component.scss'
 })
 export class LoginFormComponent {
   formLabelClassName = "form--label font-bold text-sm text-[#24110C] mb-2";

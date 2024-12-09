@@ -6,11 +6,10 @@ import { Router, RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from
 import { UserService } from '@services/user/user.service';
 
 @Component({
-  selector: 'app-mini-navbar',
-  standalone: true,
-  imports: [RouterLink, RouterModule, CommonModule, RouterOutlet, RouterLinkActive, MatButtonModule, NgClass],
-  templateUrl: './mini-navbar.component.html',
-  styleUrl: './mini-navbar.component.scss',
+    selector: 'app-mini-navbar',
+    imports: [RouterLink, RouterModule, CommonModule, RouterOutlet, RouterLinkActive, MatButtonModule, NgClass],
+    templateUrl: './mini-navbar.component.html',
+    styleUrl: './mini-navbar.component.scss'
 })
 export class MiniNavbarComponent implements OnInit {
   path: string | null = null;

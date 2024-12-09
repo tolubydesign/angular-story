@@ -11,15 +11,14 @@ import { MatIconModule } from "@angular/material/icon";
 import { HTTPSuccessResponse } from "@models/http.model";
 
 @Component({
-  standalone: true,
-  imports: [
-    OptionalSelectionCardComponent,
-    RouterLink, RouterModule, RouterOutlet, RouterLinkActive,
-    MatButtonModule, MatDividerModule, MatIconModule
-  ],
-  selector: "app-editor",
-  templateUrl: "./editor.component.html",
-  styleUrls: ["./editor.component.scss"],
+    imports: [
+        OptionalSelectionCardComponent,
+        RouterLink, RouterModule, RouterOutlet, RouterLinkActive,
+        MatButtonModule, MatDividerModule, MatIconModule
+    ],
+    selector: "app-editor",
+    templateUrl: "./editor.component.html",
+    styleUrls: ["./editor.component.scss"]
 })
 export class EditorComponent implements OnInit {
   private _AllStoriesSubscription: Subscription | undefined;

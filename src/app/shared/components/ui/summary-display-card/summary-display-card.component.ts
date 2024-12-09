@@ -5,11 +5,10 @@ import { MatCardHeader, MatCardModule } from '@angular/material/card';
 // TODO: a better name for this component
 // TODO: loading wait
 @Component({
-  selector: 'app-summary-display-card',
-  standalone: true,
-  imports: [MatButtonModule, MatCardModule, MatCardHeader],
-  templateUrl: './summary-display-card.component.html',
-  styleUrl: './summary-display-card.component.scss'
+    selector: 'app-summary-display-card',
+    imports: [MatButtonModule, MatCardModule, MatCardHeader],
+    templateUrl: './summary-display-card.component.html',
+    styleUrl: './summary-display-card.component.scss'
 })
 export class SummaryDisplayCardComponent {
   @Input({required: true}) imageUrl: string = '';

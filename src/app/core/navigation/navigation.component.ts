@@ -7,11 +7,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { removeUserSessionStorageCredentials } from "@shared/helpers/session.storage";
 
 @Component({
-  selector: 'app-navigation',
-  standalone: true,
-  imports: [RouterLink, RouterModule, CommonModule, RouterOutlet, RouterLinkActive, MatButtonModule, MatMenuModule],
-  templateUrl: './navigation.component.html',
-  styleUrl: './navigation.component.scss'
+    selector: 'app-navigation',
+    imports: [RouterLink, RouterModule, CommonModule, RouterOutlet, RouterLinkActive, MatButtonModule, MatMenuModule],
+    templateUrl: './navigation.component.html',
+    styleUrl: './navigation.component.scss'
 })
 export class NavigationComponent {
   navigationLinkClassName = 'block cursor-pointer mb-2 rounded-full hover:bg-[#fff] z-10';

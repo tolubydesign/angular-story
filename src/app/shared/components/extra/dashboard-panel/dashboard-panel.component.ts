@@ -4,11 +4,10 @@ import { Router } from '@angular/router';
 import { PanelComponent } from '../panel/panel.component';
 
 @Component({
-  standalone: true,
-  imports: [PanelComponent],
-  selector: 'app-dashboard-panel',
-  templateUrl: './dashboard-panel.component.html',
-  styleUrls: ['./dashboard-panel.component.scss']
+    imports: [PanelComponent],
+    selector: 'app-dashboard-panel',
+    templateUrl: './dashboard-panel.component.html',
+    styleUrls: ['./dashboard-panel.component.scss']
 })
 export class DashboardPanelComponent implements OnInit {
 

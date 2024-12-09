@@ -5,11 +5,10 @@ import { RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from '@angul
 import { RegisterFormComponent } from '@components/form/register-form/register-form.component';
 
 @Component({
-  selector: 'app-register',
-  standalone: true,
-  imports: [RouterLink, RouterModule, CommonModule, RouterOutlet, RouterLinkActive, RegisterFormComponent],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+    selector: 'app-register',
+    imports: [RouterLink, RouterModule, CommonModule, RouterOutlet, RouterLinkActive, RegisterFormComponent],
+    templateUrl: './register.component.html',
+    styleUrl: './register.component.scss'
 })
 export class RegisterComponent {
 

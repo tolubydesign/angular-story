@@ -9,11 +9,10 @@ import { RouterModule } from '@angular/router';
 import { NgFor, NgForOf, NgIf, NgTemplateOutlet } from '@angular/common';
 
 @Component({
-  standalone: true,
-  imports: [MatCardTitle, MatCard, MatCardSubtitle, MatCardContent, RouterModule, NgIf, NgFor, NgForOf, NgTemplateOutlet],
-  selector: 'app-story-board',
-  templateUrl: './story-board.component.html',
-  styleUrls: ['./story-board.component.scss']
+    imports: [MatCardTitle, MatCard, MatCardSubtitle, MatCardContent, RouterModule, NgIf, NgFor, NgForOf, NgTemplateOutlet],
+    selector: 'app-story-board',
+    templateUrl: './story-board.component.html',
+    styleUrls: ['./story-board.component.scss']
 })
 export class StoryBoardComponent implements OnInit {
   @Input() fullStory: Plot | falsy = undefined;

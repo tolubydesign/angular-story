@@ -2,9 +2,10 @@ import { Component, OnInit, Input } from "@angular/core";
 import { map } from "rxjs/operators";
 
 @Component({
-  selector: "app-narrative",
-  templateUrl: "./narrative.component.html",
-  styleUrls: ["./narrative.component.scss"],
+    selector: "app-narrative",
+    templateUrl: "./narrative.component.html",
+    styleUrls: ["./narrative.component.scss"],
+    standalone: false
 })
 export class NarrativeComponent implements OnInit {
   @Input() narrative: string | undefined;

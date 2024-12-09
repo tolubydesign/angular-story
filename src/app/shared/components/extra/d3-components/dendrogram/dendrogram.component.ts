@@ -5,9 +5,10 @@ import { HierarchyNode, Selection, svg } from "d3";
 import { generateID } from "@models/tree-data.model";
 
 @Component({
-  selector: "app-dendrogram",
-  templateUrl: "./dendrogram.component.html",
-  styleUrls: ["./dendrogram.component.scss"],
+    selector: "app-dendrogram",
+    templateUrl: "./dendrogram.component.html",
+    styleUrls: ["./dendrogram.component.scss"],
+    standalone: false
 })
 export class DendrogramComponent implements OnInit {
   /**

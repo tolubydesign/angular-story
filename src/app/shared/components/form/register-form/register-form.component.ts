@@ -9,11 +9,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, finalize, Observable, throwError } from 'rxjs';
 
 @Component({
-  selector: 'app-register-form',
-  standalone: true,
-  imports: [ReactiveFormsModule, MatCheckboxModule, MatButtonModule],
-  templateUrl: './register-form.component.html',
-  styleUrl: './register-form.component.scss',
+    selector: 'app-register-form',
+    imports: [ReactiveFormsModule, MatCheckboxModule, MatButtonModule],
+    templateUrl: './register-form.component.html',
+    styleUrl: './register-form.component.scss'
 })
 export class RegisterFormComponent {
   formLabelClassName = 'form--label font-bold text-sm text-[#24110C] mb-2';

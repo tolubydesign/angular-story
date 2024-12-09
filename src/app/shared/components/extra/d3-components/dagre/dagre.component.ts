@@ -4,9 +4,10 @@ import { BaseType } from "d3";
 import { Selection } from "d3-selection";
 
 @Component({
-  selector: "app-dagre",
-  templateUrl: "./dagre.component.html",
-  styleUrls: ["./dagre.component.scss"],
+    selector: "app-dagre",
+    templateUrl: "./dagre.component.html",
+    styleUrls: ["./dagre.component.scss"],
+    standalone: false
 })
 export class DagreComponent implements OnInit {
   constructor() {}

@@ -14,15 +14,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { HTTPSuccessResponse } from '@models/http.model';
 
 @Component({
-  standalone: true,
-  imports: [
-    StoryBoardComponent, NgIf, CommonModule,
-    RouterLink, RouterModule, RouterOutlet, RouterLinkActive,
-    MatButtonModule, MatDividerModule, MatIconModule
-  ],
-  selector: 'app-interaction-dashboard',
-  templateUrl: './interaction-dashboard.component.html',
-  styleUrls: ['./interaction-dashboard.component.scss']
+    imports: [
+        StoryBoardComponent, NgIf, CommonModule,
+        RouterLink, RouterModule, RouterOutlet, RouterLinkActive,
+        MatButtonModule, MatDividerModule, MatIconModule
+    ],
+    selector: 'app-interaction-dashboard',
+    templateUrl: './interaction-dashboard.component.html',
+    styleUrls: ['./interaction-dashboard.component.scss']
 })
 export class InteractionDashboardComponent implements OnInit, OnDestroy {
 

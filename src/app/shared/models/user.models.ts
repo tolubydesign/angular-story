@@ -1,7 +1,7 @@
 
 export type UserCredentials = {
-  token: string | null | undefined,
-  username: string | null | undefined,
-  role: string | null | undefined,
-  email: string | null | undefined,
+  token?: string | null,
+  username?: string | null,
+  role?: string | null,
+  email?: string | null,
 }

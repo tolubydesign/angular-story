@@ -14,11 +14,7 @@ import { HTTPSuccessResponse } from "@models/http.model";
   standalone: true,
   imports: [
     OptionalSelectionCardComponent,
-    RouterLink, RouterModule, RouterOutlet, RouterLinkActive, 
-// TODO: `HttpClientModule` should not be imported into a component directly.
-// Please refactor the code to add `provideHttpClient()` call to the provider list in the
-// application bootstrap logic and remove the `HttpClientModule` import from this component.
-HttpClientModule,
+    RouterLink, RouterModule, RouterOutlet, RouterLinkActive,
     MatButtonModule, MatDividerModule, MatIconModule
   ],
   selector: "app-editor",

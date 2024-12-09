@@ -10,14 +10,18 @@ import { DraftCardRowComponent } from '@components/card-row/draft-card-row/draft
 @Component({
   selector: 'app-main',
   standalone: true,
-  imports: [MatCardModule, CommonModule, RouterModule, RouterOutlet, RouterLink, RouterLinkActive, 
-// TODO: `HttpClientModule` should not be imported into a component directly.
-// Please refactor the code to add `provideHttpClient()` call to the provider list in the
-// application bootstrap logic and remove the `HttpClientModule` import from this component.
-HttpClientModule, WelcomeMatComponent, ContinueCardRowComponent, DraftCardRowComponent],
+  imports: [
+    MatCardModule,
+    CommonModule,
+    RouterModule,
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    WelcomeMatComponent,
+    ContinueCardRowComponent,
+    DraftCardRowComponent,
+  ],
   templateUrl: './main.component.html',
-  styleUrl: './main.component.scss'
+  styleUrl: './main.component.scss',
 })
-export class MainComponent {
-
-}
+export class MainComponent {}

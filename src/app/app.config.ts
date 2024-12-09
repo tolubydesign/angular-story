@@ -2,7 +2,7 @@ import { ApplicationConfig, Injectable } from '@angular/core';
 import { RouterStateSnapshot, TitleStrategy, provideRouter } from '@angular/router';
 import { routes } from '@app/app.routes';
 import { Title, provideClientHydration } from '@angular/platform-browser';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 @Injectable({providedIn: 'root'})
@@ -24,7 +24,7 @@ export const appConfig: ApplicationConfig = {
     {provide: TitleStrategy, useClass: TemplatePageTitleStrategy},
     provideClientHydration(),
     // importProvidersFrom(AppRoutingModule),
-    provideHttpClient(),
+    provideHttpClient(withFetch()),
     provideAnimationsAsync(),
   ]
 };

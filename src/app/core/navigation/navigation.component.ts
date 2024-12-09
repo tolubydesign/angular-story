@@ -9,11 +9,7 @@ import { removeUserSessionStorageCredentials } from "@shared/helpers/session.sto
 @Component({
   selector: 'app-navigation',
   standalone: true,
-  imports: [RouterLink, RouterModule, CommonModule, RouterOutlet, RouterLinkActive, 
-// TODO: `HttpClientModule` should not be imported into a component directly.
-// Please refactor the code to add `provideHttpClient()` call to the provider list in the
-// application bootstrap logic and remove the `HttpClientModule` import from this component.
-HttpClientModule, MatButtonModule, MatMenuModule],
+  imports: [RouterLink, RouterModule, CommonModule, RouterOutlet, RouterLinkActive, MatButtonModule, MatMenuModule],
   templateUrl: './navigation.component.html',
   styleUrl: './navigation.component.scss'
 })

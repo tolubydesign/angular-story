@@ -8,7 +8,6 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AppRoutingModule } from "./app-routing.module";
-import { HttpClientModule } from "@angular/common/http";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
@@ -23,7 +22,6 @@ import { RouterModule } from '@angular/router';
     MatCheckboxModule,
     MatCardModule,
     MatListModule,
-    HttpClientModule,
     MatIconModule,
     FormsModule,
     ReactiveFormsModule,

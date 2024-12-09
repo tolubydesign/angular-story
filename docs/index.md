@@ -5,5 +5,6 @@
 ## Development
 ### [Running Project](/docs/development/run.md)
 ### [Deployment](/docs/development/deployment.md)
-### [Hosting ](/docs/development/hosting.md)
+### [Hosting](/docs/development/hosting.md)
 
+### [To Do](/docs/todo.md)

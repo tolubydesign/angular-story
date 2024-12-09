@@ -13,7 +13,7 @@ const email = sitePrimaryKey + 'email';
  * @param isBrowser `false` on the server side and `true` on the browser side
  */
 export function getUserCredentials(isBrowser: boolean, session?: Storage): UserCredentials {
-  console.log('session storage', sessionStorage)
+  console.log('session storage', session)
   console.log('get user credentials isBrowser:', isBrowser)
   if (!isBrowser) {
     return {

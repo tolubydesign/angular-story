@@ -1,13 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { falsy } from '@models/tree.model';
-import { ActivatedRoute, RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 import { URLParameters } from '@helpers/parameter';
 import { Subscription } from 'rxjs';
 import { Plot } from '@models/plot';
 import { StoriesService } from '@services/stories.service';
 import { StoryBoardComponent } from '../story-board/story-board.component';
 import { CommonModule, NgIf } from '@angular/common';
-import {} from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,7 +15,7 @@ import { HTTPSuccessResponse } from '@models/http.model';
 @Component({
     imports: [
         StoryBoardComponent, NgIf, CommonModule,
-        RouterLink, RouterModule, RouterOutlet, RouterLinkActive,
+        RouterLink, RouterModule, RouterLinkActive,
         MatButtonModule, MatDividerModule, MatIconModule
     ],
     selector: 'app-interaction-dashboard',

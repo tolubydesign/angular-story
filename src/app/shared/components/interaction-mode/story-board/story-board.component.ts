@@ -6,10 +6,10 @@ import { Router } from '@angular/router';
 import { NotificationService } from '@services/notification.service';
 import { MatCard, MatCardContent, MatCardSubtitle, MatCardTitle } from '@angular/material/card';
 import { RouterModule } from '@angular/router';
-import { NgFor, NgForOf, NgIf, NgTemplateOutlet } from '@angular/common';
+import { NgFor, NgForOf, NgIf } from '@angular/common';
 
 @Component({
-    imports: [MatCardTitle, MatCard, MatCardSubtitle, MatCardContent, RouterModule, NgIf, NgFor, NgForOf, NgTemplateOutlet],
+    imports: [MatCardTitle, MatCard, MatCardSubtitle, MatCardContent, RouterModule, NgIf, NgFor, NgForOf],
     selector: 'app-story-board',
     templateUrl: './story-board.component.html',
     styleUrls: ['./story-board.component.scss']

@@ -1,14 +1,13 @@
 import { CommonModule } from '@angular/common';
-import {} from '@angular/common/http';
 import { Component } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from "@angular/router";
+import { Router, RouterLink, RouterModule } from "@angular/router";
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { removeUserSessionStorageCredentials } from "@shared/helpers/session.storage";
 
 @Component({
     selector: 'app-navigation',
-    imports: [RouterLink, RouterModule, CommonModule, RouterOutlet, RouterLinkActive, MatButtonModule, MatMenuModule],
+    imports: [RouterLink, RouterModule, CommonModule, MatButtonModule, MatMenuModule],
     templateUrl: './navigation.component.html',
     styleUrl: './navigation.component.scss'
 })

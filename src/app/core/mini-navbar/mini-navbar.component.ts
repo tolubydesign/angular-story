@@ -1,15 +1,14 @@
-import { CommonModule, NgClass } from '@angular/common';
-import {} from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { Router, RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { UserService } from '@services/user/user.service';
 
 @Component({
-    selector: 'app-mini-navbar',
-    imports: [RouterLink, RouterModule, CommonModule, RouterOutlet, RouterLinkActive, MatButtonModule, NgClass],
-    templateUrl: './mini-navbar.component.html',
-    styleUrl: './mini-navbar.component.scss'
+  selector: 'app-mini-navbar',
+  imports: [RouterLink, RouterModule, CommonModule, MatButtonModule],
+  templateUrl: './mini-navbar.component.html',
+  styleUrl: './mini-navbar.component.scss',
 })
 export class MiniNavbarComponent implements OnInit {
   path: string | null = null;
@@ -24,6 +23,6 @@ export class MiniNavbarComponent implements OnInit {
   }
 
   signOut() {
-    console.log('sign out')
+    console.log('sign out');
   }
 }

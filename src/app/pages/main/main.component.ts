@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
-import {} from '@angular/common/http';
 import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { WelcomeMatComponent } from '@components/welcome-mat/welcome-mat.component';
 import { ContinueCardRowComponent } from '@components/card-row/continue-card-row/continue-card-row.component';
 import { DraftCardRowComponent } from '@components/card-row/draft-card-row/draft-card-row.component';
@@ -13,9 +12,6 @@ import { DraftCardRowComponent } from '@components/card-row/draft-card-row/draft
         MatCardModule,
         CommonModule,
         RouterModule,
-        RouterOutlet,
-        RouterLink,
-        RouterLinkActive,
         WelcomeMatComponent,
         ContinueCardRowComponent,
         DraftCardRowComponent,

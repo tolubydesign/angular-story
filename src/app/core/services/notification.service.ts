@@ -18,6 +18,8 @@ export class NotificationService {
   constructor() { }
 
   notifyUser(message: string, action?: string) {
+    console.log('notify user, message', message);
+    console.log('notify user, action', action);
     this._NotificationText.next({ message, action });
   }
 }

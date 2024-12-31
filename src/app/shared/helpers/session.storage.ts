@@ -4,7 +4,7 @@ import { isPlatformBrowser } from '@angular/common';
 const sitePrimaryKey = 'toa_dev_session_storage_';
 const tokenKey = sitePrimaryKey + 'token';
 const username = sitePrimaryKey + 'username';
-const role = sitePrimaryKey + 'role';
+const id = sitePrimaryKey + 'id';
 const email = sitePrimaryKey + 'email';
 
 /**
@@ -13,22 +13,20 @@ const email = sitePrimaryKey + 'email';
  * @param isBrowser `false` on the server side and `true` on the browser side
  */
 export function getUserCredentials(isBrowser: boolean, session?: Storage): UserCredentials {
-  console.log('session storage', session)
-  console.log('get user credentials isBrowser:', isBrowser)
   if (!isBrowser) {
     return {
       token: undefined,
       username: undefined,
-      role: undefined,
       email: undefined,
+      id: undefined,
     }
   }
 
   return {
     token: session?.getItem(tokenKey) ? session.getItem(tokenKey) : undefined,
     username: session ? session.getItem(username) : undefined,
-    role: session ? session.getItem(role) : undefined,
     email: session ? session.getItem(email) : undefined,
+    id: session ? session.getItem(id) : undefined,
   };
 }
 
@@ -39,9 +37,9 @@ export function getUserCredentials(isBrowser: boolean, session?: Storage): UserC
  */
 export function setUserCredential(credential: UserCredentials): void {
   if (sessionStorage && credential.token) sessionStorage.setItem(tokenKey, credential.token);
-  if (sessionStorage && credential.email) sessionStorage.setItem(email, credential.email);
-  if (sessionStorage && credential.role) sessionStorage.setItem(role, credential.role);
   if (sessionStorage && credential.username) sessionStorage.setItem(username, credential.username);
+  if (sessionStorage && credential.email) sessionStorage.setItem(email, credential.email);
+  if (sessionStorage && credential.id) sessionStorage.setItem(id, credential.id);
   return;
 }
 
@@ -49,7 +47,7 @@ export function removeUserSessionStorageCredentials(): void {
   if (sessionStorage) {
     sessionStorage.removeItem(tokenKey);
     sessionStorage.removeItem(email);
-    sessionStorage.removeItem(role);
+    sessionStorage.removeItem(id);
     sessionStorage.removeItem(username);
   }
 }

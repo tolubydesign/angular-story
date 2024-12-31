@@ -1,6 +1,5 @@
-// import { uuid } from 'uuidv4';
-import * as uuid from "uuid";
 import { Plot, PlotContent } from "./plot";
+import { createId } from "@paralleldrive/cuid2";
 
 export interface DendrogramData {
   data: {
@@ -33,7 +32,7 @@ export interface DendrogramDataParent {
 }
 
 export function generateID() {
-  return uuid.v4();
+  return createId();
 }
 
 export function GenerateText(type: 'title' | 'description'): string {
@@ -472,6 +471,8 @@ export const data: Plot[] = [
     id: generateID(),
     title: GenerateText('title'),
     description: GenerateText('description'),
+    creator: '',
+    status: 'public',
     content: {
       id: generateID(),
       name: GenerateText('title'),
@@ -690,6 +691,8 @@ export const data: Plot[] = [
     id: generateID(),
     title: GenerateText('title'),
     description: GenerateText('description'),
+    creator: '',
+    status: 'public',
     content: {
       id: generateID(),
       name: GenerateText('title'),

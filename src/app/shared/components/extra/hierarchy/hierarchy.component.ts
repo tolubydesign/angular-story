@@ -46,6 +46,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.plot) {
+      // TODO: pass session storage information like id
       this.storyEditor = new StoryEditor(this.plot.id, this.plot);
 
       if (!this.storyEditor) return this.notificationService.notifyUser("Board couldn't be made.");

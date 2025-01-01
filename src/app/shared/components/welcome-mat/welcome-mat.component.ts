@@ -1,7 +1,8 @@
 import { StoriesService } from '@core/services/stories.service';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
+import { getUserCredentials } from '../../helpers/session.storage';
 
 @Component({
     selector: 'app-welcome-mat',
@@ -10,11 +11,16 @@ import { Router } from '@angular/router';
     styleUrl: './welcome-mat.component.scss'
 })
 export class WelcomeMatComponent {
-
+  username = signal<string>('')
   constructor(
     private router: Router,
     private storiesService: StoriesService
-  ) { }
+  ) {
+    // showcase username
+    const { username } = getUserCredentials(true, sessionStorage);
+    console.log('welcome comp. username', username);
+    this.username.set(username?.trim() ?? '');
+  }
 
   /**
    * Redirect to create a new story, in edit more.

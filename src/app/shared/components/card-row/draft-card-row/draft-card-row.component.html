@@ -5,20 +5,11 @@
   </div>
 
   <div class="draft-display-card--content flex flex-wrap gap-4 mb-6">
-    <app-summary-display-card *ngFor="let item of content()"
-      [contentType]="'draft'"
-      [description]="item.description"
-      [title]="item.title"
-      ></app-summary-display-card>
-
-      <app-summary-display-card *ngFor="let item of content()"
-      [contentType]="'draft'"
-      [description]="item.description"
-      [title]="item.title"
-      ></app-summary-display-card>
+    <app-summary-display-card *ngFor="let item of content()" [contentType]="'draft'" [description]="item.description"
+      [title]="item.title"></app-summary-display-card>
   </div>
 
   <div>
-    <button mat-raised-button color="axolotl" class="text-[10px]" (click)="loadMore()">Load More</button>
+    <button mat-raised-button color="axolotl" class="text-[10px]" (click)="loadMore()">Load More (inactive)</button>
   </div>
 </section>

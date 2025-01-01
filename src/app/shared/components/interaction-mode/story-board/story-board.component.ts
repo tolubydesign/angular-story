@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { Plot, PlotContent } from '@models/plot';
 import { falsy } from '@models/tree.model';
-import StoryBoard from '@lib/story-board';
+import StoryBoard from '@lib/board';
 import { Router } from '@angular/router';
 import { NotificationService } from '@services/notification.service';
 import { MatCard, MatCardContent, MatCardSubtitle, MatCardTitle } from '@angular/material/card';

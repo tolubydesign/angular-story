@@ -7,7 +7,7 @@
 
   <div class="display-dendrogram--group" *ngIf="this.displayDendrogram">
     <!-- TODO: render dendrogram here or pass data into child component -->
-    <app-hierarchy *ngIf="plot" [plot]="plot">
+    <app-hierarchy *ngIf="plot" [content]="plot">
       <!-- src/app/shared/components/hierarchy/hierarchy.component.html -->
       <!-- This component is in /components/d3/ -->
     </app-hierarchy>

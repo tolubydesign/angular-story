@@ -1,12 +1,12 @@
 import { PlotService } from '@services/plot/plot.service';
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, WritableSignal, input, signal } from '@angular/core';
 import { CommonModule, JsonPipe, NgIf } from '@angular/common';
 import * as d3 from "d3";
 import { HierarchyNode, Selection, svg, drag, ValueFn } from "d3";
 import { BaseType } from 'd3-selection';
 import { Falsy, Subscription } from 'rxjs';
 import { Plot, PlotContent } from '@models/plot';
-import StoryEditor from "@lib/story-editor";
+import StoryEditor from "@lib/editor";
 import * as uuid from "uuid";
 import { StoriesService } from '@services/stories.service';
 import { NotificationService } from '@services/notification.service';
@@ -21,15 +21,11 @@ type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any
     styleUrls: ['./hierarchy.component.scss']
 })
 export class HierarchyComponent implements OnInit, OnDestroy {
-
-  // Note.
-  // `plot` is a is a "prop" 
-  // TODO: [optional] rename `plot` to `narrative`
-  @Input({required: true}) plot?: Plot = undefined;
+  content = input<Plot>()
   @ViewChild('D3HierarchyInputRef') D3HierarchyInputRef: ElementRef | undefined;
   private _HierarchySubscriber?: Subscription;
-
   mutatedPlot?: Plot;
+  plot: WritableSignal<Plot | undefined> = signal(this.content())
 
   constructor(
     private plotService: PlotService,
@@ -45,9 +41,10 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   HierarchyElement = `div#${this.name}`;
 
   ngOnInit(): void {
-    if (this.plot) {
+    const plotContent = this.plot();
+    if (plotContent && plotContent?.id && typeof plotContent?.id === 'string') {
       // TODO: pass session storage information like id
-      this.storyEditor = new StoryEditor(this.plot.id, this.plot);
+      this.storyEditor = new StoryEditor(plotContent.id, plotContent);
 
       if (!this.storyEditor) return this.notificationService.notifyUser("Board couldn't be made.");
       if (this.storyEditor?.errorMessage) return this.notificationService.notifyUser(this.storyEditor.errorMessage)
@@ -99,16 +96,17 @@ export class HierarchyComponent implements OnInit, OnDestroy {
    */
   initialiseComponent(updatingGraph: boolean = false): void {
     this.root = null;
+    const content = this.plot();
     const proxy = this.storyEditor?.boardProxy;
     // NOTE: if the new id is different to the session storage id. Go with the new id.    
     const sessionStorageId: string | undefined = proxy?.story?.id;
     const sessionStoragePlot: Plot | undefined = proxy?.story;
-    const plotIdProp = this.plot?.id;
+    const plotIdProp = content?.id;
 
-    if (!this.plot || !this.storyEditor) {
+    if (!this.plot() || !this.storyEditor) {
       this.notificationService.notifyUser("Plot or Story Editor can not be found.");
       console.warn("ERROR Story Editor:", this.storyEditor);
-      console.warn("ERROR Plot:", this.plot);
+      console.warn("ERROR Plot:", this.plot());
       return;
     }
 
@@ -116,11 +114,11 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       // Note.
       // Working with the prop-plot. There is a different plot to what has been stored.
       // Update session storage plot with prop-plot
-      this.mutatedPlot = this.plot
+      this.mutatedPlot = this.plot()
     } else {
       // Initialise Editor
-      this.plot = JSON.parse(JSON.stringify(sessionStoragePlot))
-      this.mutatedPlot = this.plot;
+      this.plot.set(JSON.parse(JSON.stringify(sessionStoragePlot)))
+      this.mutatedPlot = this.plot();
     }
 
     this.buildD3Tree().then((canvas: Selection<SVGGElement, unknown, HTMLElement, any> | undefined | void) => {

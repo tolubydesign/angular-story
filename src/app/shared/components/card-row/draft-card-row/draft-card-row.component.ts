@@ -5,17 +5,16 @@ import { SummaryDisplayCardComponent } from '@components/ui/summary-display-card
 import { Plot } from '@models/plot';
 
 @Component({
-    selector: 'app-draft-card-row',
-    imports: [SummaryDisplayCardComponent, NgFor, MatButtonModule],
-    templateUrl: './draft-card-row.component.html',
-    styleUrl: './draft-card-row.component.scss'
+  selector: 'app-draft-card-row',
+  imports: [SummaryDisplayCardComponent, NgFor, MatButtonModule],
+  templateUrl: './draft-card-row.component.html',
+  styleUrl: './draft-card-row.component.scss',
 })
 export class DraftCardRowComponent {
   content = input<Plot[]>([]);
-  constructor(
-  ) { }
+  constructor() {}
 
   loadMore() {
-    console.log('loading more...')
+    console.log('loading more...');
   }
 }

@@ -1,10 +1,10 @@
 import { Component, Input, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardHeader, MatCardModule } from '@angular/material/card';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
     selector: 'app-summary-display-card',
-    imports: [MatButtonModule, MatCardModule, MatCardHeader],
+    imports: [MatButtonModule, MatCardModule],
     templateUrl: './summary-display-card.component.html',
     styleUrl: './summary-display-card.component.scss'
 })
@@ -14,6 +14,14 @@ export class SummaryDisplayCardComponent {
   @Input({required: true}) title: string = '';
   @Input({required: true}) description: string = '';
   // @Input({required: true}) content: string = '';
+  // published = input()
   @Input({required: true}) contentType: 'draft' | 'continuation' = 'continuation'
 
+  edit() {
+    console.log('edit clicked')
+  }
+
+  delete() {
+    console.log('delete clicked')
+  }
 }

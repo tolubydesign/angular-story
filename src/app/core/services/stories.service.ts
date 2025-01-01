@@ -203,11 +203,11 @@ export class StoriesService {
   async createNewStoryGraph(): Promise<string | undefined> {
     const session = getUserCredentials(true, sessionStorage);
     if (!session.id) {
-      // couldn't get session storage or user id. either way, there's a serious problem 
+      // couldn't get session storage or user id. either way, there's a serious problem
       console.warn('Issue getting session storage');
       // TODO: warning
-      this.notificationService.notifyUser('Error getting user information')
-      return undefined
+      this.notificationService.notifyUser('Error getting user information');
+      return undefined;
     }
 
     const story: Plot = {
@@ -262,14 +262,17 @@ export class StoriesService {
           tap((response: HTTPSuccessResponse<Plot[]>) => {
             console.log('fetch activities. user activities ::: response', response);
             content = response.data;
-            const drafts: Plot[] = [];
+            const drafted: Plot[] = [];
             const published: Plot[] = [];
 
             // sort
             // divide between drafts (belonging to user and not published), recent interactions (not belonging to user), completed (published works)
-            response.data.forEach((plot) => (!!plot?.published ? published.push(plot) : drafts.push(plot)));
+            response.data.forEach((plot) => {
+              console.log('fetch activities. user activities ::: published', plot.published);
+              return !!plot?.published ? published.push(plot) : drafted.push(plot);
+            });
             this._publishedWorksSubject.next(published);
-            this._draftedWorksSubject.next(published);
+            this._draftedWorksSubject.next(drafted);
             return response;
           })
         )

@@ -1,3 +1,4 @@
+// NOTE: component possibly deprecated
 import { Component, OnInit } from '@angular/core';
 import { StoriesService } from '@services/stories.service';
 import { Subscription } from 'rxjs';

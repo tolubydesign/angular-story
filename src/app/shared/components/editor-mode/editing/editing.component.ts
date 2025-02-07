@@ -1,15 +1,16 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { falsy } from '@models/tree.model';
 import { URLParameters } from '@helpers/parameter';
 import { Plot } from '@models/plot';
-import { Falsy, Subscription } from 'rxjs';
+import { Falsy, Subscription, ErrorObserver } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import { StoriesService } from '@services/stories.service';
 import { LoaderComponent } from '../../ui/loader/loader.component';
 import { HierarchyComponent } from '../../extra/hierarchy/hierarchy.component';
 import { NgIf } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
 
 // Create Mat Icons.
 const CloseIcon = `
@@ -20,7 +21,7 @@ const CloseIcon = `
     </path>
   </g>
 </svg>
-`
+`;
 const THUMB_ICON =
   `
   <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px">
@@ -32,24 +33,23 @@ const THUMB_ICON =
 `;
 
 @Component({
-    imports: [LoaderComponent, HierarchyComponent, NgIf],
-    selector: 'app-editing',
-    templateUrl: './editing.component.html',
-    styleUrls: ['./editing.component.scss']
+  imports: [HierarchyComponent, NgIf, MatButtonModule],
+  selector: 'app-editing',
+  templateUrl: './editing.component.html',
+  styleUrls: ['./editing.component.scss'],
 })
-
 export class EditingComponent implements OnInit, OnDestroy {
-  parameterId: string | falsy;
+  parameterId = signal<string | falsy>(undefined);
   parameters = new URLParameters(this.activatedRoute);
-  plot: Plot | undefined;
-  private _FetchStoriesSubscriber: Subscription | undefined;
+  plot: WritableSignal<Plot | undefined> = signal(undefined);
   private _EditingStorySubscriber: Subscription | undefined;
 
   constructor(
+    private router: Router,
     private activatedRoute: ActivatedRoute,
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer,
-    private storiesService: StoriesService,
+    private storiesService: StoriesService
   ) {
     // Note that we provide the icon here as a string literal here due to a limitation in
     // Stackblitz. If you want to provide the icon from a URL, you can use:
@@ -63,9 +63,8 @@ export class EditingComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._FetchStoriesSubscriber?.unsubscribe();
     this._EditingStorySubscriber?.unsubscribe();
-    this.storiesService.updateEditingStory("")
+    this.storiesService.updateEditingStory('');
   }
 
   // TODO: The `this.storiesService.editingStory.subscribe()` request is made twice per load.
@@ -76,35 +75,27 @@ export class EditingComponent implements OnInit, OnDestroy {
    */
   async initialization(): Promise<void> {
     this._EditingStorySubscriber = this.storiesService.editingStory.subscribe((story?: Plot) => {
-      this.plot = story;
-    })
+      console.log('_EditingStorySubscriber story', story);
+      this.plot.set(story);
+    });
 
     const parameterID = await this.getParameterID();
-    if (parameterID instanceof Error) throw parameterID
-
-    // fetch files if nothing is in the store.
-    if (!this.storiesService.AllStoriesState()) {
-      this.storiesService.fetchAllStories().subscribe(
-        () => this.updateStoryParameterId(parameterID)
-      )
-    } else {
-      this.updateStoryParameterId(parameterID)
-    }
+    if (parameterID instanceof Error) throw parameterID;
+    this.fetchStory(parameterID);
   }
 
   /**
-   * @description Get id from url. Page route
-   * @return {Promise<void>}
+   * Get id from url. Page route
    */
   async getParameterID(): Promise<string | Error> {
-    const parameter = await this.parameters.GetIDParameter();
-    if (parameter instanceof Error) {
-      console.warn(parameter.message);
-      return parameter;
+    const parameterResponse = await this.parameters.GetIDParameter();
+    if (parameterResponse instanceof Error) {
+      console.warn(parameterResponse.message);
+      return parameterResponse;
     }
 
-    this.parameterId = parameter;
-    return parameter;
+    this.parameterId.set(parameterResponse);
+    return parameterResponse;
   }
 
   /**
@@ -117,5 +108,35 @@ export class EditingComponent implements OnInit, OnDestroy {
 
   updateStoryParameterId(id: string) {
     this.updateStory(id);
+  }
+
+  async newBoard() {
+    // get id from url parameter
+    const param = this.parameterId();
+    if (param && typeof param === 'string') {
+      // generate new board object. 
+      // Use existing parameter id if possible
+      const id = await this.storiesService.createNewStoryGraph(param);
+      console.log('new board ... id', id);
+      if (!id) return;
+    
+      // TODO: notify user of action
+    }
+  }
+
+  fetchStory(parameter: string) {
+    // fetch story request
+    this.storiesService.getStoryRequest(parameter).subscribe({
+      next: (v) => {
+        console.log('Editing Comp getStoryRequest subscribe response next', v);
+      },
+      error: (e) => {
+        // A 404 error is fine in this case. we just need to create a brand new project.
+        if (e.status === 404) {
+          // console.log('status of ', e.status);
+          // make "create new button" accessible
+        }
+      },
+    });
   }
 }

@@ -20,7 +20,7 @@ export const handleServiceError = (notificationService: NotificationService) => 
   } else {
     // The backend returned an unsuccessful response code.
     // The response body may contain clues as to what went wrong.
-    console.warn(`Backend returned code "${error.status}", body was: `, error.error);
+    console.warn(`Handle Service Error Code: ${error.status}, Error: `, error.error);
   }
 
   // Return an observable with a user-facing error message.

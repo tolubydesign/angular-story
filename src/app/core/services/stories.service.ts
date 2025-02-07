@@ -50,12 +50,18 @@ export class StoriesService {
    * @description Request to get all stories.
    * @returns HTTP GET request response.
    */
-  fetchAllStories(): Observable<any> {
-    const url = `${this._url}/list-stories`;
+  fetchAllStories(): Observable<HTTPSuccessResponse<Plot[]>> {
+    console.log('fetchAllStories >>');
+    const url = `${this._url}/stories`;
     this._loading.next(true);
+
+    // get user token
+    const session = getUserCredentials(true, sessionStorage);
+    console.log('fetch activities . session storage', session);
+    const headers = new HttpHeaders().set('Token', `Bearer ${session.token}`);
     return (
       this.http
-        .get<HTTPSuccessResponse<Plot[]>>(url)
+        .get<HTTPSuccessResponse<Plot[]>>(url, { headers })
         // Error Handling
         .pipe(catchError(this.handleError(this.notificationService)))
 
@@ -81,6 +87,7 @@ export class StoriesService {
    * @returns Observable<HTTPSuccessResponse>
    */
   addStory(body: { title: string; description: string; content: any }): Observable<any> {
+    console.log('addStory >>');
     const url = `${this._url}/story`;
     this._loading.next(true);
     return (
@@ -115,7 +122,6 @@ export class StoriesService {
    */
   updateStoryRequest({ id, description, title, body }: { id: string; description: string; title: string; body: PlotContent }): Observable<HTTPSuccessResponse> {
     const url = `${this._url}/story`;
-
     const header = new HttpHeaders().set('id', id).set('description', description).set('title', title);
 
     return (
@@ -200,7 +206,7 @@ export class StoriesService {
   /**
    * @description Create a brand new story graph.
    */
-  async createNewStoryGraph(): Promise<string | undefined> {
+  async createNewStoryGraph(id?: string): Promise<string | undefined> {
     const session = getUserCredentials(true, sessionStorage);
     if (!session.id) {
       // couldn't get session storage or user id. either way, there's a serious problem
@@ -211,7 +217,7 @@ export class StoriesService {
     }
 
     const story: Plot = {
-      id: createId(),
+      id: id ?? createId(),
       description: 'Description text needed',
       title: 'Title of Story',
       creator: session.id,
@@ -237,11 +243,11 @@ export class StoriesService {
   fetchActivity(): Observable<HTTPSuccessResponse<Plot[]>> {
     const url = `${this._url}/activities`;
     this._loading.next(true);
-    let content: Plot[] = [];
+    // let content: Plot[] = [];
     const session = getUserCredentials(true, sessionStorage);
-    console.log('fetch activities . session storage', session);
+    // console.log('fetch activities . session storage', session);
     const headers = new HttpHeaders().set('Token', `Bearer ${session.token}`).set('Id', session.id ?? '');
-    console.log('fetch activities . http headers', headers);
+    // console.log('fetch activities . http headers', headers);
 
     return (
       this.http
@@ -261,7 +267,7 @@ export class StoriesService {
         .pipe(
           tap((response: HTTPSuccessResponse<Plot[]>) => {
             console.log('fetch activities. user activities ::: response', response);
-            content = response.data;
+            // content = response.data;
             const drafted: Plot[] = [];
             const published: Plot[] = [];
 
@@ -279,6 +285,43 @@ export class StoriesService {
     );
   }
 
+  // get data for single story.
+  getStoryRequest(id: string): Observable<HTTPSuccessResponse<Plot>> {
+    console.info('getStoryRequest ...');
+    const url = `${this._url}/story`;
+    this._loading.next(true);
+
+    // get user token
+    const session = getUserCredentials(true, sessionStorage);
+    const headers = new HttpHeaders().set('Token', `Bearer ${session.token}`).set('id', id);
+    return (
+      this.http
+        .get<HTTPSuccessResponse<Plot>>(url, { headers })
+        // Error Handling
+        .pipe(
+          catchError((err: any, caught: Observable<HTTPSuccessResponse<Plot>>) => {
+            console.log(`get story with id:${id} not found`);
+            if (err?.error?.message && err?.message) err.message = err?.error?.message;
+            return this.handleError(this.notificationService)(err, caught);
+          })
+        )
+
+        .pipe(
+          finalize(() => {
+            this._loading.next(false);
+          })
+        )
+
+        .pipe(
+          tap((response: HTTPSuccessResponse<Plot>) => {
+            // update current active story
+            this._EditingStoryIDSubject.next(response.data.id);
+            this._EditingStorySubject.next(response.data);
+            return response;
+          })
+        )
+    );
+  }
   AllStoriesState = (): Plot[] | undefined => this._AllStoriesSubject.value;
   EditingStoryState = (): Plot | undefined => this._EditingStorySubject.value;
   EditingStoryIdState = (): string | null => this._EditingStoryIDSubject.value;

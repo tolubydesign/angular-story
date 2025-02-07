@@ -2,24 +2,24 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 export type Notification = {
-  message: string,
-  action?: string
-}
+  message: string;
+  action?: string;
+};
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NotificationService {
   milliseconds: number = 1000;
-  private _NotificationText = new BehaviorSubject<Notification>({ message: "", action: undefined });
-  text = this._NotificationText.asObservable()
-  timer: ReturnType<typeof setTimeout> = setTimeout(() => { }, this.milliseconds);
+  private _NotificationText = new BehaviorSubject<Notification>({ message: '', action: undefined });
+  text = this._NotificationText.asObservable();
+  timer: ReturnType<typeof setTimeout> = setTimeout(() => {}, this.milliseconds);
 
-  constructor() { }
+  constructor() {}
 
   notifyUser(message: string, action?: string) {
-    console.log('notify user, message', message);
-    console.log('notify user, action', action);
+    console.info('notifyUser > message', message);
+    // console.log('notifyUser > action', action);
     this._NotificationText.next({ message, action });
   }
 }

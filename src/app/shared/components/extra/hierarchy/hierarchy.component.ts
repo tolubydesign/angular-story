@@ -1,13 +1,13 @@
-import { PlotService } from '@services/plot/plot.service';
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, WritableSignal, input, signal } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, WritableSignal, input, signal, HostListener } from '@angular/core';
 import { CommonModule, JsonPipe, NgIf } from '@angular/common';
-import * as d3 from 'd3';
-import { HierarchyNode, Selection, svg, drag, ValueFn } from 'd3';
-import { BaseType } from 'd3-selection';
 import { Falsy, Subscription } from 'rxjs';
+import { HierarchyNode, Selection, svg, drag, ValueFn } from 'd3';
+import * as uuid from 'uuid';
+import * as d3 from 'd3';
+import { BaseType } from 'd3-selection';
+import { PlotService } from '@services/plot/plot.service';
 import { Plot, PlotContent } from '@models/plot';
 import StoryEditor from '@lib/editor';
-import * as uuid from 'uuid';
 import { StoriesService } from '@services/stories.service';
 import { NotificationService } from '@services/notification.service';
 import { NodeFormComponent } from '../../editor-mode/node-form/node-form.component';
@@ -27,11 +27,20 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   mutatedPlot?: Plot;
   plot: WritableSignal<Plot | undefined> = signal(this.content());
 
+  // page size related
+  isMobile: boolean = false;
+  navBarWidth = 68;
+  innerWidth: number = window.innerWidth - this.navBarWidth;
+  innerHeight: number = window.innerHeight;
+  mobileWidth: number = 760;
+
+  // Board related
   storyEditor?: StoryEditor;
   private _editedSubscription?: Subscription;
   narrativeEdited?: boolean;
   graphRefreshed: boolean = false;
-  name = 'd3-hierarchy';
+  name = 'd3-tree-hierarchy-wrapper';
+  d3SVGBoardName = 'd3-svg';
   HierarchyElement = `div#${this.name}`;
 
   // ************** Generate the tree diagram	 ***************** //
@@ -41,7 +50,8 @@ export class HierarchyComponent implements OnInit, OnDestroy {
 
   // declares a tree layout and assigns the size
   // Controls the look of the graph/D3-table
-  treeMap: d3.TreeLayout<unknown> = d3.tree().size([this.width, this.height]);
+  treeMap: d3.TreeLayout<unknown> = d3.tree();
+  // treeMap: d3.TreeLayout<unknown> = d3.tree().size([this.width, this.height]);
 
   margin = { top: 100, right: 50, bottom: 100, left: 50 };
   // viewerWidth = this.width - this.margin.left - this.margin.right;
@@ -59,14 +69,17 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   // svg: Selection<Element, any, HTMLElement, any> = undefined;
 
   // Node related
-  nodeEnterRectWidth = 42;
-  nodeEnterRectHeight = this.nodeEnterRectWidth;
+  interactiveNodeButton = 42;
+  nodeEnterRectWidth = 200;
+  nodeEnterRectHeight = this.nodeEnterRectWidth / 3;
   nodeEnterRectRepoX = (this.nodeEnterRectWidth - this.nodeEnterRectWidth * 2) / 2;
   nodeEnterRectRepoY = (this.nodeEnterRectHeight - this.nodeEnterRectHeight * 2) / 2;
 
   constructor(private plotService: PlotService, private storiesService: StoriesService, private notificationService: NotificationService) {}
 
   ngOnInit(): void {
+    this.isMobile = this.innerWidth < this.mobileWidth;
+
     this.plot.set(this.content());
     const plotContent = this.plot();
     console.log('On init plot-content', plotContent);
@@ -75,6 +88,10 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       console.log('On init setting things up');
 
       // TODO: pass session storage information like id
+      // call session storage
+      // if session storage has data. apply it to Board. If ID's dont match use source instead
+
+      // apply data to Board
       this.storyEditor = new StoryEditor(plotContent.id, plotContent);
 
       if (!this.storyEditor) return this.notificationService.notifyUser("Board couldn't be made.");
@@ -91,6 +108,23 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._HierarchySubscriber?.unsubscribe();
     this._editedSubscription?.unsubscribe();
+    console.log('ON DESTROY');
+    d3.select(this.HierarchyElement).selectAll('*').remove();
+  }
+
+  // @HostListener is applied to the onWindowResize function
+  @HostListener('window:resize', ['$event'])
+  /**
+   * Event fires on page resize.
+   * @param event
+   */
+  onWindowResize(event: Event) {
+    const { target } = event;
+    if ((target as Window)?.innerWidth && (target as Window)?.innerHeight) {
+      this.innerWidth = (target as Window).innerWidth - this.navBarWidth * 4;
+      this.innerHeight = (target as Window).innerHeight;
+    }
+    this.isMobile = this.innerWidth < this.mobileWidth;
   }
 
   /**
@@ -136,6 +170,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   /**
    * Sub-function - Initialise the D3 graph. This function will call the necessary function to create the D3 canvas and
    * add the data needed to build the graph.
+   *
    * If there exists a graph. It will be wiped and reset.
    */
   buildD3Tree = async (): Promise<Selection<SVGGElement, unknown, HTMLElement, any> | undefined | void> => {
@@ -144,23 +179,26 @@ export class HierarchyComponent implements OnInit, OnDestroy {
 
     // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     // Add 'implements OnInit' to the class.
-    this.treeMap.size();
+
+    // clear SVG. Remove the board
     if (this.svg) {
+      // console.log('buildD3Tree clearing all')
+      // d3.select(this.HierarchyElement).selectAll('*').remove();
       this.svg.remove();
-      const SVG = document.getElementById('d3-svg');
+      const SVG = document.getElementById(this.d3SVGBoardName);
       this.D3HierarchyInputRef?.nativeElement.removeChild(SVG);
     }
 
-    const canvas = await this.createCanvas();
-    this.svg = canvas;
-    console.log('build d3 tree CANVAS', canvas);
+    this.svg = await this.createCanvas();
+    console.log('build d3 tree CANVAS', this.svg);
     console.log('build d3 tree mutated plot content', this.mutatedPlot);
+
     // Initialise d3 hierarchy graph.
     if (!this.mutatedPlot) return this.notificationService.notifyUser('Mutated plot is undefined.');
 
     this.root = d3.hierarchy(this.mutatedPlot.content, (d: PlotContent) => d.children);
     this.update(this.root);
-    return canvas;
+    return this.svg;
   };
 
   /**
@@ -175,19 +213,22 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       d3
         .select(this.HierarchyElement)
         .append('svg')
-        .attr('id', 'd3-svg')
-        .attr('width', this.width)
-        .attr('height', this.height)
+        .attr('id', this.d3SVGBoardName)
+        .attr('class', 'canvas')
+        .attr('width', this.innerWidth)
+        .attr('height', this.innerHeight)
+        // .attr('width', '90vw')
+        // .attr('height', '90vh')
         // .attr("width", this.width + this.margin.right + this.margin.left)
         // .attr("height", this.height + this.margin.top + this.margin.bottom)
         .append('g')
-        .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')')
+        .attr('transform', `translate(${this.innerWidth / 2}, ${this.innerHeight / 2})`)
+      // .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')')
     );
   }
 
   /**
    * @description Initialise/Update/Rebuild data graph.
-   * @param source RootType
    * @returns
    */
   update(source: RootType) {
@@ -221,14 +262,11 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     });
 
     // Enter any new modes at the parent's previous position.
-    let nodeEnter: Selection<SVGGElement, d3.HierarchyNode<unknown>, SVGGElement, unknown> = node
-      .enter()
-      .append('g')
-      .attr('class', 'node')
-      .attr('transform', (d: any) => {
-        return 'translate(' + d.x + ',' + d.y + ')';
-        // return "translate(" + source.x + "," + source.y + ")";
-      });
+    let nodeEnter: Selection<SVGGElement, d3.HierarchyNode<unknown>, SVGGElement, unknown> = node.enter().append('g').attr('class', 'node canvas--node');
+    // .attr('transform', (d: any) => {
+    //   return `translate(${d.x}, ${d.y})`;
+    //   // return "translate(" + source.x + "," + source.y + ")";
+    // });
     // .call(drag)
     // .on("click", (a, b) => this.click(a, b));
 
@@ -415,26 +453,25 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     // Add child node
     nodeEnter
       .append('rect')
-      .attr('width', this.nodeEnterRectWidth / 3)
-      .attr('height', this.nodeEnterRectHeight / 3)
-      .attr('stroke-width', '2px')
+      .attr('width', this.interactiveNodeButton / 3)
+      .attr('height', this.interactiveNodeButton / 3)
+      // .attr('stroke-width', '2px')
       .attr('rx', 100)
-      .attr('x', `${this.nodeEnterRectWidth / 3 / 2}`)
-      .attr('y', this.nodeEnterRectWidth - 10)
+      .attr('x', `${this.interactiveNodeButton / 3 / 2}`)
+      .attr('y', this.interactiveNodeButton + 5)
       .style('fill', '#22a422')
       .attr('class', 'cursor-pointer')
       .attr('data-node-type', 'button-add-node')
       .on('click', (event: any, d: HierarchyNode<unknown>) => this.addNode(event, d));
-
-    // to delete child node
+    // delete button. child node
     nodeEnter
       .append('rect')
-      .attr('width', this.nodeEnterRectWidth / 3)
-      .attr('height', this.nodeEnterRectHeight / 3)
-      .attr('stroke-width', '2px')
+      .attr('width', this.interactiveNodeButton / 3)
+      .attr('height', this.interactiveNodeButton / 3)
+      // .attr('stroke-width', '2px')
       .attr('rx', 100)
-      .attr('x', `${-Math.abs(this.nodeEnterRectWidth / 2)}`)
-      .attr('y', this.nodeEnterRectWidth - 10)
+      .attr('x', `${-Math.abs(this.interactiveNodeButton / 2)}`)
+      .attr('y', this.interactiveNodeButton + 5)
       .style('fill', 'rgb(123, 28, 28)')
       .attr('class', 'cursor-pointer')
       .attr('data-node-type', 'button-remove-node')

@@ -1,17 +1,47 @@
-<!-- TODO: Move component to another folder  -->
-<div data-component="Hierarchy Component" class="overflow-auto">
-  <div #D3HierarchyInputRef id="d3-hierarchy"></div>
+<div data-component="Hierarchy Component" class="hierarchy--component">
+  <div #D3HierarchyInputRef class="h-screen" id="d3-tree-hierarchy-wrapper"></div>
 </div>
 
-<div data-element="Save" *ngIf="narrativeEdited && graphRefreshed" class="save-content--group absolute top-[10px] right-[10px]">
+<div data-element="Save" *ngIf="narrativeEdited && graphRefreshed"
+  class="save-content--group absolute top-[10px] right-[10px]">
   <button mat-raised-button class="save--button text-[10px]" (click)="saveStateInSession()">save</button>
 </div>
 
-<!-- TODO: to be deleted in the future -->
-<div *ngIf="plot" data-element="Hierarchy component json plot"
-  class="fixed bottom-[20px] left-0 bg-white shadow-md max-h-[100px] max-w-[92vw] w-full translate-x-[4vw] overflow-y-auto px-2 py-2">
-  <p class="text-[8px]">{{ plot | json }}</p>
+<div *ngIf="plot" data-element="Hierarchy Logs"
+  class="absolute bottom-10 left-2 bg-white shadow-md w-[calc(100%-0.5rem)] px-2 py-2">
+  <p class="text-[8px]">{{ plot() | json }}</p>
+
+  <br>
+  <div id="dimensions">
+    <div *ngIf="isMobile">I am a Mobile Device</div>
+    <div><strong>Width:</strong>&nbsp;{{innerWidth}}</div>
+    <div><strong>Height:</strong>&nbsp;{{innerHeight}}</div>
+  </div>
 </div>
 
 <app-node-form (updateNodeContent)="updateNodeContent($event)"
   (addNodeContent)="addNodeContent($event)"></app-node-form>
+
+
+<!-- <div data-component="Hierarchy Component" class="relative">
+  <svg #D3HierarchyInputRef id="d3-hierarchy"></svg>
+
+  <svg id="d3-hierarchy" class="relative top-[50%] left-[50%]" style="transform: translate(-50%, -50%)">
+    <g transform="translate(5, 5)">
+      <defs id="defs" />
+      <g id="links" />
+      <g id="nodes" />
+      <g id="arrows" />
+    </g>
+  </svg>
+
+
+  <svg id="d3-hierarchy">
+    <g transform="translate(5, 5)">
+      <defs id="defs" />
+      <g id="links" />
+      <g id="nodes" />
+      <g id="arrows" />
+    </g>
+  </svg>
+</div> -->

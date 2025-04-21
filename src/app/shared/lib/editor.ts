@@ -11,6 +11,8 @@ type BoardProxy = {
 
 /**
  * @description Handle changes and updates made in the Editor part of the website.
+ * 
+ * TODO: class name "StoryEditor" will be deprecated in future updates to "Board"
  */
 export default class StoryEditor {
   id: string;

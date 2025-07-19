@@ -1,10 +1,26 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, WritableSignal, input, signal, HostListener } from '@angular/core';
 import { CommonModule, JsonPipe, NgIf } from '@angular/common';
 import { Falsy, Subscription } from 'rxjs';
-import { HierarchyNode, Selection, svg, drag, ValueFn } from 'd3';
+import {
+  HierarchyNode,
+  Selection,
+  svg,
+  drag,
+  ValueFn,
+  tree,
+  TreeLayout,
+  hierarchy,
+  select,
+  HierarchyPointNode,
+  Link,
+  Transition,
+  TransitionLike,
+  BaseType,
+  HierarchyLink,
+} from 'd3';
 import * as uuid from 'uuid';
 import * as d3 from 'd3';
-import { BaseType } from 'd3-selection';
+// import { BaseType } from 'd3-selection';
 import { PlotService } from '@services/plot/plot.service';
 import { Plot, PlotContent } from '@models/plot';
 import StoryEditor from '@lib/editor';
@@ -12,7 +28,18 @@ import { StoriesService } from '@services/stories.service';
 import { NotificationService } from '@services/notification.service';
 import { NodeFormComponent } from '../../editor-mode/node-form/node-form.component';
 
-type RootType = HierarchyNode<Plot | Falsy> | undefined | null | { children: any[]; x0: any; y0: any } | any;
+type Unknown = any;
+type CanvasSelection = Selection<SVGGElement | any, undefined | unknown, HTMLElement | null | any, undefined>;
+// Selection<SVGSVGElement, undefined, null, undefined>
+type RootType = HierarchyNode<PlotContent | undefined> & {
+  index?: number;
+  // index: number;
+  // x0: Unknown;
+  // y0: Unknown;
+  // x: Unknown;
+  // y: Unknown;
+  // _children: RootType[] | undefined;
+};
 
 @Component({
   imports: [JsonPipe, NodeFormComponent, NgIf, CommonModule],
@@ -48,9 +75,16 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   height = 2000;
   createSvg: any = svg;
 
+  // Specify the charts’ dimensions. The height is variable, depending on the layout.
+  // width = 928;
+  marginTop = 10;
+  marginRight = 10;
+  marginBottom = 10;
+  marginLeft = 40;
+
   // declares a tree layout and assigns the size
   // Controls the look of the graph/D3-table
-  treeMap: d3.TreeLayout<unknown> = d3.tree();
+  treeMap: TreeLayout<unknown> = tree();
   // treeMap: d3.TreeLayout<unknown> = d3.tree().size([this.width, this.height]);
 
   margin = { top: 100, right: 50, bottom: 100, left: 50 };
@@ -58,22 +92,49 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   // viewerHeight = this.height - this.margin.top - this.margin.bottom;
   duration = 750;
   i = 0;
-  root: RootType = {
-    children: [],
-    x0: 0,
-    y0: 0,
-  };
 
+  // Rows are separated by dx pixels, columns by dy pixels. These names can be counter-intuitive
+  // (dx is a height, and dy a width). This because the tree must be viewed with the root at the
+  // “bottom”, in the data domain. The width of a column is based on the tree’s height.
+  // root = d3.hierarchy(data);
+  container: Selection<BaseType, unknown, HTMLElement, any> | undefined;
+  base: RootType | undefined;
+  nodes: RootType[] | undefined;
+  dx: number | undefined;
+  dy: number | undefined;
+  tree: TreeLayout<unknown> | any | undefined;
+  diagonal: Link<Unknown, d3.DefaultLinkObject, Unknown> | undefined;
+  // diagonal: Link<any, d3.DefaultLinkObject, [number, number]> | undefined;
+
+  // Compute the extent of the tree. Note that x and y are swapped here
+  // because in the tree layout, x is the breadth, but when displayed, the
+  // tree extends right rather than down.
+  x0: number = Infinity;
+  x1: number = -this.x0;
+  circleWidth = 10;
+  circleRadius = 5;
+  circleHeight = 10;
+  nodeSize = 20;
+
+  svg: CanvasSelection | undefined;
+  link: Selection<SVGPathElement | null, HierarchyLink<PlotContent | undefined>, SVGGElement, unknown> | undefined;
+  node: Selection<SVGGElement | null, RootType, SVGGElement, unknown> | undefined;
+  gLink: CanvasSelection | undefined;
+  gNode: CanvasSelection | undefined;
+  nodeEnter: Selection<SVGGElement | any, RootType, SVGGElement, undefined> | undefined;
+  transition: Transition<SVGGElement, undefined, null, undefined> | undefined;
   // append the svg object to the body of the page
-  svg: Selection<SVGGElement, HierarchyNode<PlotContent> | unknown, HTMLElement, any> | undefined = undefined;
+  // svg: Selection<SVGGElement, HierarchyNode<PlotContent> | unknown, HTMLElement, any> | undefined = undefined;
   // svg: Selection<Element, any, HTMLElement, any> = undefined;
 
   // Node related
   interactiveNodeButton = 42;
-  nodeEnterRectWidth = 200;
+  nodeEnterRectWidth = 42;
   nodeEnterRectHeight = this.nodeEnterRectWidth / 3;
   nodeEnterRectRepoX = (this.nodeEnterRectWidth - this.nodeEnterRectWidth * 2) / 2;
   nodeEnterRectRepoY = (this.nodeEnterRectHeight - this.nodeEnterRectHeight * 2) / 2;
+  x: any;
+  y: any;
 
   constructor(private plotService: PlotService, private storiesService: StoriesService, private notificationService: NotificationService) {}
 
@@ -83,33 +144,27 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     this.plot.set(this.content());
     const plotContent = this.plot();
     console.log('On init plot-content', plotContent);
-    console.log('On init plot-content');
+
     if (plotContent && plotContent?.id) {
-      console.log('On init setting things up');
-
-      // TODO: pass session storage information like id
-      // call session storage
-      // if session storage has data. apply it to Board. If ID's dont match use source instead
-
+      console.log('On init. setting up');
       // apply data to Board
       this.storyEditor = new StoryEditor(plotContent.id, plotContent);
-
       if (!this.storyEditor) return this.notificationService.notifyUser("Board couldn't be made.");
       if (this.storyEditor?.errorMessage) return this.notificationService.notifyUser(this.storyEditor.errorMessage);
 
       this._editedSubscription = this.storyEditor.edited.subscribe((state: boolean) => {
         this.narrativeEdited = state;
       });
-    }
 
-    this.initialiseComponent();
+      this.init();
+    }
   }
 
   ngOnDestroy(): void {
     this._HierarchySubscriber?.unsubscribe();
     this._editedSubscription?.unsubscribe();
     console.log('ON DESTROY');
-    d3.select(this.HierarchyElement).selectAll('*').remove();
+    select(this.HierarchyElement).selectAll('*').remove();
   }
 
   // @HostListener is applied to the onWindowResize function
@@ -127,78 +182,343 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     this.isMobile = this.innerWidth < this.mobileWidth;
   }
 
-  /**
-   * @description Get information from store. Start up D3 graph.
-   * @returns
-   */
-  initialiseComponent(updatingGraph: boolean = false): void {
-    this.root = null;
+  init() {
     const content = this.plot();
+    console.log('init function called');
 
-    const proxy = this.storyEditor?.boardProxy;
-    // NOTE: if the new id is different to the session storage id. Go with the new id.
-    const sessionStorageId: string | undefined = proxy?.story?.id;
-    const sessionStoragePlot: Plot | undefined = proxy?.story;
-    const plotIdProp = content?.id;
+    this.base = d3.hierarchy(content?.content).eachBefore(
+      (
+        (i) => (d) =>
+          ((d as any).index = i++)
+      )(0)
+    );
+    this.dx = 10;
+    this.dy = this.width / ((this.base as any).height + 1);
+    this.nodes = this.base.descendants();
+    // Create a tree layout.
+    // this.tree = d3.cluster().nodeSize([this.dx, this.dy]);
 
-    if (!this.plot() || !this.storyEditor) {
-      this.notificationService.notifyUser('Plot or Story Editor can not be found.');
-      console.warn('ERROR Story Editor:', this.storyEditor);
-      console.warn('ERROR Plot:', this.plot());
+    // Sort the tree and apply the layout.
+    // this.base.sort((a, b) => d3.ascending(a?.data?.name, b.data?.name));
+    // this.tree(this.base);
+
+    // Compute the extent of the tree. Note that x and y are swapped here
+    // because in the tree layout, x is the breadth, but when displayed, the
+    // tree extends right rather than down.
+    this.x0 = Infinity;
+    this.x1 = -this.x0;
+
+    // this.base.eachBefore(
+    //   (
+    //     (i) => (d) =>
+    //       (d.index = i++)
+    //   )(0)
+    // );
+    this.base.each((d) => console.log('each d', d));
+    this.base.eachAfter((d) => console.log('each after d', d));
+    // this.base.each((d: RootType | any) => {
+    //   if (d.x > this.x1) this.x1 = d.x;
+    //   if (d.x < this.x0) this.x0 = d.x;
+    // });
+
+    // Compute the adjusted height of the tree.
+    this.height = this.x1 - this.x0 + this.dx * 2;
+
+    this.generateSVG();
+  }
+
+  generateSVG() {
+    console.log('generate SVG function called');
+    if (!this.dx || !this.dy || !this.base) {
       return;
     }
 
-    this.mutatedPlot = this.plot();
+    this.container = d3.select(this.HierarchyElement);
+    // Create the SVG container, a layer for the links and a layer for the nodes.
+    this.svg = this.container
+      .append('svg')
+      .attr('id', this.d3SVGBoardName)
+      .attr('width', this.width)
+      .attr('height', this.height)
+      // .attr('viewBox', [-this.dy / 3, this.x0 - this.dx, this.width, this.height])
+      .attr('viewBox', [-this.nodeSize / 2, -this.nodeSize * 3 / 2, this.width, this.height])
+      .attr('style', 'max-width: 100%; height: auto; font: 10px sans-serif; overflow: visible;');
+    // this.svg = d3
+    //   .select(this.HierarchyElement)
+    //   .append('svg')
+    //   .attr('id', this.d3SVGBoardName)
+    //   .attr('width', this.width)
+    //   .attr('height', this.height)
+    //   .attr('viewBox', [-this.dy / 3, this.x0 - this.dx, this.width, this.height])
+    //   .attr('style', 'max-width: 100%; height: auto; font: 10px sans-serif;');
 
-    // if (plotIdProp !== sessionStorageId) {
-    //   // Note.
-    //   // Working with the prop-plot. There is a different plot to what has been stored.
-    //   // Update session storage plot with prop-plot
-    //   this.mutatedPlot = this.plot();
-    // } else {
-    //   // Initialise Editor
-    //   // TODO: notify user. we are using session storage data
-    //   this.plot.set(JSON.parse(JSON.stringify(sessionStoragePlot)));
-    //   this.mutatedPlot = this.plot();
-    // }
+    console.log('root links', this.base.links());
+    this.link = this.svg
+      .append('g')
+      .attr('fill', 'none')
+      .attr('stroke', '#999')
+      .selectAll()
+      .data(this.base.links())
+      .join('path')
+      .attr(
+        'd',
+        (d) => `
+        M${(d.source.depth) * this.nodeSize},${((d.source as Unknown)?.index ?? d.source.depth + 1) * this.nodeSize}
+        V${((d.target as Unknown)?.index ?? d.target.depth + 1) * this.nodeSize}
+        h${this.nodeSize}
+      `
+      );
 
-    this.buildD3Tree().then((canvas: Selection<SVGGElement, unknown, HTMLElement, any> | undefined | void) => {
-      if (canvas && updatingGraph) this.graphRefreshed = true;
-    });
+    this.node = this.svg
+      .append('g')
+      .selectAll()
+      .data(this.nodes as RootType[])
+      .join('g')
+      .attr('transform', (d) => `translate(0,${(d.index ?? (d.depth + 1)) * this.nodeSize})`);
+    // this.gLink = this.svg.append('g').attr('fill', 'none').attr('stroke', '#555').attr('stroke-opacity', 0.4).attr('stroke-width', 1.5);
+    // this.gNode = this.svg.append('g').attr('cursor', 'pointer').attr('pointer-events', 'all');
+
+    this.node
+      .append('circle')
+      .attr('cx', (d) => d.depth * this.nodeSize)
+      .attr('r', 2.5)
+      .attr('fill', (d) => (d.children ? null : '#999'));
+
+    this.node
+      .append('text')
+      .attr('dy', '0.32em')
+      .attr('x', (d) => d.depth * this.nodeSize + 6)
+      .text((d) => d.data?.name ?? 'name not set');
+
+    this.node.append('title').text((d) =>
+      d
+        .ancestors()
+        .reverse()
+        .map((d) => d.data?.name ?? 'name unknown')
+        .join('/')
+    );
+
+    console.log('this.svg data:', this.svg);
+    console.log('this.base data:', this.base);
+
+    if (this.base) {
+      console.log('root has data');
+      this.update(null, this.base);
+    }
   }
+
+  update(event: any, source: any) {
+    console.log('function update');
+    if (!this.base || !this.svg || !this.tree || !this.node || !this.link) {
+      return;
+    }
+
+    const duration = event?.altKey ? 2500 : 250; // hold the alt key to slow down the transition
+    const nodes = this.base.descendants().reverse();
+    const links = this.base.links();
+    // Compute the new tree layout.
+    this.tree(this.base);
+
+    // let left = this.base;
+    // let right = this.base;
+
+    // this.base.eachBefore((node: any) => {
+    //   if (node.x < left.x) left = node;
+    //   if (node.x > right.x) right = node;
+    // });
+
+    // const transition = this.svg.transition().duration(duration).attr('height', this.height);
+    // .attr('viewBox', [-this.dy / 3, this.x0 - this.dx, this.width, this.height])
+    // .tween("resize", window.ResizeObserver ? null : () => () => svg.dispatch("toggle"));
+
+    // Update the nodes…
+    // const node = this.node.selectAll('g').data(nodes, (d: any) => d.id);
+
+    // Enter any new nodes at the parent's previous position.
+    // const nodeEnter = node.enter()
+    //     .attr("transform", (d: any) => {
+    //       return `translate(${d.y},${d.x})`
+    //     })
+    //     .attr("fill-opacity", 0)
+    //     .attr("stroke-opacity", 0)
+    //     .on("click", (event, d) => {
+    //       console.log('node:enter:click:d', d);
+    //       console.log('node:enter:click:event', event);
+    //       d.children = d.children ?? [];
+    //       this.update(event, d);
+    //     });
+
+    //     nodeEnter.append("circle")
+    //     .attr("r", 2.5)
+    //     .attr("fill", d => d.children ? "#555" : "#999")
+    //     .attr("stroke-width", 10);
+
+    // nodeEnter.append("text")
+    //     .attr("dy", "0.31em")
+    //     .attr("x", d => d.children ? -6 : 6)
+    //     .attr("text-anchor", d => d.children ? "end" : "start")
+    //     .text(d => d.data?.name ?? 'name not provided')
+    //     .attr("stroke-linejoin", "round")
+    //     .attr("stroke-width", 3)
+    //     .attr("stroke", "white")
+    //     .attr("paint-order", "stroke");
+  }
+
+  // updateOld(event: any, source: RootType) {
+  //   if (!this.base || !this.svg || !this.tree || !this.gNode || !this.gLink || !this.diagonal) {
+  //     return;
+  //   }
+
+  //   const duration = event?.altKey ? 2500 : 250; // hold the alt key to slow down the transition
+  //   const nodes = this.base.descendants().reverse();
+  //   const links = this.base.links();
+
+  //   // Compute the new tree layout.
+  //   this.tree(this.base as HierarchyNode<unknown>);
+
+  //   let left: RootType = this.base;
+  //   let right = this.base;
+
+  //   // this.base.eachBefore((node: Unknown) => {
+  //   //   if (node?.x < left.x) left = node;
+  //   //   if (node?.x > right.x) right = node;
+  //   // });
+
+  //   // const height = right.x - left.x + this.marginTop + this.marginBottom;
+
+  //   const transition = this.svg
+  //     .transition()
+  //     .duration(duration)
+  //     .attr('height', this.height)
+  //     // .attr('viewBox', [-this.marginLeft, left.x - this.marginTop, this.width, this.height])
+  //     .attr('viewBox', `${-this.marginLeft} ${left.x - this.marginTop} ${this.width} ${this.height}`);
+  //     // .tween('resize', () => {
+  //     //   return null
+  //     // })
+
+  //   // Update the nodes…
+  //   const node = this.gNode.selectAll('g').data(nodes, (d: Unknown) => d.id);
+
+  //   // Enter any new nodes at the parent's previous position.
+  //   this.nodeEnter = node
+  //     .enter()
+  //     .append('g')
+  //     .attr('transform', (d) => {
+  //       return `translate(${source.y0},${source.x0})`;
+  //     })
+  //     .attr('fill-opacity', 0)
+  //     .attr('stroke-opacity', 0)
+  //     .on('click', (event, d) => {
+  //       // d.children = d.children ? null : d._children;
+  //       d.children = d.children ? undefined : d._children;
+  //       this.update(event, d);
+  //     });
+
+  //   this.nodeEnter
+  //     .append('circle')
+  //     .attr('r', 2.5)
+  //     .attr('fill', (d) => (d._children ? '#555' : '#999'))
+  //     .attr('stroke-width', 10);
+
+  //   this.nodeEnter
+  //     .append('text')
+  //     .attr('dy', '0.31em')
+  //     .attr('x', (d) => (d._children ? -6 : 6))
+  //     .attr('text-anchor', (d) => (d._children ? 'end' : 'start'))
+  //     .text((d) => d?.data?.title.slice(0, 4) ?? 'title not set')
+  //     .attr('stroke-linejoin', 'round')
+  //     .attr('stroke-width', 3)
+  //     .attr('stroke', 'white')
+  //     .attr('paint-order', 'stroke');
+
+  //   // Transition nodes to their new position.
+  //   // const nodeUpdate = node
+  //   //   .merge(this.nodeEnter as Unknown)
+  //   //   .transition(transition as unknown as string)
+  //   //   .attr('transform', (d) => `translate(${d.y},${d.x})`)
+  //   //   .attr('fill-opacity', 1)
+  //   //   .attr('stroke-opacity', 1);
+
+  //   // // Transition exiting nodes to the parent's new position.
+  //   // const nodeExit = node
+  //   //   .exit()
+  //   //   .transition(transition as unknown as string)
+  //   //   .remove()
+  //   //   .attr('transform', (d) => `translate(${source.y},${source.x})`)
+  //   //   .attr('fill-opacity', 0)
+  //   //   .attr('stroke-opacity', 0);
+
+  //   // Update the links…
+  //   // const link = this.gLink.selectAll('path').data(links, (d: Unknown) => d.target.id);
+
+  //   // //
+  //   // const diagonal = this.diagonal;
+
+  //   // Enter any new links at the parent's previous position.
+  //   // const linkEnter = link
+  //   //   .enter()
+  //   //   .append('path')
+  //   //   .attr('d', (d) => {
+  //   //     const o = { x: source.x0, y: source.y0 };
+  //   //     return diagonal({ source: o, target: o } as Unknown);
+  //   //   });
+
+  //   // Transition links to their new position.
+  //   // link
+  //   //   .merge(
+  //   //     linkEnter as unknown as
+  //   //       | Selection<BaseType, HierarchyLink<Plot | undefined>, SVGGElement, undefined>
+  //   //       | TransitionLike<BaseType, HierarchyLink<Plot | undefined>>
+  //   //   )
+  //   //   .transition(transition as unknown as string)
+  //   //   .attr('d', diagonal as Unknown);
+
+  //   // // Transition exiting nodes to the parent's new position.
+  //   // link
+  //   //   .exit()
+  //   //   .transition(transition as unknown as string)
+  //   //   .remove()
+  //   //   .attr('d', (d) => {
+  //   //     const o = { x: source.x, y: source.y };
+  //   //     return diagonal({ source: o, target: o } as Unknown);
+  //   //   });
+
+  //   // // Stash the old positions for transition.
+  //   // this.base.eachBefore((d) => {
+  //   //   d.x0 = d.x;
+  //   //   d.y0 = d.y;
+  //   // });
+  // }
 
   /**
    * Sub-function - Initialise the D3 graph. This function will call the necessary function to create the D3 canvas and
    * add the data needed to build the graph.
-   *
    * If there exists a graph. It will be wiped and reset.
    */
   buildD3Tree = async (): Promise<Selection<SVGGElement, unknown, HTMLElement, any> | undefined | void> => {
     // Initialise d3 hierarchy graph.
-    // this.root = d3.hierarchy(this.mutatedPlot.content, (d) => d.children);
+    // this.base = d3.hierarchy(this.mutatedPlot.content, (d) => d.children);
 
     // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     // Add 'implements OnInit' to the class.
-
-    // clear SVG. Remove the board
+    this.treeMap.size();
     if (this.svg) {
-      // console.log('buildD3Tree clearing all')
-      // d3.select(this.HierarchyElement).selectAll('*').remove();
       this.svg.remove();
-      const SVG = document.getElementById(this.d3SVGBoardName);
+      const SVG = document.getElementById('d3-svg');
       this.D3HierarchyInputRef?.nativeElement.removeChild(SVG);
     }
 
-    this.svg = await this.createCanvas();
-    console.log('build d3 tree CANVAS', this.svg);
+    // const canvas = await this.createCanvas();
+    const canvas = this.generateSVG();
+    // this.svg = canvas;
+    console.log('build d3 tree CANVAS', canvas);
     console.log('build d3 tree mutated plot content', this.mutatedPlot);
-
     // Initialise d3 hierarchy graph.
     if (!this.mutatedPlot) return this.notificationService.notifyUser('Mutated plot is undefined.');
 
-    this.root = d3.hierarchy(this.mutatedPlot.content, (d: PlotContent) => d.children);
-    this.update(this.root);
-    return this.svg;
+    // this.base = d3.hierarchy(this.mutatedPlot.content, (d: PlotContent) => d.children);
+    // this.update(null, this.base);
+    return canvas;
   };
 
   /**
@@ -213,278 +533,47 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       d3
         .select(this.HierarchyElement)
         .append('svg')
-        .attr('id', this.d3SVGBoardName)
-        .attr('class', 'canvas')
-        .attr('width', this.innerWidth)
-        .attr('height', this.innerHeight)
-        // .attr('width', '90vw')
-        // .attr('height', '90vh')
+        .attr('id', 'd3-svg')
+        .attr('width', this.width)
+        .attr('height', this.height)
         // .attr("width", this.width + this.margin.right + this.margin.left)
         // .attr("height", this.height + this.margin.top + this.margin.bottom)
         .append('g')
-        .attr('transform', `translate(${this.innerWidth / 2}, ${this.innerHeight / 2})`)
-      // .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')')
+        .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')')
     );
   }
 
   /**
-   * @description Initialise/Update/Rebuild data graph.
+   * @description Get information from store. Start up D3 graph.
    * @returns
    */
-  update(source: RootType) {
-    if (!source) {
-      return this.notificationService.notifyUser("Graph board couldn't be updated.");
-    }
+  initialiseComponent(updatingGraph: boolean = false): void {
+    this.base = undefined;
+    const content = this.plot();
 
-    // Assigns the x and y position for the nodes
-    const treeData = this.treeMap(source);
+    // const proxy = this.storyEditor?.boardProxy;
+    // // NOTE: if the new id is different to the session storage id. Go with the new id.
+    // const sessionStorageId: string | undefined = proxy?.story?.id;
+    // const sessionStoragePlot: Plot | undefined = proxy?.story;
+    // const plotIdProp = content?.id;
 
-    let nodes: HierarchyNode<unknown>[] = treeData.descendants();
-    let links: d3.HierarchyPointNode<unknown>[] = treeData.descendants().slice(1);
-
-    // ****************** Nodes section ***************************
-    // Update the nodes...
-    if (!this.svg) {
-      this.notificationService.notifyUser("Graph couldn't be built");
+    if (!this.plot()) {
+      this.notificationService.notifyUser('Plot content not found.');
+      console.warn('ERROR Plot:', this.plot());
+      return;
+    } else if (!this.storyEditor) {
+      this.notificationService.notifyUser('Story Editor not found.');
+      console.warn('ERROR Story Editor:', this.storyEditor);
       return;
     }
 
-    // Normalize for fixed-depth.
-    // Line below determines the height difference between rows.
-    nodes.forEach((d: any) => {
-      return (d.y = d.depth * 120);
-    });
-
-    // Declare the nodes…
-    // let node: any = this.svg.selectAll(`#${this.name} g.node`).data(nodes, (d: any) => { return d.id || (d.id = ++this.i) });
-    let node: Selection<BaseType, HierarchyNode<unknown>, SVGGElement, unknown> = this.svg.selectAll(`g.node`).data(nodes, (d: any) => {
-      return d.id || (d.id = ++this.i);
-    });
-
-    // Enter any new modes at the parent's previous position.
-    let nodeEnter: Selection<SVGGElement, d3.HierarchyNode<unknown>, SVGGElement, unknown> = node.enter().append('g').attr('class', 'node canvas--node');
-    // .attr('transform', (d: any) => {
-    //   return `translate(${d.x}, ${d.y})`;
-    //   // return "translate(" + source.x + "," + source.y + ")";
-    // });
-    // .call(drag)
-    // .on("click", (a, b) => this.click(a, b));
-
-    // Append various node elements
-    this.createNodes(nodeEnter);
-
-    /**
-     * LABEL
-     * Add labels to nodes.
-     */
-    nodeEnter
-      .append('text')
-      .attr('pointer-events', 'none')
-      // .attr("y", (d: any) => {
-      //   return d.children || d._children ? -18 : 18;
-      // })
-      .attr('dy', '.35em')
-      .attr('text-anchor', 'middle')
-      .attr('class', 'node--text')
-      .text((d: any) => d.data.name)
-      .style('fill-opacity', 1)
-      .attr('text-anchor', 'middle')
-      .attr('fill', '#000')
-      .style('font-size', '10px')
-      .style('font-family', '"Roboto-Mono", "Helvetica Neue", sans-serif');
-
-    /** UPDATE (DON'T REALLY KNOW WHAT) */
-    // // ****************** links section ***************************
-    /**
-     * Update the links...
-     * Declare the links…
-     */
-    let link = this.svg
-      .selectAll('path.link')
-      // .data(links, (d: any) => {
-      //   return d.id ? d.id : d.target.id;
-      // });
-      .data(links, (d: any) => {
-        return d.id ? d.id : d.target.id;
-      });
-
-    // Enter the links.
-    link
-      .enter()
-      .insert('path', 'g')
-      .attr('class', 'link')
-      .attr('stroke', 'black')
-      .attr('fill', 'transparent')
-
-      // .attr('d', this.diagonal)
-      // .attr('d', d3.linkVertical())
-      .attr('d', (d: any, al: any) => {
-        return diagonal(d.parent ? d.parent : source, d) as any;
-      });
-  }
-
-  /**
-   * @description Node event
-   * @param event
-   * @param d
-   */
-  click(event: any, d: d3.HierarchyNode<Plot> | any) {
-    // (function) Toggle children on click
-    if (d.children) {
-      d._children = d.children;
-      d.children = null;
-    } else {
-      d.children = d._children;
-      d._children = null;
-    }
-  }
-
-  /**
-   * @description Node event. Add a child node to selected node.
-   * @param { SVGRectElement } this
-   * @param { * } event
-   * @param { HierarchyNode<unknown | Plot | PlotContent> } d
-   */
-  addNode(event: any, d: HierarchyNode<any>): void {
-    console.log('function call add node, d:', d);
-
-    this.plotService.selectInstance({
-      instance: {
-        id: uuid.v4(),
-        name: 'Name of node',
-        description: 'Description of node',
-        children: undefined,
-      },
-      parentInstanceId: d.data.id,
+    this.mutatedPlot = this.plot();
+    this.buildD3Tree().then((canvas: Selection<SVGGElement, unknown, HTMLElement, any> | undefined | void) => {
+      if (canvas && updatingGraph) this.graphRefreshed = true;
     });
   }
 
-  /**
-   * @description Node event. Remove node from graph.
-   * @param {any} event
-   * @param {HierarchyNode<Plot>} d
-   * @param {SVGRectElement} this
-   */
-  removeNode(event: any, d: HierarchyNode<Plot>): void {
-    if (this.storyEditor) {
-      this.storyEditor.removeNode(d.data.id);
-      // Note: update graph
-      this.initialiseComponent(true);
-    } else {
-      this.notificationService.notifyUser('Point to could not be removed. Graph has errored out.');
-    }
-  }
-
-  /**
-   * Save narrative data to Session Storage.
-   */
-  saveStateInSession() {
-    if (!this.storyEditor) return this.notificationService.notifyUser('Board could not be saved. Graph board could not be accessed');
-
-    const isSaved = this.storyEditor.boardProxy.saveSession();
-    const story = this.storyEditor?.boardProxy?.story;
-
-    if (!story) return this.notificationService.notifyUser("Board information couldn't be captured.");
-    if (!isSaved) return this.notificationService.notifyUser('Changes could not be saved.');
-
-    if (story && isSaved) {
-      const { id, title, description, content } = story;
-
-      this.storiesService.updateStoryRequest({ id, description, title, body: content }).subscribe((response) => {
-        this.graphRefreshed = !!response;
-      });
-    }
-  }
-
-  /**
-   * @description Node event. Edit node on graph
-   * @param { SVGRectElement } this
-   * @param { * } event
-   * @param { HierarchyNode<unknown | Plot | PlotContent> } d
-   */
-  editNode(event: any, d: any): void {
-    this.plotService.selectInstance({
-      instance: d.data,
-    });
-  }
-
-  /**
-   * @description
-   * @param {d3.Selection} nodeEnter
-   */
-  createNodes(nodeEnter: Selection<SVGGElement, d3.HierarchyNode<unknown>, SVGGElement, unknown>) {
-    /**
-     * CIRCLE.
-     * Add Circle for the nodes.
-     */
-    // nodeEnter
-    //   .append("circle")
-    //   .attr("r", 20)
-    //   .attr("stroke", "steelblue")
-    //   .style("fill", (d: any) => {
-    //     return d.children ? "lightsteelblue" : "#fff";
-    //   })
-    //   .attr("stroke-width", "3px;");
-
-    /**
-     * RECTANGLE
-     * Replaces circle, above
-     */
-    nodeEnter
-      .append('rect')
-      .attr('width', this.nodeEnterRectWidth)
-      .attr('height', this.nodeEnterRectHeight)
-      .attr('stroke-width', '3px')
-      // (below) reposition box/rectangle
-      .attr('x', this.nodeEnterRectRepoX)
-      .attr('y', this.nodeEnterRectRepoY)
-      .style('stroke', 'blue')
-      .style('fill', (d: any) => (d.children ? 'lightsteelblue' : '#fff'))
-      .attr('class', 'cursor-pointer')
-      .attr('data-node-type', 'button-edit-node')
-      .on('click', (event: any, d: HierarchyNode<unknown>) => {
-        this.editNode(event, d);
-      });
-
-    /**
-     * RECTANGLE
-     * interactive button
-     */
-    // Add child node
-    nodeEnter
-      .append('rect')
-      .attr('width', this.interactiveNodeButton / 3)
-      .attr('height', this.interactiveNodeButton / 3)
-      // .attr('stroke-width', '2px')
-      .attr('rx', 100)
-      .attr('x', `${this.interactiveNodeButton / 3 / 2}`)
-      .attr('y', this.interactiveNodeButton + 5)
-      .style('fill', '#22a422')
-      .attr('class', 'cursor-pointer')
-      .attr('data-node-type', 'button-add-node')
-      .on('click', (event: any, d: HierarchyNode<unknown>) => this.addNode(event, d));
-    // delete button. child node
-    nodeEnter
-      .append('rect')
-      .attr('width', this.interactiveNodeButton / 3)
-      .attr('height', this.interactiveNodeButton / 3)
-      // .attr('stroke-width', '2px')
-      .attr('rx', 100)
-      .attr('x', `${-Math.abs(this.interactiveNodeButton / 2)}`)
-      .attr('y', this.interactiveNodeButton + 5)
-      .style('fill', 'rgb(123, 28, 28)')
-      .attr('class', 'cursor-pointer')
-      .attr('data-node-type', 'button-remove-node')
-      .on('click', (event: any, d: HierarchyNode<unknown>) => this.removeNode(event, d as HierarchyNode<Plot>));
-
-    // TODO: add icon or text inside of interactive button. Highlight that element is intractable
-    // nodeEnter.append('text')
-    // .attr('writing-mode', "tb")
-    // .attr("x", `${-Math.abs((nodeEnterRectWidth / 3) / 2)}`).attr('y', nodeEnterRectWidth - 10)
-    // .text('+')
-  }
-
-  updateNodeContent({ form }: { form: any }) {
+  updateNodeContent({ form }: { form: Unknown }) {
     if (!this.storyEditor) return this.notificationService.notifyUser('Editor cant be found. No update was made.');
     if (!this.storyEditor?.getBoardProxyStory()) return this.notificationService.notifyUser('Editor Error board.');
 
@@ -494,7 +583,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     this.initialiseComponent(true);
   }
 
-  addNodeContent({ form, parentNodeId }: { form: any; parentNodeId: string }) {
+  addNodeContent({ form, parentNodeId }: { form: Unknown; parentNodeId: string }) {
     if (!this.storyEditor) return this.notificationService.notifyUser('Editor cant be found. No update was made.');
     if (!this.storyEditor?.getBoardProxyStory()) return this.notificationService.notifyUser('Editor Error board.');
 
@@ -504,35 +593,26 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     // Note: update graph
     this.initialiseComponent(true);
   }
+
+  /**
+   * Save narrative data to Session Storage.
+   */
+  saveStateInSession() {
+    console.log('save state in session');
+    //   if (!this.storyEditor) return this.notificationService.notifyUser('Board could not be saved. Graph board could not be accessed');
+
+    //   const isSaved = this.storyEditor.boardProxy.saveSession();
+    //   const story = this.storyEditor?.boardProxy?.story;
+
+    //   if (!story) return this.notificationService.notifyUser("Board information couldn't be captured.");
+    //   if (!isSaved) return this.notificationService.notifyUser('Changes could not be saved.');
+
+    //   if (story && isSaved) {
+    //     const { id, title, description, content } = story;
+
+    //     this.storiesService.updateStoryRequest({ id, description, title, body: content }).subscribe((response) => {
+    //       this.graphRefreshed = !!response;
+    //     });
+    //   }
+  }
 }
-
-/**
- * @description Creates a curved (diagonal) path from parent to the child nodes
- * @param {any} s
- * @param {any} d
- * @returns {any} path
- */
-function diagonal(s: any, d: any) {
-  const path = `M ${s.x} ${s.y} C ${(s.x + d.x) / 2} ${s.y}, ${(s.x + d.x) / 2} ${d.y}, ${d.x} ${d.y}`;
-  return path;
-}
-
-// const drag = {
-
-//   function ondragstart() {
-//     d3.select(this).attr("stroke", "black");
-//   }
-
-//   function dragged(event, d) {
-//     d3.select(this).raise().attr("cx", d.x = event.x).attr("cy", d.y = event.y);
-//   }
-
-//   function dragended() {
-//     d3.select(this).attr("stroke", null);
-//   }
-
-//   return d3.drag()
-//       .on("start", dragstarted)
-//       .on("drag", dragged)
-//       .on("end", dragended);
-// }

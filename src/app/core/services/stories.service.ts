@@ -226,7 +226,18 @@ export class StoriesService {
         id: createId(),
         name: 'Initial Content for story',
         description: 'Description not yet provided.',
-        children: undefined,
+        children: [
+          {
+            id: createId(),
+            name: 'secondary',
+            description: 'secondary description',
+          },
+          {
+            id: createId(),
+            name: 'secondary',
+            description: 'secondary description',
+          }
+        ],
         graphics: undefined,
         characters: undefined,
       },

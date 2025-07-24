@@ -231,12 +231,36 @@ export class StoriesService {
             id: createId(),
             name: 'secondary',
             description: 'secondary description',
+            children: [
+              {
+                id: createId(),
+                name: 'tertiary',
+                description: 'tertiary description',
+              },
+              {
+                id: createId(),
+                name: 'tertiary',
+                description: 'tertiary description',
+              },
+            ],
           },
           {
             id: createId(),
             name: 'secondary',
             description: 'secondary description',
-          }
+            children: [
+              {
+                id: createId(),
+                name: 'tertiary',
+                description: 'tertiary description',
+              },
+              {
+                id: createId(),
+                name: 'tertiary',
+                description: 'tertiary description',
+              },
+            ],
+          },
         ],
         graphics: undefined,
         characters: undefined,

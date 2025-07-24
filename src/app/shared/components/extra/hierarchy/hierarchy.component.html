@@ -1,5 +1,5 @@
 <div data-component="Hierarchy Component" class="hierarchy--component">
-  <div #D3HierarchyInputRef class="h-screen flex justify-center items-center" id="d3-tree-hierarchy-wrapper"></div>
+  <div #D3HierarchyInputRef class="h-screen flex justify-center items-center ml-2" id="tree-hierarchy-wrapper"></div>
 </div>
 
 <div data-element="Save" *ngIf="narrativeEdited && graphRefreshed"
@@ -21,6 +21,8 @@
       </p>
     </div>
   </div>
+
+  <button (click)="clear()">Clear the field</button>
 </div>
 
 <app-node-form (updateNodeContent)="updateNodeContent($event)"

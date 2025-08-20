@@ -46,7 +46,8 @@ interface RootType extends HierarchyNode<PlotContent | undefined> {
   // y0: Unknown;
   // x: Unknown;
   // y: Unknown;
-  // _children: RootType[] | undefined;
+  // _children?: RootType[];
+  // children?: RootType;
 }
 
 @Component({
@@ -56,6 +57,9 @@ interface RootType extends HierarchyNode<PlotContent | undefined> {
   styleUrls: ['./hierarchy.component.scss'],
 })
 export class HierarchyComponent implements OnInit, OnDestroy {
+  generateSVG() {
+    throw new Error('Method not implemented.');
+  }
   @ViewChild('D3HierarchyInputRef') D3HierarchyInputRef: ElementRef | undefined;
   content = input<Plot>();
   private _HierarchySubscriber?: Subscription;
@@ -79,8 +83,9 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   HierarchyElement = `div#${this.name}`;
 
   // ************** Generate the tree diagram	 ***************** //
-  width = 2500;
-  height = 2000;
+  margin = { top: 20, right: 90, bottom: 30, left: 90 };
+  width = 960 - this.margin.left - this.margin.right;
+  height = 500 - this.margin.top - this.margin.bottom;
   createSvg: any = svg;
 
   // Specify the charts’ dimensions. The height is variable, depending on the layout.
@@ -92,10 +97,9 @@ export class HierarchyComponent implements OnInit, OnDestroy {
 
   // declares a tree layout and assigns the size
   // Controls the look of the graph/D3-table
-  treeMap: TreeLayout<unknown> = tree();
+  treeMap: TreeLayout<unknown | any> = tree();
   // treeMap: d3.TreeLayout<unknown> = d3.tree().size([this.width, this.height]);
 
-  margin = { top: 20, right: 120, bottom: 20, left: 120 };
   duration = 750;
   padding = 1;
   i = 0;
@@ -106,13 +110,15 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   // root = d3.hierarchy(data);
   container: Selection<BaseType, unknown, HTMLElement, any> | undefined;
   base: RootType | undefined;
-  nodes: RootType[] | undefined;
+  nodes: HierarchyPointNode<any>[] | undefined;
   dx: number | undefined;
   dy: number | undefined = this.width / this.padding;
   // declares a tree layout and assigns the size
   // Controls the look of the graph/D3-table
   tree: TreemapLayout<unknown | any> | undefined;
-  diagonal: Link<Unknown, DefaultLinkObject, Unknown> | undefined;
+  // diagonal: Link<Unknown, DefaultLinkObject, Unknown> | undefined = linkHorizontal()
+  //   .x((d: Unknown) => d.y)
+  //   .y((d: Unknown) => d.x);
   // diagonal: Link<any, d3.DefaultLinkObject, [number, number]> | undefined;
   curve = d3.line().curve(d3.curveNatural);
 
@@ -145,6 +151,9 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   nodeEnterRectRepoY = (this.nodeEnterRectHeight - this.nodeEnterRectHeight * 2) / 2;
   x: any;
   y: any;
+  links?: HierarchyPointNode<any>[];
+  rectHeight?: number;
+  rectWidth?: number;
 
   constructor(private plotService: PlotService, private storiesService: StoriesService, private notificationService: NotificationService) {}
 
@@ -195,336 +204,203 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   }
 
   init() {
-    const content = this.plot();
-    console.log('init function called');
-
-    this.base = d3.hierarchy(content?.content).eachBefore(
-      (
-        (i) => (d) =>
-          ((d as any).index = i++)
-      )(0)
-    ) as RootType;
-    this.base.sort((a, b) => d3.descending(a.height, b.height));
-    this.base.x0 = this.height / 2;
-    this.base.y0 = 0;
-    this.nodes = this.base.descendants();
-
-    // Compute the layout.
-    // this.dx = 10;
-    // this.dy = this.width / ((this.base as any).height + 1);
-    this.dx = 10;
-    this.dy = this.width / (this.base.height + this.padding);
-    // tree().nodeSize([this.dx, this.dy])(this.base as HierarchyNode<unknown>);
-
-    // Center the tree.
-    this.base.each((d) => {
-      if (d.x > this.x1) this.x1 = d.x;
-      if (d.x < this.x0) this.x0 = d.x;
-    });
-
-    // Compute the default height.
-    if (this.height === undefined) this.height = this.x1 - this.x0 + this.dx * 2;
-
-    const curve = d3.curveBumpX;
-    // Use the required curve
-    if (typeof curve !== 'function') throw new Error(`Unsupported curve`);
-
-    // Compute the adjusted height of the tree.
-    // this.height = (this.nodes.length + 1) * this.nodeSize;
-
-    this.generateSVG();
-  }
-
-  generateSVG() {
     console.log('generate SVG function called');
-    if (!this.dx || !this.dy || !this.base) {
-      console.log('generate svg error');
-      return;
-    }
 
-    // Alt to: d3.layout.tree().size([height, width]);
-    this.tree = treemap().size([this.height, this.width]).padding(20);
-
-    const nodeSpacing = 60;
-    // Alt to: d3.svg.diagonal()
-    this.diagonal = linkHorizontal()
-      .x((d: Unknown) => d.y)
-      .y((d: Unknown) => d.x);
-
+    const content = this.plot();
     this.container = d3.select(this.HierarchyElement);
     // Create the SVG container, a layer for the links and a layer for the nodes.
     this.svg = this.container
       .append('svg')
       .attr('id', this.boardId)
-      .attr('viewBox', [(this.dy * this.padding) / 2, this.x0 - this.dx, this.width, this.height])
-      // .attr('viewBox', [-this.nodeSize / 2, (-this.nodeSize * 3) / 2, this.width, this.height])
       .attr('width', this.width + this.margin.right + this.margin.left)
       .attr('height', this.height + this.margin.top + this.margin.bottom)
-      .attr('style', 'max-width: 100%; height: auto; font: 16px sans-serif; overflow: visible;')
       .attr('font-family', 'sans-serif')
       .attr('font-size', 16);
 
-    const former = () => {
-      // this.tree = d3.treemap().size([this.width, this.height]).padding(4).round(true);
-      // this.tree(this.base as HierarchyNode<unknown>);
-      // // this.svg
-      // //   .append('g')
-      // //   .attr('fill', 'none')
-      // //   .attr('stroke', '#555')
-      // //   .attr('stroke-opacity', 0.4)
-      // //   .attr('stroke-linecap', null)
-      // //   .attr('stroke-linejoin', null)
-      // //   .attr('stroke-width', 1.5)
-      // //   .selectAll('path')
-      // //   .data(this.base.links())
-      // //   .join('path')
-      // //   .attr('d', () => '');
-      // this.link = this.svg
-      //   .append('g')
-      //   .attr('fill', 'none')
-      //   .attr('stroke', '#555')
-      //   .attr('stroke-opacity', 0.4)
-      //   .attr('stroke-linecap', null)
-      //   .attr('stroke-linejoin', null)
-      //   .attr('stroke-width', 1.5)
-      //   .selectAll('path')
-      //   .data(this.base.links())
-      //   .join('path')
-      //   .attr('d', (m) => {
-      //     const curve = d3.curveBumpX;
-      //     const drawer = d3
-      //       .link(curve)
-      //       .x((d: Unknown) => d.y)
-      //       .y((d: Unknown) => d.x);
-      //     // console.log('drawer', { drawer });
-      //     // console.log('drawer.xx', drawer.source());
-      //     // console.log('mm', m);
-      //     const o = { x: drawer.x(), y: drawer.y() };
-      //     return drawer.source() as Unknown;
-      //   });
-      // console.log('root links', this.base.links());
-      // // this.link = this.svg
-      // //   .append('g')
-      // //   .attr('fill', 'none')
-      // //   .attr('stroke', '#999')
-      // //   .selectAll()
-      // //   .data(this.base.links())
-      // //   .join('path')
-      // //   .attr(
-      // //     'd',
-      // //     (d: HierarchyLink<Unknown>) => `
-      // //     M${d.source.depth * this.nodeSize},${((d.source as Unknown)?.index ?? d.source.depth + 1) * this.nodeSize}
-      // //     V${((d.target as Unknown).index ?? d.target.depth + 1) * this.nodeSize}
-      // //     h${this.nodeSize}
-      // //   `
-      // //   );
-      // //   const nodes = svg.selectAll("g")
-      // // .data(root.descendants())
-      // // .enter()
-      // // .append("g")
-      // // .attr("transform", d => `translate(${d.x0},${d.y0})`);
-      // // Set Node
-      // this.node = this.svg
-      //   .append('g')
-      //   .attr('data-element-identifier', 'node-group')
-      //   .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")")
-      //   // .attr('transform', (...all) => {
-      //   //   console.log('transform A d', all);
-      //   //   return '';
-      //   // })
-      //   .selectAll()
-      //   .data(this.base.descendants())
-      //   .join('g')
-      //   .attr('data-node-depth', (d) => d.depth)
-      //   .attr('data-node-index', (d) => d.index)
-      //   .attr('data-element-identifier', 'graph-node')
-      //   .attr('transform', (d: Unknown) => {
-      //     console.log('transform d', d);
-      //     return `translate(${d.x ? d.x : 0},${d.y ?? 0})`;
-      //   });
-      // this.node
-      //   .append('rect')
-      //   .attr('width', (d: Unknown) => (d.x1 ?? 0) - (d.x0 ?? 0))
-      //   .attr('height', (d: Unknown) => (d.y1 ?? 0) - (d.y0 ?? 0))
-      //   .attr('fill', 'lightblue')
-      //   .attr('stroke', 'white');
-      // // this.node
-      // //   .append('circle')
-      // //   .attr('cx', (d) => d.depth * this.nodeSize)
-      // //   .attr('r', 4)
-      // //   .attr('fill', (d) => (d.children ? null : '#999'));
-      // this.node
-      //   .append('text')
-      //   .attr('x', (d: Unknown) => ((d.x1 ?? 1) - (d.x0 ?? 1)) / 2)
-      //   .attr('y', (d: Unknown) => ((d.y1 ?? 1) - (d.y0 ?? 1)) / 2)
-      //   .attr('dy', '0.35em')
-      //   .attr('text-anchor', 'middle')
-      //   .text((d: Unknown) => d.data.name);
-      // // name
-      // // this.node
-      // //   .append('text')
-      // //   .attr('dy', '0.32em')
-      // //   .attr('dx', '.5em')
-      // //   .attr('x', (d) => d.depth * this.nodeSize + 6)
-      // //   // text size
-      // //   .attr('style', 'font-size: 1rem')
-      // //   .attr('class', 'tree--node')
-      // //   .text((d) => d.data?.name ?? 'unset name');
-      // console.log('this.svg data:', this.svg);
-      // console.log('this.base data:', this.base);
-    };
+    // declares a tree layout and assigns the size
+    this.treeMap = d3.tree().size([this.height, this.width]);
 
-    console.log('root has data');
-    // this.update(null, this.base);
+    // Assigns parent, children, height, depth
+    this.base = d3.hierarchy(content?.content, (d) => d?.children) as RootType;
+    // this.base.sort((a, b) => d3.descending(a.height, b.height));
+    this.base.x0 = this.height / 2;
+    this.base.y0 = 0;
+
+    // Collapse the node and all it's children
+    function collapse(d: any) {
+      if (d.children) {
+        d._children = d.children;
+        d._children.forEach(collapse);
+        d.children = null;
+      }
+    }
+
+    // Collapse after the second level
+    this.base.children?.forEach(collapse);
+
     this.render(null, this.base, this.svg);
   }
 
-  render(event: any, source: RootType, svg: CanvasSelection) {
-    if (!this.svg || !this.base || !this.tree || !this.diagonal) {
-      console.log(`error render svg: ${this.svg} | base: ${this.base} | tree: ${this.tree}`);
+  render(event: any, source: RootType, cSVG: CanvasSelection) {
+    if (!this.base || !this.svg) {
       return;
     }
+    // Assigns the x and y position for the nodes
+    var treeData = this.treeMap(this.base);
 
-    const links = this.base.links();
+    // Compute the new tree layout.
+    this.nodes = treeData.descendants();
+    this.links = treeData.descendants().slice(1);
 
-    console.log('links links', links);
     // Normalize for fixed-depth.
-    this.nodes?.forEach(function (d) {
+    this.nodes.forEach(function (d) {
       d.y = d.depth * 180;
     });
 
-    // Update the nodes…
-    // Set Node
-    this.node = this.svg
-      .append('g')
-      .selectAll('g')
-      .data(source.descendants())
-      .join('g')
-      .attr('data-element-identifier', 'node__span')
-      .attr('data-node-depth', (d) => d.depth)
-      .attr('data-node-index', (d) => d.index)
-      .attr('transform', (d) => `translate(${d.y},${d.x})`);
+    // Update the nodes...
+    const node = this.svg.selectAll('g.node').data(this.nodes, function (d: Unknown, i: number) {
+      return d.id || (d.id = ++i);
+    });
 
-    // this.node = this.svg
-    //   .append('g')
-    //   .attr('data-element-identifier', 'node-group')
-    //   // .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')')
-
-    //   // .attr('transform', (...all) => {
-    //   //   console.log('transform A d', all);
-    //   //   return '';
-    //   // })
-    //   .selectAll()
-    //   .data(source.descendants())
-    //   .join('g')
-    //   .attr('data-node-depth', (d) => d.depth)
-    //   .attr('data-node-index', (d) => d.index)
-    //   .attr('data-element-identifier', 'graph-node')
-    //   .attr('transform', (d: Unknown) => {
-    //     console.log('transform d', d);
-    //     return `translate(${d.x ?? 0},${d.y ?? 0})`;
-    //   });
-
-    // this.node
-    //   .append('rect')
-    //   .attr('width', (d: Unknown) => d.x1 - d.x0)
-    //   .attr('height', (d: Unknown) => d.y1 - d.y0)
-    //   .attr('fill', 'lightblue')
-    //   .attr('stroke', 'white');
-
-    // Text
-    this.node
-      .append('text')
-      .attr('dy', '0.32em')
-      .attr('dy', '0.32em')
-      .attr('x', (d) => (d.children ? -6 : 6))
-      .attr('text-anchor', (d) => (d.children ? 'end' : 'start'))
-      .attr('paint-order', 'stroke')
-      .attr('style', 'font-size: 16px ')
-      .text((d: Unknown) => d.data.name);
-
-    // this.node
-    //   .append('text')
-    //   .attr('x', (d: Unknown) => ((d.x1 ?? 1) - (d.x0 ?? 1)) / 2)
-    //   .attr('y', (d: Unknown) => ((d.y1 ?? 1) - (d.y0 ?? 1)) / 2)
-    //   .attr('dy', '0.35em')
-    //   .attr('text-anchor', 'middle')
-    //   .attr('style', 'font-size: 16px ')
-    //   .text((d: Unknown) => d.data.name);
-
-    // Enter any new nodes at the parent's previous position.
-    const enter = this.node
+    // Enter any new modes at the parent's previous position.
+    const nodeEnter = node
       .enter()
       .append('g')
       .attr('class', 'node')
-      // .attr('transform', function (d) {
-      //   return 'translate(' + source.y0 + ',' + source.x0 + ')';
-      // })
+      .attr('transform', function (d) {
+        return 'translate(' + source.y0 + ',' + source.x0 + ')';
+      })
       .on('click', this.click);
 
-    // enter
-    //   .append('text')
-    //   .attr('x', function (d) {
-    //     return d.children ? -10 : 10;
-    //   })
-    //   .attr('dy', '.35em')
-    //   .attr('text-anchor', function (d) {
-    //     return d.children ? 'end' : 'start';
-    //   })
-    //   .text(function (d) {
-    //     return d.name;
-    //   })
-    //   .style('fill-opacity', 1e-6);
+    this.rectHeight = 60;
+    this.rectWidth = 120;
 
-    // // Transition exiting nodes to the parent's new position.
-    // const update = this.node
-    //   .transition()
-    //   .duration(this.duration)
-    //   .attr('transform', function (d) {
-    //     return 'translate(' + (d.y ?? 0) + ',' + (d.x ?? 0) + ')';
-    //   });
+    nodeEnter
+      .append('rect')
+      .attr('class', 'node')
+      .attr('width', this.rectWidth)
+      .attr('height', this.rectHeight)
+      .attr('x', 0)
+      .attr('y', (this.rectHeight / 2) * -1)
+      .attr('rx', '5')
+      .style('fill', function (d) {
+        return d.data.fill;
+      });
 
-    // // Update the links…
-    // var link = this.svg.selectAll('path.link').data(links, function (d: any) {
-    //   return d.target.id;
-    // });
+    // Add labels for the nodes
+    nodeEnter
+      .append('text')
+      .attr('dy', '-.35em')
+      .attr('x', function (d) {
+        return 13;
+      })
+      .attr('text-anchor', function (d) {
+        return 'start';
+      })
+      .text(function (d) {
+        return d.data.name;
+      })
+      .append('tspan')
+      .attr('dy', '1.75em')
+      .attr('x', function (d) {
+        return 13;
+      })
+      .text(function (d) {
+        return d.data.subname;
+      });
 
-    // // Enter any new links at the parent's previous position.
-    // link
-    //   .enter()
-    //   .insert('path', 'g')
-    //   .attr('class', 'node__path')
-    //   .attr('d', function (d) {
-    //     const curv = d3.curveBumpX;
-    //     const drawer = d3
-    //       .link(curv)
-    //       .x((b: Unknown) => b.y)
-    //       .y((b: Unknown) => b.x);
-    //     console.log('drawer', { drawer });
-    //     console.log('drawer.xx', drawer.source());
-    //     console.log('d -- d', d);
+    // UPDATE Delete below
+    const nodeUpdate = nodeEnter.merge(node as Unknown);
 
-    //     const curve = d3.line().curve(d3.curveNatural);
-    //     const result = curve([]);
+    // Transition to the proper position for the node
+    nodeUpdate
+      .transition()
+      .duration(this.duration)
+      .attr('transform', function (d) {
+        return 'translate(' + d.y + ',' + d.x + ')';
+      });
 
-    //     const o = { x: drawer.x(), y: drawer.y() };
+    // Update the node attributes and style
+    nodeUpdate
+      .select('circle.node')
+      .attr('r', 10)
+      .style('fill', function (d) {
+        return d.children ? 'lightsteelblue' : '#fff';
+      })
+      .attr('cursor', 'pointer');
 
-    //     // const curve = d3.line().curve(d3.curveNatural);
-    //     // const points = [ [drawer.target()]]
+    // Remove any exiting nodes
+    var nodeExit = node
+      .exit()
+      .transition()
+      .duration(this.duration)
+      .attr('transform', function (d) {
+        return 'translate(' + source.y + ',' + source.x + ')';
+      })
+      .remove();
 
-    //     return drawer.toString();
+    // On exit reduce the node circles size to 0
+    nodeExit.select('circle').attr('r', 1e-6);
 
-    //     // var o = { x: source.x0, y: source.y0 };
-    //     // return this.diagonal({ source: o, target: o });
-    //   });
+    // On exit reduce the opacity of text labels
+    nodeExit.select('text').style('fill-opacity', 1e-6);
 
-    console.log('root links', source.links());
-    console.log('this.svg data:', this.svg);
-    console.log('this.base data:', this.base);
+    // Update the links...
+    var link = this.svg.selectAll('path.link').data(this.links, (d: Unknown) => {
+      return d.id;
+    });
+
+    // Enter any new links at the parent's previous position.
+    var linkEnter = link
+      .enter()
+      .insert('path', 'g')
+      .attr('class', 'link')
+      .attr('d', (d) => {
+        var o = { x: source.x0, y: source.y0 };
+        return this.curvedDiagonal(o, o);
+      });
+
+    // UPDATE Delete bellow
+    var linkUpdate = linkEnter.merge(link as Unknown);
+
+    // Transition back to the parent element position
+    linkUpdate
+      .transition()
+      .duration(this.duration)
+      .attr('d', (d) => {
+        return this.curvedDiagonal(d, d.parent);
+      });
+
+    // Remove any exiting links
+    var linkExit = link
+      .exit()
+      .transition()
+      .duration(this.duration)
+      .attr('d', (d) => {
+        var o = { x: source.x, y: source.y };
+        return this.curvedDiagonal(o, o);
+      })
+      .remove();
+
+    // Store the old positions for transition.
+    this.nodes.forEach((d: HierarchyPointNode<any> | any) => {
+      d.x0 = d.x;
+      d.y0 = d.y;
+    });
   }
 
   click() {
     console.log('click');
+  }
+
+  // Creates a curved (diagonal) path from parent to the child nodes
+  curvedDiagonal(s: Unknown, d: Unknown) {
+    const path = `M ${s.y} ${s.x}
+            C ${(s.y + d.y) / 2} ${s.x},
+              ${(s.y + d.y) / 2} ${d.x},
+              ${d.y} ${d.x}`;
+
+    return path;
   }
 
   clear() {

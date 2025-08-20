@@ -17,6 +17,10 @@ import {
   TransitionLike,
   BaseType,
   HierarchyLink,
+  TreemapLayout,
+  linkHorizontal,
+  DefaultLinkObject,
+  treemap,
 } from 'd3';
 import * as uuid from 'uuid';
 import * as d3 from 'd3';
@@ -32,7 +36,11 @@ type Unknown = any;
 type CanvasSelection = Selection<SVGGElement | any, undefined | unknown, HTMLElement | null | any, undefined>;
 // Selection<SVGSVGElement, undefined, null, undefined>
 interface RootType extends HierarchyNode<PlotContent | undefined> {
+  x: Unknown;
   index: number;
+  x0?: number;
+  y0?: number;
+  y?: number;
   // index: number;
   // x0: Unknown;
   // y0: Unknown;
@@ -87,10 +95,9 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   treeMap: TreeLayout<unknown> = tree();
   // treeMap: d3.TreeLayout<unknown> = d3.tree().size([this.width, this.height]);
 
-  margin = { top: 100, right: 50, bottom: 100, left: 50 };
-  // viewerWidth = this.width - this.margin.left - this.margin.right;
-  // viewerHeight = this.height - this.margin.top - this.margin.bottom;
+  margin = { top: 20, right: 120, bottom: 20, left: 120 };
   duration = 750;
+  padding = 1;
   i = 0;
 
   // Rows are separated by dx pixels, columns by dy pixels. These names can be counter-intuitive
@@ -101,24 +108,27 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   base: RootType | undefined;
   nodes: RootType[] | undefined;
   dx: number | undefined;
-  dy: number | undefined;
-  tree: TreeLayout<unknown> | any | undefined;
-  diagonal: Link<Unknown, d3.DefaultLinkObject, Unknown> | undefined;
+  dy: number | undefined = this.width / this.padding;
+  // declares a tree layout and assigns the size
+  // Controls the look of the graph/D3-table
+  tree: TreemapLayout<unknown | any> | undefined;
+  diagonal: Link<Unknown, DefaultLinkObject, Unknown> | undefined;
   // diagonal: Link<any, d3.DefaultLinkObject, [number, number]> | undefined;
+  curve = d3.line().curve(d3.curveNatural);
 
   // Compute the extent of the tree. Note that x and y are swapped here
   // because in the tree layout, x is the breadth, but when displayed, the
   // tree extends right rather than down.
-  // x0: number = Infinity;
-  // x1: number = -this.x0;
+  x0: number = Infinity;
+  x1: number = -this.x0;
   circleWidth = 10;
   circleRadius = 5;
   circleHeight = 10;
   nodeSize = 30;
 
   svg: CanvasSelection | undefined;
-  link: Selection<SVGPathElement | null, HierarchyLink<PlotContent | undefined>, SVGGElement, unknown> | undefined;
-  node: Selection<SVGGElement | null, RootType, SVGGElement, unknown> | undefined;
+  link: Selection<BaseType | SVGPathElement, HierarchyLink<PlotContent | undefined>, SVGGElement, unknown> | any;
+  node: Selection<Unknown, RootType, SVGGElement, unknown> | undefined;
   gLink: CanvasSelection | undefined;
   gNode: CanvasSelection | undefined;
   nodeEnter: Selection<SVGGElement | any, RootType, SVGGElement, undefined> | undefined;
@@ -194,12 +204,33 @@ export class HierarchyComponent implements OnInit, OnDestroy {
           ((d as any).index = i++)
       )(0)
     ) as RootType;
-    this.dx = 10;
-    this.dy = this.width / ((this.base as any).height + 1);
+    this.base.sort((a, b) => d3.descending(a.height, b.height));
+    this.base.x0 = this.height / 2;
+    this.base.y0 = 0;
     this.nodes = this.base.descendants();
 
+    // Compute the layout.
+    // this.dx = 10;
+    // this.dy = this.width / ((this.base as any).height + 1);
+    this.dx = 10;
+    this.dy = this.width / (this.base.height + this.padding);
+    // tree().nodeSize([this.dx, this.dy])(this.base as HierarchyNode<unknown>);
+
+    // Center the tree.
+    this.base.each((d) => {
+      if (d.x > this.x1) this.x1 = d.x;
+      if (d.x < this.x0) this.x0 = d.x;
+    });
+
+    // Compute the default height.
+    if (this.height === undefined) this.height = this.x1 - this.x0 + this.dx * 2;
+
+    const curve = d3.curveBumpX;
+    // Use the required curve
+    if (typeof curve !== 'function') throw new Error(`Unsupported curve`);
+
     // Compute the adjusted height of the tree.
-    this.height = (this.nodes.length + 1) * this.nodeSize;
+    // this.height = (this.nodes.length + 1) * this.nodeSize;
 
     this.generateSVG();
   }
@@ -207,72 +238,293 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   generateSVG() {
     console.log('generate SVG function called');
     if (!this.dx || !this.dy || !this.base) {
+      console.log('generate svg error');
       return;
     }
 
+    // Alt to: d3.layout.tree().size([height, width]);
+    this.tree = treemap().size([this.height, this.width]).padding(20);
+
     const nodeSpacing = 60;
+    // Alt to: d3.svg.diagonal()
+    this.diagonal = linkHorizontal()
+      .x((d: Unknown) => d.y)
+      .y((d: Unknown) => d.x);
 
     this.container = d3.select(this.HierarchyElement);
     // Create the SVG container, a layer for the links and a layer for the nodes.
     this.svg = this.container
       .append('svg')
       .attr('id', this.boardId)
-      .attr('width', this.width)
-      .attr('height', this.height)
-      // .attr('viewBox', [-this.dy / 3, this.x0 - this.dx, this.width, this.height])
-      .attr('viewBox', [-this.nodeSize / 2, (-this.nodeSize * 3) / 2, this.width, this.height])
-      .attr('style', 'max-width: 100%; height: auto; font: 10px sans-serif; overflow: visible;');
+      .attr('viewBox', [(this.dy * this.padding) / 2, this.x0 - this.dx, this.width, this.height])
+      // .attr('viewBox', [-this.nodeSize / 2, (-this.nodeSize * 3) / 2, this.width, this.height])
+      .attr('width', this.width + this.margin.right + this.margin.left)
+      .attr('height', this.height + this.margin.top + this.margin.bottom)
+      .attr('style', 'max-width: 100%; height: auto; font: 16px sans-serif; overflow: visible;')
+      .attr('font-family', 'sans-serif')
+      .attr('font-size', 16);
 
-    console.log('root links', this.base.links());
-    this.link = this.svg
-      .append('g')
-      .attr('fill', 'none')
-      .attr('stroke', '#999')
-      .selectAll()
-      .data(this.base.links())
-      .join('path')
-      .attr(
-        'd',
-        (d: HierarchyLink<Unknown>) => `
-        M${d.source.depth * this.nodeSize},${((d.source as Unknown)?.index ?? d.source.depth + 1) * this.nodeSize}
-        V${((d.target as Unknown).index ?? d.target.depth + 1) * this.nodeSize} 
-        h${this.nodeSize}
-      `
-      );
+    const former = () => {
+      // this.tree = d3.treemap().size([this.width, this.height]).padding(4).round(true);
+      // this.tree(this.base as HierarchyNode<unknown>);
+      // // this.svg
+      // //   .append('g')
+      // //   .attr('fill', 'none')
+      // //   .attr('stroke', '#555')
+      // //   .attr('stroke-opacity', 0.4)
+      // //   .attr('stroke-linecap', null)
+      // //   .attr('stroke-linejoin', null)
+      // //   .attr('stroke-width', 1.5)
+      // //   .selectAll('path')
+      // //   .data(this.base.links())
+      // //   .join('path')
+      // //   .attr('d', () => '');
+      // this.link = this.svg
+      //   .append('g')
+      //   .attr('fill', 'none')
+      //   .attr('stroke', '#555')
+      //   .attr('stroke-opacity', 0.4)
+      //   .attr('stroke-linecap', null)
+      //   .attr('stroke-linejoin', null)
+      //   .attr('stroke-width', 1.5)
+      //   .selectAll('path')
+      //   .data(this.base.links())
+      //   .join('path')
+      //   .attr('d', (m) => {
+      //     const curve = d3.curveBumpX;
+      //     const drawer = d3
+      //       .link(curve)
+      //       .x((d: Unknown) => d.y)
+      //       .y((d: Unknown) => d.x);
+      //     // console.log('drawer', { drawer });
+      //     // console.log('drawer.xx', drawer.source());
+      //     // console.log('mm', m);
+      //     const o = { x: drawer.x(), y: drawer.y() };
+      //     return drawer.source() as Unknown;
+      //   });
+      // console.log('root links', this.base.links());
+      // // this.link = this.svg
+      // //   .append('g')
+      // //   .attr('fill', 'none')
+      // //   .attr('stroke', '#999')
+      // //   .selectAll()
+      // //   .data(this.base.links())
+      // //   .join('path')
+      // //   .attr(
+      // //     'd',
+      // //     (d: HierarchyLink<Unknown>) => `
+      // //     M${d.source.depth * this.nodeSize},${((d.source as Unknown)?.index ?? d.source.depth + 1) * this.nodeSize}
+      // //     V${((d.target as Unknown).index ?? d.target.depth + 1) * this.nodeSize}
+      // //     h${this.nodeSize}
+      // //   `
+      // //   );
+      // //   const nodes = svg.selectAll("g")
+      // // .data(root.descendants())
+      // // .enter()
+      // // .append("g")
+      // // .attr("transform", d => `translate(${d.x0},${d.y0})`);
+      // // Set Node
+      // this.node = this.svg
+      //   .append('g')
+      //   .attr('data-element-identifier', 'node-group')
+      //   .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")")
+      //   // .attr('transform', (...all) => {
+      //   //   console.log('transform A d', all);
+      //   //   return '';
+      //   // })
+      //   .selectAll()
+      //   .data(this.base.descendants())
+      //   .join('g')
+      //   .attr('data-node-depth', (d) => d.depth)
+      //   .attr('data-node-index', (d) => d.index)
+      //   .attr('data-element-identifier', 'graph-node')
+      //   .attr('transform', (d: Unknown) => {
+      //     console.log('transform d', d);
+      //     return `translate(${d.x ? d.x : 0},${d.y ?? 0})`;
+      //   });
+      // this.node
+      //   .append('rect')
+      //   .attr('width', (d: Unknown) => (d.x1 ?? 0) - (d.x0 ?? 0))
+      //   .attr('height', (d: Unknown) => (d.y1 ?? 0) - (d.y0 ?? 0))
+      //   .attr('fill', 'lightblue')
+      //   .attr('stroke', 'white');
+      // // this.node
+      // //   .append('circle')
+      // //   .attr('cx', (d) => d.depth * this.nodeSize)
+      // //   .attr('r', 4)
+      // //   .attr('fill', (d) => (d.children ? null : '#999'));
+      // this.node
+      //   .append('text')
+      //   .attr('x', (d: Unknown) => ((d.x1 ?? 1) - (d.x0 ?? 1)) / 2)
+      //   .attr('y', (d: Unknown) => ((d.y1 ?? 1) - (d.y0 ?? 1)) / 2)
+      //   .attr('dy', '0.35em')
+      //   .attr('text-anchor', 'middle')
+      //   .text((d: Unknown) => d.data.name);
+      // // name
+      // // this.node
+      // //   .append('text')
+      // //   .attr('dy', '0.32em')
+      // //   .attr('dx', '.5em')
+      // //   .attr('x', (d) => d.depth * this.nodeSize + 6)
+      // //   // text size
+      // //   .attr('style', 'font-size: 1rem')
+      // //   .attr('class', 'tree--node')
+      // //   .text((d) => d.data?.name ?? 'unset name');
+      // console.log('this.svg data:', this.svg);
+      // console.log('this.base data:', this.base);
+    };
 
+    console.log('root has data');
+    // this.update(null, this.base);
+    this.render(null, this.base, this.svg);
+  }
+
+  render(event: any, source: RootType, svg: CanvasSelection) {
+    if (!this.svg || !this.base || !this.tree || !this.diagonal) {
+      console.log(`error render svg: ${this.svg} | base: ${this.base} | tree: ${this.tree}`);
+      return;
+    }
+
+    const links = this.base.links();
+
+    console.log('links links', links);
+    // Normalize for fixed-depth.
+    this.nodes?.forEach(function (d) {
+      d.y = d.depth * 180;
+    });
+
+    // Update the nodes…
+    // Set Node
     this.node = this.svg
       .append('g')
-      .selectAll()
-      .data(this.nodes as RootType[])
+      .selectAll('g')
+      .data(source.descendants())
       .join('g')
+      .attr('data-element-identifier', 'node__span')
       .attr('data-node-depth', (d) => d.depth)
-      .attr('data-node-depth', (d) => d.index)
-      .attr('transform', (d) => `translate(0,${(d.index ?? d.depth + 1) * this.nodeSize})`);
+      .attr('data-node-index', (d) => d.index)
+      .attr('transform', (d) => `translate(${d.y},${d.x})`);
 
-    this.node
-      .append('circle')
-      .attr('cx', (d) => d.depth * this.nodeSize)
-      .attr('r', 4)
-      .attr('fill', (d) => (d.children ? null : '#999'));
+    // this.node = this.svg
+    //   .append('g')
+    //   .attr('data-element-identifier', 'node-group')
+    //   // .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')')
 
-    // name
+    //   // .attr('transform', (...all) => {
+    //   //   console.log('transform A d', all);
+    //   //   return '';
+    //   // })
+    //   .selectAll()
+    //   .data(source.descendants())
+    //   .join('g')
+    //   .attr('data-node-depth', (d) => d.depth)
+    //   .attr('data-node-index', (d) => d.index)
+    //   .attr('data-element-identifier', 'graph-node')
+    //   .attr('transform', (d: Unknown) => {
+    //     console.log('transform d', d);
+    //     return `translate(${d.x ?? 0},${d.y ?? 0})`;
+    //   });
+
+    // this.node
+    //   .append('rect')
+    //   .attr('width', (d: Unknown) => d.x1 - d.x0)
+    //   .attr('height', (d: Unknown) => d.y1 - d.y0)
+    //   .attr('fill', 'lightblue')
+    //   .attr('stroke', 'white');
+
+    // Text
     this.node
       .append('text')
       .attr('dy', '0.32em')
-      .attr('dx', '.5em')
-      .attr('x', (d) => d.depth * this.nodeSize + 6)
-      // text size
-      .attr('style', 'font-size: 1rem')
-      .attr('class', 'tree--node')
-      .text((d) => d.data?.name ?? 'unset name');
+      .attr('dy', '0.32em')
+      .attr('x', (d) => (d.children ? -6 : 6))
+      .attr('text-anchor', (d) => (d.children ? 'end' : 'start'))
+      .attr('paint-order', 'stroke')
+      .attr('style', 'font-size: 16px ')
+      .text((d: Unknown) => d.data.name);
 
+    // this.node
+    //   .append('text')
+    //   .attr('x', (d: Unknown) => ((d.x1 ?? 1) - (d.x0 ?? 1)) / 2)
+    //   .attr('y', (d: Unknown) => ((d.y1 ?? 1) - (d.y0 ?? 1)) / 2)
+    //   .attr('dy', '0.35em')
+    //   .attr('text-anchor', 'middle')
+    //   .attr('style', 'font-size: 16px ')
+    //   .text((d: Unknown) => d.data.name);
+
+    // Enter any new nodes at the parent's previous position.
+    const enter = this.node
+      .enter()
+      .append('g')
+      .attr('class', 'node')
+      // .attr('transform', function (d) {
+      //   return 'translate(' + source.y0 + ',' + source.x0 + ')';
+      // })
+      .on('click', this.click);
+
+    // enter
+    //   .append('text')
+    //   .attr('x', function (d) {
+    //     return d.children ? -10 : 10;
+    //   })
+    //   .attr('dy', '.35em')
+    //   .attr('text-anchor', function (d) {
+    //     return d.children ? 'end' : 'start';
+    //   })
+    //   .text(function (d) {
+    //     return d.name;
+    //   })
+    //   .style('fill-opacity', 1e-6);
+
+    // // Transition exiting nodes to the parent's new position.
+    // const update = this.node
+    //   .transition()
+    //   .duration(this.duration)
+    //   .attr('transform', function (d) {
+    //     return 'translate(' + (d.y ?? 0) + ',' + (d.x ?? 0) + ')';
+    //   });
+
+    // // Update the links…
+    // var link = this.svg.selectAll('path.link').data(links, function (d: any) {
+    //   return d.target.id;
+    // });
+
+    // // Enter any new links at the parent's previous position.
+    // link
+    //   .enter()
+    //   .insert('path', 'g')
+    //   .attr('class', 'node__path')
+    //   .attr('d', function (d) {
+    //     const curv = d3.curveBumpX;
+    //     const drawer = d3
+    //       .link(curv)
+    //       .x((b: Unknown) => b.y)
+    //       .y((b: Unknown) => b.x);
+    //     console.log('drawer', { drawer });
+    //     console.log('drawer.xx', drawer.source());
+    //     console.log('d -- d', d);
+
+    //     const curve = d3.line().curve(d3.curveNatural);
+    //     const result = curve([]);
+
+    //     const o = { x: drawer.x(), y: drawer.y() };
+
+    //     // const curve = d3.line().curve(d3.curveNatural);
+    //     // const points = [ [drawer.target()]]
+
+    //     return drawer.toString();
+
+    //     // var o = { x: source.x0, y: source.y0 };
+    //     // return this.diagonal({ source: o, target: o });
+    //   });
+
+    console.log('root links', source.links());
     console.log('this.svg data:', this.svg);
     console.log('this.base data:', this.base);
+  }
 
-    if (this.base) {
-      console.log('root has data');
-      this.update(null, this.base);
-    }
+  click() {
+    console.log('click');
   }
 
   clear() {
@@ -281,7 +533,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   }
 
   resizeCanvas() {
-    if (this.svg) this.svg.attr('width', this.width).attr('height', this.height);
+    if (this.svg) this.svg.attr('width', this.width + this.margin.right + this.margin.left).attr('height', this.height + this.margin.top + this.margin.bottom);
   }
 
   update(event: any, source: any) {
@@ -294,7 +546,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     const nodes = this.base.descendants().reverse();
     const links = this.base.links();
     // Compute the new tree layout.
-    this.tree(this.base);
+    this.tree(this.base as HierarchyNode<unknown>);
   }
 
   /**

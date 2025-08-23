@@ -46,7 +46,7 @@ interface RootType extends HierarchyNode<PlotContent | undefined> {
   // y0: Unknown;
   // x: Unknown;
   // y: Unknown;
-  // _children?: RootType[];
+  _children?: RootType[];
   // children?: RootType;
 }
 
@@ -97,7 +97,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
 
   // declares a tree layout and assigns the size
   // Controls the look of the graph/D3-table
-  treeMap: TreeLayout<unknown | any> = tree();
+  treeMap: TreeLayout<unknown | any> = tree().size([this.height, this.width]);
   // treeMap: d3.TreeLayout<unknown> = d3.tree().size([this.width, this.height]);
 
   duration = 750;
@@ -152,8 +152,8 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   x: any;
   y: any;
   links?: HierarchyPointNode<any>[];
-  rectHeight?: number;
-  rectWidth?: number;
+  rectHeight: number = 80;
+  rectWidth: number = 200;
 
   constructor(private plotService: PlotService, private storiesService: StoriesService, private notificationService: NotificationService) {}
 
@@ -226,17 +226,10 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     this.base.x0 = this.height / 2;
     this.base.y0 = 0;
 
-    // Collapse the node and all it's children
-    function collapse(d: any) {
-      if (d.children) {
-        d._children = d.children;
-        d._children.forEach(collapse);
-        d.children = null;
-      }
-    }
-
     // Collapse after the second level
-    this.base.children?.forEach(collapse);
+    this.base.children?.forEach((child: RootType) => {
+      return this.collapse(child);
+    });
 
     this.render(null, this.base, this.svg);
   }
@@ -259,7 +252,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
 
     // Update the nodes...
     const node = this.svg.selectAll('g.node').data(this.nodes, function (d: Unknown, i: number) {
-      return d.id || (d.id = ++i);
+      return i;
     });
 
     // Enter any new modes at the parent's previous position.
@@ -272,9 +265,6 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       })
       .on('click', this.click);
 
-    this.rectHeight = 60;
-    this.rectWidth = 120;
-
     nodeEnter
       .append('rect')
       .attr('class', 'node')
@@ -284,19 +274,15 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       .attr('y', (this.rectHeight / 2) * -1)
       .attr('rx', '5')
       .style('fill', function (d) {
-        return d.data.fill;
+        return d.data.fill ?? '#fff';
       });
 
     // Add labels for the nodes
     nodeEnter
       .append('text')
       .attr('dy', '-.35em')
-      .attr('x', function (d) {
-        return 13;
-      })
-      .attr('text-anchor', function (d) {
-        return 'start';
-      })
+      .attr('x', () => 13)
+      .attr('text-anchor', () => 'start')
       .text(function (d) {
         return d.data.name;
       })
@@ -321,13 +307,13 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       });
 
     // Update the node attributes and style
-    nodeUpdate
-      .select('circle.node')
-      .attr('r', 10)
-      .style('fill', function (d) {
-        return d.children ? 'lightsteelblue' : '#fff';
-      })
-      .attr('cursor', 'pointer');
+    // nodeUpdate
+    //   .select('circle.node')
+    //   .attr('r', 10)
+    //   .style('fill', function (d) {
+    //     return d.children ? 'lightsteelblue' : '#fff';
+    //   })
+    //   .attr('cursor', 'pointer');
 
     // Remove any exiting nodes
     var nodeExit = node
@@ -354,11 +340,17 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     var linkEnter = link
       .enter()
       .insert('path', 'g')
+      .attr('data-type', 'node__link')
       .attr('class', 'link')
       .attr('d', (d) => {
-        var o = { x: source.x0, y: source.y0 };
+        var o = { x: source.x0, y: source.y0 } as HierarchyPointNode<RootType>;
         return this.curvedDiagonal(o, o);
-      });
+      })
+      .attr('stroke', 'black')
+      // with multiple points defined, if you leave out fill:none,
+      // the overlapping space defined by the points is filled with
+      // the default value of 'black'
+      .attr('fill', 'none');
 
     // UPDATE Delete bellow
     var linkUpdate = linkEnter.merge(link as Unknown);
@@ -372,15 +364,15 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       });
 
     // Remove any exiting links
-    var linkExit = link
-      .exit()
-      .transition()
-      .duration(this.duration)
-      .attr('d', (d) => {
-        var o = { x: source.x, y: source.y };
-        return this.curvedDiagonal(o, o);
-      })
-      .remove();
+    // var linkExit = link
+    //   .exit()
+    //   .transition()
+    //   .duration(this.duration)
+    //   .attr('d', (d) => {
+    //     var o = { x: source.x, y: source.y };
+    //     return this.curvedDiagonal(o, o);
+    //   })
+    //   .remove();
 
     // Store the old positions for transition.
     this.nodes.forEach((d: HierarchyPointNode<any> | any) => {
@@ -392,13 +384,20 @@ export class HierarchyComponent implements OnInit, OnDestroy {
   click() {
     console.log('click');
   }
+  // Collapse the node and all it's children
+  collapse(d: RootType) {
+    if (d.children) {
+      d._children = d.children;
+      d._children.forEach(this.collapse);
+    }
+  }
 
   // Creates a curved (diagonal) path from parent to the child nodes
-  curvedDiagonal(s: Unknown, d: Unknown) {
+  curvedDiagonal(s: HierarchyPointNode<any>, d: HierarchyPointNode<any> | null) {
     const path = `M ${s.y} ${s.x}
-            C ${(s.y + d.y) / 2} ${s.x},
-              ${(s.y + d.y) / 2} ${d.x},
-              ${d.y} ${d.x}`;
+            C ${(s.y + (d?.y ?? 0)) / 2} ${s.x},
+              ${(s.y + (d?.y ?? 0)) / 2} ${d?.x ?? 0},
+              ${d?.y ?? 0} ${d?.x ?? 0}`;
 
     return path;
   }

@@ -1,4 +1,4 @@
-import { NgFor } from '@angular/common';
+
 import { Component, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { SummaryDisplayCardComponent } from '@components/ui/summary-display-card/summary-display-card.component';
@@ -6,7 +6,7 @@ import { Plot } from '@models/plot';
 
 @Component({
   selector: 'app-draft-card-row',
-  imports: [SummaryDisplayCardComponent, NgFor, MatButtonModule],
+  imports: [SummaryDisplayCardComponent, MatButtonModule],
   templateUrl: './draft-card-row.component.html',
   styleUrl: './draft-card-row.component.scss',
 })

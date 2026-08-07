@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { ResolveEnd, Router, RouterOutlet } from '@angular/router';
 import { NavigationComponent } from '@core/navigation/navigation.component';
@@ -9,7 +9,7 @@ import { MiniNavbarComponent } from '@core/mini-navbar/mini-navbar.component';
 
 @Component({
   selector: 'app-root',
-  imports: [NavigationComponent, SnackBarNotificationComponent, RouterOutlet, CommonModule, FooterComponent, MiniNavbarComponent],
+  imports: [NavigationComponent, SnackBarNotificationComponent, RouterOutlet, FooterComponent, MiniNavbarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

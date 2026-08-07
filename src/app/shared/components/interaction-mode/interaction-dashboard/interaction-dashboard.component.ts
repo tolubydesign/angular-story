@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { Plot } from '@models/plot';
 import { StoriesService } from '@services/stories.service';
 import { StoryBoardComponent } from '../story-board/story-board.component';
-import { CommonModule, NgIf } from '@angular/common';
+
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,10 +14,14 @@ import { HTTPSuccessResponse } from '@models/http.model';
 
 @Component({
     imports: [
-        StoryBoardComponent, NgIf, CommonModule,
-        RouterLink, RouterModule, RouterLinkActive,
-        MatButtonModule, MatDividerModule, MatIconModule
-    ],
+    StoryBoardComponent,
+    RouterLink,
+    RouterModule,
+    RouterLinkActive,
+    MatButtonModule,
+    MatDividerModule,
+    MatIconModule
+],
     selector: 'app-interaction-dashboard',
     templateUrl: './interaction-dashboard.component.html',
     styleUrls: ['./interaction-dashboard.component.scss']

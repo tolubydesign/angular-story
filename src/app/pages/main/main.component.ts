@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { RouterModule } from '@angular/router';
@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-main',
-  imports: [MatCardModule, CommonModule, RouterModule, WelcomeMatComponent, ContinueCardRowComponent, DraftCardRowComponent],
+  imports: [MatCardModule, RouterModule, WelcomeMatComponent, ContinueCardRowComponent, DraftCardRowComponent],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
 })

@@ -1,21 +1,28 @@
 <!-- TODO: remove file in future. No longer in use (production) -->
 <!-- DELETE FILE -->
 <slot data-component="Panel Component" [class]="{ 'panel--component': true }">
-  <div class="loader--group" *ngIf="!this.displayDendrogram">
-    <app-loader></app-loader>
-  </div>
-
-  <div class="display-dendrogram--group" *ngIf="this.displayDendrogram">
-    <!-- TODO: render dendrogram here or pass data into child component -->
-    <app-hierarchy *ngIf="plot" [content]="plot">
-      <!-- src/app/shared/components/hierarchy/hierarchy.component.html -->
-      <!-- This component is in /components/d3/ -->
-    </app-hierarchy>
-    
-    <div *ngIf="!plot">
-      <p class="text-sm text-center text-rose-500">Story information couldn't be fetched.</p>
+  @if (!this.displayDendrogram) {
+    <div class="loader--group">
+      <app-loader></app-loader>
     </div>
-  </div>
+  }
+
+  @if (this.displayDendrogram) {
+    <div class="display-dendrogram--group">
+      <!-- TODO: render dendrogram here or pass data into child component -->
+      @if (plot) {
+        <app-hierarchy [content]="plot">
+          <!-- src/app/shared/components/hierarchy/hierarchy.component.html -->
+          <!-- This component is in /components/d3/ -->
+        </app-hierarchy>
+      }
+      @if (!plot) {
+        <div>
+          <p class="text-sm text-center text-rose-500">Story information couldn't be fetched.</p>
+        </div>
+      }
+    </div>
+  }
 
   <!-- Handle form changes -->
   <app-node-form></app-node-form>

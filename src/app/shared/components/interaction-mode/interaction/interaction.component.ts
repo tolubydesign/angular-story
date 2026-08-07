@@ -5,7 +5,7 @@ import { Subscription } from "rxjs";
 import { Plot } from "@models/plot";
 import { StoriesService } from "@services/stories.service";
 import { OptionalSelectionCardComponent } from "@shared/components/ui/optional-selection-card/optional-selection-card.component";
-import { CommonModule } from "@angular/common";
+
 import { MatIconModule } from "@angular/material/icon";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatButtonModule } from "@angular/material/button";
@@ -13,10 +13,14 @@ import { HTTPSuccessResponse } from "@models/http.model";
 
 @Component({
     imports: [
-        OptionalSelectionCardComponent,
-        RouterLink, RouterModule, CommonModule, RouterLinkActive,
-        MatButtonModule, MatDividerModule, MatIconModule
-    ],
+    OptionalSelectionCardComponent,
+    RouterLink,
+    RouterModule,
+    RouterLinkActive,
+    MatButtonModule,
+    MatDividerModule,
+    MatIconModule
+],
     selector: "app-interaction",
     templateUrl: "./interaction.component.html",
     styleUrls: ["./interaction.component.scss"]

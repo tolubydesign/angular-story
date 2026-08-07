@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, WritableSignal, input, signal, HostListener } from '@angular/core';
-import { CommonModule, JsonPipe, NgIf } from '@angular/common';
+import { CommonModule, JsonPipe } from '@angular/common';
 import { Falsy, Subscription } from 'rxjs';
 import {
   HierarchyNode,
@@ -55,7 +55,7 @@ interface RootType extends HierarchyNode<PlotContent> {
 }
 
 @Component({
-  imports: [JsonPipe, NodeFormComponent, NgIf, CommonModule],
+  imports: [JsonPipe, NodeFormComponent, CommonModule],
   selector: 'app-hierarchy',
   templateUrl: './hierarchy.component.html',
   styleUrls: ['./hierarchy.component.scss'],

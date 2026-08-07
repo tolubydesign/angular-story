@@ -9,7 +9,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { StoriesService } from '@services/stories.service';
 import { LoaderComponent } from '../../ui/loader/loader.component';
 import { HierarchyComponent } from '../../extra/hierarchy/hierarchy.component';
-import { NgIf } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 
 // Create Mat Icons.
@@ -33,7 +33,7 @@ const THUMB_ICON =
 `;
 
 @Component({
-  imports: [HierarchyComponent, NgIf, MatButtonModule],
+  imports: [HierarchyComponent, MatButtonModule],
   selector: 'app-editing',
   templateUrl: './editing.component.html',
   styleUrls: ['./editing.component.scss'],

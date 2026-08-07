@@ -1,20 +1,26 @@
 <div data-component="Editing Panel Component" class="w-[calc(100vw-68px)] relative h-screen">
   <!-- <div class="absolute top-3 left-3">
-    <a mat-flat-button routerLink="/editor" routerLinkActive="active">Return to Main Edit Page</a>
-  </div> -->
+  <a mat-flat-button routerLink="/editor" routerLinkActive="active">Return to Main Edit Page</a>
+</div> -->
 
-  <div *ngIf="plot()" class="display-dendrogram--group h-screen">
-    <app-hierarchy *ngIf="plot()" [content]="plot()">
-      <!-- src/app/shared/components/hierarchy/hierarchy.component.html -->
-      <!-- This component is in /components/d3/ -->
-    </app-hierarchy>
+@if (plot()) {
+  <div class="display-dendrogram--group h-screen">
+    @if (plot()) {
+      <app-hierarchy [content]="plot()">
+        <!-- src/app/shared/components/hierarchy/hierarchy.component.html -->
+        <!-- This component is in /components/d3/ -->
+      </app-hierarchy>
+    }
   </div>
+}
 
-  <div *ngIf="!plot()" data-element="" class="flex justify-center items-center w-auto h-screen">
+@if (!plot()) {
+  <div data-element="" class="flex justify-center items-center w-auto h-screen">
     <div class="my-auto flex flex-col justify-center">
       <p class="text-sm text-center text-rose-700">Unable to fetch story data</p>
       <button mat-flat-button color="ordana" class="mt-6 mx-auto" data-button-explanation="return to ..."
-        (click)="newBoard()">Create New Board</button>
+      (click)="newBoard()">Create New Board</button>
     </div>
   </div>
+}
 </div>

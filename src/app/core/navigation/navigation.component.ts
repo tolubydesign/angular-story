@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterModule } from "@angular/router";
 import { MatMenuModule } from '@angular/material/menu';
@@ -7,7 +7,7 @@ import { removeUserSessionStorageCredentials } from "@shared/helpers/session.sto
 
 @Component({
     selector: 'app-navigation',
-    imports: [RouterLink, RouterModule, CommonModule, MatButtonModule, MatMenuModule],
+    imports: [RouterLink, RouterModule, MatButtonModule, MatMenuModule],
     templateUrl: './navigation.component.html',
     styleUrl: './navigation.component.scss'
 })

@@ -4,10 +4,10 @@ import { falsy } from '@models/tree.model';
 import { PlotService } from "@services/plot/plot.service";
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { MatCard, MatCardActions, MatCardContent, MatCardSubtitle, MatCardTitle } from '@angular/material/card';
-import { CommonModule, NgFor, NgForOf, NgIf } from '@angular/common';
+
 
 @Component({
-    imports: [MatCard, MatCardSubtitle, MatCardTitle, MatCardContent, MatCardActions, NgIf, CommonModule, NgFor, NgForOf],
+    imports: [MatCard, MatCardSubtitle, MatCardTitle, MatCardContent, MatCardActions],
     selector: 'app-optional-selection-card',
     templateUrl: './optional-selection-card.component.html',
     styleUrls: ['./optional-selection-card.component.scss']

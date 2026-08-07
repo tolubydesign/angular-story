@@ -9,7 +9,7 @@ import { falsy } from "@models/tree.model";
 import { LoaderComponent } from "../../ui/loader/loader.component";
 import { HierarchyComponent } from "../hierarchy/hierarchy.component";
 import { NodeFormComponent } from "../../editor-mode/node-form/node-form.component";
-import { NgIf } from "@angular/common";
+
 
 // Create Mat Icons.
 const CloseIcon = `
@@ -32,7 +32,7 @@ const THUMB_ICON =
 `;
 
 @Component({
-    imports: [LoaderComponent, HierarchyComponent, NodeFormComponent, NgIf],
+    imports: [LoaderComponent, HierarchyComponent, NodeFormComponent],
     selector: "app-panel",
     templateUrl: "./panel.component.html",
     styleUrls: ["./panel.component.scss"]

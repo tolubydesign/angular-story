@@ -5,10 +5,10 @@ import { PlotContent } from '@models/plot';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NotificationService } from '@services/notification.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule, NgIf } from '@angular/common';
+
 
 @Component({
-    imports: [FormsModule, ReactiveFormsModule, NgIf, CommonModule],
+    imports: [FormsModule, ReactiveFormsModule],
     selector: 'app-node-form',
     templateUrl: './node-form.component.html',
     styleUrls: ['./node-form.component.scss']

@@ -1,47 +1,53 @@
 <slot data-component="Story Board Component" class="story-board--section">
   @if (fullStory) {
-    <article class="board--base--group">
-      <div class="board--header--group">
-        <p class="" style="margin: auto auto 10px; text-align: center">level: {{ level }}</p>
-        <mat-card-title class="board--title">{{ title }}</mat-card-title>
-        <mat-card-subtitle class="board--description">{{ description }}</mat-card-subtitle>
-      </div>
-      <mat-card class="board-card--base">
-        @if (narrative) {
-          <mat-card-content class="board--content--group" data-element="Story Board Narrative Details and Optional Choices.">
-            <div class="board--graphics--group" [style]="!narrative.graphics ? 'background-color: #d4d4d4' : ''"></div>
-            <div class="board--description--group">
-              {{ narrative.description }}
-            </div>
-            <div class="board--options--group">
-              <!-- loop - optional selections -->
-              @for (child of narrative.children; track child; let i = $index) {
-                <ng-template #button *ngIf="narrative" let-child [ngForOf]="narrative.children" let-i="index">
-                  @if (child.name) {
-                    <button class="board-button--option" mat-stroked-button data-id="{{ child.id }}" (click)="selectionOption(child)">
-                      {{ child.name }}
-                    </button>
-                  }
-                </ng-template>
-              }
-            </div>
-            @if (narrative && !narrative.children) {
-              <div class="">
-                <p class="board-button--option" style="text-align:center">Story Ended</p>
-                <div>
-                  <a class="hover:cursor-pointer" [routerLink]="['/interact']" [queryParams]="{debug: true}" queryParamsHandling="merge">
-                    Go to Interaction Page.
-                  </a>
-                  <br />
-                  <a class="hover:cursor-pointer" (click)="reload()">
-                    Return to start.
-                  </a>
-                </div>
-              </div>
+  <article class="board--base--group">
+    <div class="board--header--group">
+      <p class="" style="margin: auto auto 10px; text-align: center">level: {{ level }}</p>
+      <mat-card-title class="board--title">{{ title }}</mat-card-title>
+      <mat-card-subtitle class="board--description">{{ description }}</mat-card-subtitle>
+    </div>
+    <mat-card class="board-card--base">
+      @if (narrative) {
+      <mat-card-content class="board--content--group"
+        data-element="Story Board Narrative Details and Optional Choices.">
+        <div class="board--graphics--group" [style]="!narrative.graphics ? 'background-color: #d4d4d4' : ''"></div>
+        <div class="board--description--group">
+          {{ narrative.description }}
+        </div>
+        <div class="board--options--group">
+          <!-- loop - optional selections -->
+          @for (child of narrative.children; track child; let i = $index) {
+          @if (narrative) {
+          <ng-template #button let-child [ngForOf]="narrative.children" let-i="index">
+            @if (child.name) {
+            <button class="board-button--option" mat-stroked-button id="{{ child.id }}"
+              (click)="selectionOption(child)">
+              {{ child.name }}
+            </button>
             }
-          </mat-card-content>
+          </ng-template>
+          }
+
+          }
+        </div>
+        @if (narrative && !narrative.children) {
+        <div class="">
+          <p class="board-button--option" style="text-align:center">Story Ended</p>
+          <div>
+            <a class="hover:cursor-pointer" [routerLink]="['/interact']" [queryParams]="{debug: true}"
+              queryParamsHandling="merge">
+              Go to Interaction Page.
+            </a>
+            <br />
+            <a class="hover:cursor-pointer" (click)="reload()">
+              Return to start.
+            </a>
+          </div>
+        </div>
         }
-      </mat-card>
-    </article>
+      </mat-card-content>
+      }
+    </mat-card>
+  </article>
   }
 </slot>

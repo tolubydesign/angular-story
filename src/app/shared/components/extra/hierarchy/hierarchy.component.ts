@@ -483,6 +483,11 @@ export class HierarchyComponent implements OnInit, OnDestroy {
     this.treeMap.size([maxX, maxY]);
   }
 
+  generateSVG = (): Selection<SVGGElement, unknown, HTMLElement, any> | undefined | void => {
+    // Not implemented.
+    return
+  }
+
 
   /**
    * Sub-function - Initialise the D3 graph. This function will call the necessary function to create the D3 canvas and

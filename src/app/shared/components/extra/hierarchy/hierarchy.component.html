@@ -9,7 +9,7 @@
   </div>
 }
 
-@if (plot) {
+@if (plot()) {
   <div data-element="Hierarchy Logs"
     class="absolute bottom-10 left-2 bg-white shadow-md w-[calc(100%-0.5rem)] px-2 py-2">
     <p class="text-[8px]">{{ plot() | json }}</p>

@@ -1,5 +1,4 @@
-
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ResolveEnd, Router, RouterOutlet } from '@angular/router';
 import { NavigationComponent } from '@core/navigation/navigation.component';
 import { SnackBarNotificationComponent } from '@core/snack-bar-notification/snack-bar-notification.component';
@@ -11,6 +10,7 @@ import { MiniNavbarComponent } from '@core/mini-navbar/mini-navbar.component';
   selector: 'app-root',
   imports: [NavigationComponent, SnackBarNotificationComponent, RouterOutlet, FooterComponent, MiniNavbarComponent],
   templateUrl: './app.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './app.component.scss',
 })
 export class AppComponent {

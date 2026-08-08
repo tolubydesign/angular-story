@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal, WritableSignal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { falsy } from '@models/tree.model';
 import { URLParameters } from '@helpers/parameter';
@@ -36,6 +36,7 @@ const THUMB_ICON =
   imports: [HierarchyComponent, MatButtonModule],
   selector: 'app-editing',
   templateUrl: './editing.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./editing.component.scss'],
 })
 export class EditingComponent implements OnInit, OnDestroy {
@@ -114,12 +115,12 @@ export class EditingComponent implements OnInit, OnDestroy {
     // get id from url parameter
     const param = this.parameterId();
     if (param && typeof param === 'string') {
-      // generate new board object. 
+      // generate new board object.
       // Use existing parameter id if possible
       const id = await this.storiesService.createNewStoryGraph(param);
       console.log('new board ... id', id);
       if (!id) return;
-    
+
       // TODO: notify user of action
     }
   }

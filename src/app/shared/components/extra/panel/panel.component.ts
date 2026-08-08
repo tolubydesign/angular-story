@@ -1,15 +1,14 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
-import { PlotService } from "@services/plot/plot.service";
-import { Falsy, Subscription } from "rxjs";
-import { Plot } from "@models/plot";
+import { PlotService } from '@services/plot/plot.service';
+import { Falsy, Subscription } from 'rxjs';
+import { Plot } from '@models/plot';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
-import { falsy } from "@models/tree.model";
-import { LoaderComponent } from "../../ui/loader/loader.component";
-import { HierarchyComponent } from "../hierarchy/hierarchy.component";
-import { NodeFormComponent } from "../../editor-mode/node-form/node-form.component";
-
+import { falsy } from '@models/tree.model';
+import { LoaderComponent } from '../../ui/loader/loader.component';
+import { HierarchyComponent } from '../hierarchy/hierarchy.component';
+import { NodeFormComponent } from '../../editor-mode/node-form/node-form.component';
 
 // Create Mat Icons.
 const CloseIcon = `
@@ -20,7 +19,7 @@ const CloseIcon = `
     </path>
   </g>
 </svg>
-`
+`;
 const THUMB_ICON =
   `
   <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px">
@@ -32,14 +31,15 @@ const THUMB_ICON =
 `;
 
 @Component({
-    imports: [LoaderComponent, HierarchyComponent, NodeFormComponent],
-    selector: "app-panel",
-    templateUrl: "./panel.component.html",
-    styleUrls: ["./panel.component.scss"]
+  imports: [LoaderComponent, HierarchyComponent, NodeFormComponent],
+  selector: 'app-panel',
+  templateUrl: './panel.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./panel.component.scss'],
 })
 export class PanelComponent implements OnInit, OnDestroy {
   parameterID: string | unknown;
-  panelError: { type: 'unknown error' | 'not found' | falsy, error: boolean } = {
+  panelError: { type: 'unknown error' | 'not found' | falsy; error: boolean } = {
     type: undefined,
     error: false,
   };
@@ -56,8 +56,8 @@ export class PanelComponent implements OnInit, OnDestroy {
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer,
     private router: Router,
-    private activatedRoute: ActivatedRoute,) {
-
+    private activatedRoute: ActivatedRoute
+  ) {
     // Note that we provide the icon here as a string literal here due to a limitation in
     // Stackblitz. If you want to provide the icon from a URL, you can use:
     // `iconRegistry.addSvgIcon('thumbs-up', sanitizer.bypassSecurityTrustResourceUrl('icon.svg'));`
@@ -78,7 +78,7 @@ export class PanelComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 
+   *
    * @description Get id from url. Page route
    * @return {void}
    */
@@ -91,11 +91,11 @@ export class PanelComponent implements OnInit, OnDestroy {
         this.displayDendrogram = true;
       }
     });
-  };
+  }
 
   /**
-   * @description descriptive text 
-   * @param {string} id 
+   * @description descriptive text
+   * @param {string} id
    */
   // updateStory(id: string) {
   //   // We have the relevant parameter id. Make a request to back-end.

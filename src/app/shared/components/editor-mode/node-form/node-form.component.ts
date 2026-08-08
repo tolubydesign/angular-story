@@ -1,17 +1,17 @@
 import { PlotService } from '@services/plot/plot.service';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { PlotContent } from '@models/plot';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NotificationService } from '@services/notification.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-
 @Component({
-    imports: [FormsModule, ReactiveFormsModule],
-    selector: 'app-node-form',
-    templateUrl: './node-form.component.html',
-    styleUrls: ['./node-form.component.scss']
+  imports: [FormsModule, ReactiveFormsModule],
+  selector: 'app-node-form',
+  templateUrl: './node-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./node-form.component.scss'],
 })
 export class NodeFormComponent {
   @Output() updateNodeContent: EventEmitter<any> = new EventEmitter();
@@ -24,57 +24,52 @@ export class NodeFormComponent {
    * @example contentIdControl = new FormControl<string | undefined>(undefined);
    */
   form = new FormGroup({
-    id: new FormControl<string | undefined>({ value: "", disabled: true }, Validators.required),
-    name: new FormControl<string | undefined>("", Validators.required),
-    description: new FormControl<string | undefined>("", Validators.required),
+    id: new FormControl<string | undefined>({ value: '', disabled: true }, Validators.required),
+    name: new FormControl<string | undefined>('', Validators.required),
+    description: new FormControl<string | undefined>('', Validators.required),
   });
 
   // SUBSCRIBER.
   subscriber: Subscription | undefined = undefined;
   instanceContent: PlotContent | undefined = undefined;
   // instanceType: PlotInstanceType | undefined = undefined;
-  instanceParentId: string | undefined = undefined
+  instanceParentId: string | undefined = undefined;
 
-  constructor(
-    private plotService: PlotService,
-    private notificationService: NotificationService,
-  ) { }
+  constructor(private plotService: PlotService, private notificationService: NotificationService) {}
 
   ngOnInit(): void {
     // listen to behavior subject.
-    this.subscriber = this.plotService.$instanceEditSubject
-      .subscribe((content: { instance: PlotContent, parentInstanceId?: string } | undefined) => {
-        if (content?.instance) {
-          this.instanceContent = content.instance;
-          // this.instanceType = content.type
-          this.instanceParentId = content.parentInstanceId;
-          this.loadFormContent(content.instance);
-
-        }
-      })
+    this.subscriber = this.plotService.$instanceEditSubject.subscribe((content: { instance: PlotContent; parentInstanceId?: string } | undefined) => {
+      if (content?.instance) {
+        this.instanceContent = content.instance;
+        // this.instanceType = content.type
+        this.instanceParentId = content.parentInstanceId;
+        this.loadFormContent(content.instance);
+      }
+    });
 
     this.form.statusChanges.subscribe((value) => {
       // console.log('[panel instance comp] form status changes subscriber', value);
-      return
+      return;
     });
   }
 
   ngOnDestroy(): void {
     // UNSUBSCRIBE
-    this.subscriber?.unsubscribe()
+    this.subscriber?.unsubscribe();
   }
 
   onSubmit(): void {
-    if (!this.form) return this.notificationService.notifyUser("Form information could not be captured.");
+    if (!this.form) return this.notificationService.notifyUser('Form information could not be captured.');
     if (this.form && !this.form.valid) return this.notificationService.notifyUser('Form invalid.');
 
     const mergedForm = {
       ...this.form.value,
-      id: this.instanceContent?.id
-    }
+      id: this.instanceContent?.id,
+    };
 
     if (this.instanceParentId) {
-      this.addNodeContent.emit({ form: mergedForm, parentNodeId: this.instanceParentId })
+      this.addNodeContent.emit({ form: mergedForm, parentNodeId: this.instanceParentId });
     } else {
       this.updateNodeContent.emit({ form: mergedForm });
     }
@@ -91,9 +86,9 @@ export class NodeFormComponent {
     // this.contentIdControl.setValue(this.content?.id);
     // console.log("function call load form content", content)
     this.form.setValue({
-      id: content?.id ? content.id : "",
-      description: content?.description ? content.description : "",
-      name: content?.name ? content.name : "",
-    })
+      id: content?.id ? content.id : '',
+      description: content?.description ? content.description : '',
+      name: content?.name ? content.name : '',
+    });
   }
 }

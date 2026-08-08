@@ -1,4 +1,16 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, WritableSignal, input, signal, HostListener } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  WritableSignal,
+  input,
+  signal,
+  HostListener,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule, JsonPipe } from '@angular/common';
 import { Falsy, Subscription } from 'rxjs';
 import {
@@ -58,6 +70,7 @@ interface RootType extends HierarchyNode<PlotContent> {
   imports: [JsonPipe, NodeFormComponent, CommonModule],
   selector: 'app-hierarchy',
   templateUrl: './hierarchy.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./hierarchy.component.scss'],
 })
 export class HierarchyComponent implements OnInit, OnDestroy {
@@ -317,7 +330,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       .attr('width', (d) => (d.depth > 0 ? 20 : 0))
       .attr('height', (d) => (d.depth > 0 ? 20 : 0))
       .attr('x', (d) => (d.depth > 0 ? (d?.data?.node?.width ? d.data.node.width + 10 : 0) : 0))
-      .attr('y', (d) => (d.depth > 0 ? ((d.data.node.height / 3) * -1) + 20 : 0))
+      .attr('y', (d) => (d.depth > 0 ? (d.data.node.height / 3) * -1 + 20 : 0))
       .attr('rx', '5')
       .attr('cursor', (d) => (d.depth > 0 ? 'pointer' : 'default'))
       .style('fill', 'red')
@@ -485,9 +498,8 @@ export class HierarchyComponent implements OnInit, OnDestroy {
 
   generateSVG = (): Selection<SVGGElement, unknown, HTMLElement, any> | undefined | void => {
     // Not implemented.
-    return
-  }
-
+    return;
+  };
 
   /**
    * Sub-function - Initialise the D3 graph. This function will call the necessary function to create the D3 canvas and
@@ -619,16 +631,16 @@ export class HierarchyComponent implements OnInit, OnDestroy {
    * Node event. Add a child node to selected node.
    */
   addNode(event: any, d: HierarchyNode<any>): void {
-    console.log("function call add node, d:", d);
+    console.log('function call add node, d:', d);
 
     this.plotService.selectInstance({
       instance: {
         id: uuid.v4(),
-        name: "Name of node",
-        description: "Description of node",
+        name: 'Name of node',
+        description: 'Description of node',
         children: undefined,
       },
-      parentInstanceId: d.data.id
+      parentInstanceId: d.data.id,
     });
   }
 
@@ -641,7 +653,7 @@ export class HierarchyComponent implements OnInit, OnDestroy {
       // Note: update graph
       this.initialiseComponent(true);
     } else {
-      this.notificationService.notifyUser("Point to could not be removed. Graph has errored out.");
+      this.notificationService.notifyUser('Point to could not be removed. Graph has errored out.');
     }
   }
 

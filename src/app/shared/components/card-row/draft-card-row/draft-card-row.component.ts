@@ -1,5 +1,4 @@
-
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { SummaryDisplayCardComponent } from '@components/ui/summary-display-card/summary-display-card.component';
 import { Plot } from '@models/plot';
@@ -8,6 +7,7 @@ import { Plot } from '@models/plot';
   selector: 'app-draft-card-row',
   imports: [SummaryDisplayCardComponent, MatButtonModule],
   templateUrl: './draft-card-row.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './draft-card-row.component.scss',
 })
 export class DraftCardRowComponent {

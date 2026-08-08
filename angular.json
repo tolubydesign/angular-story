@@ -24,19 +24,11 @@
               "base": "dist/angular-interaction"
             },
             "index": "src/index.html",
-            "polyfills": [
-              "src/polyfills.ts"
-            ],
+            "polyfills": ["src/polyfills.ts"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/styles.scss"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["@angular/material/prebuilt-themes/indigo-pink.css", "src/styles.scss"],
             "scripts": [],
             "browser": "src/main.ts",
             "server": "src/main.server.ts",
@@ -78,6 +70,12 @@
                   "with": "src/environments/environment.development.ts"
                 }
               ]
+            },
+            "testing": {
+              "aot": false,
+              "optimization": false,
+              "extractLicenses": false,
+              "polyfills": "src/polyfills.ts"
             }
           },
           "defaultConfiguration": "production"
@@ -101,19 +99,14 @@
           }
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
-            "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/assets"],
-            "styles": [
-              "@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/styles.scss"
-            ],
-            "scripts": []
+            "reporters": ["default"],
+            "coverageReporters": ["html", "text-summary"],
+            "setupFiles": ["src/test.ts"],
+            "buildTarget": ":build:testing",
+            "runner": "vitest"
           }
         }
       }

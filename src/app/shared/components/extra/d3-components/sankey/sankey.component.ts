@@ -1,11 +1,12 @@
-import { Component, OnInit } from "@angular/core";
-import * as d3 from "d3";
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import * as d3 from 'd3';
 
 @Component({
-    selector: "app-sankey",
-    templateUrl: "./sankey.component.html",
-    styleUrls: ["./sankey.component.scss"],
-    standalone: false
+  selector: 'app-sankey',
+  templateUrl: './sankey.component.html',
+  styleUrls: ['./sankey.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class SankeyComponent implements OnInit {
   constructor() {}
@@ -20,7 +21,7 @@ export class SankeyComponent implements OnInit {
   graph: any;
   path: any;
   sankey: any;
-  units = "Widgets";
+  units = 'Widgets';
 
   // set the dimensions and margins of the graph
   margin = { top: 10, right: 10, bottom: 10, left: 10 };
@@ -28,9 +29,9 @@ export class SankeyComponent implements OnInit {
   height = 300 - this.margin.top - this.margin.bottom;
 
   // format variables
-  formatNumber = d3.format(",.0f"); // zero decimal places
+  formatNumber = d3.format(',.0f'); // zero decimal places
   format = (d: any) => {
-    return this.formatNumber(d) + " " + this.units;
+    return this.formatNumber(d) + ' ' + this.units;
   };
   color = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -38,15 +39,12 @@ export class SankeyComponent implements OnInit {
   createSvg(): void {
     // append the svg object to the body of the page
     this.svg = d3
-      .select("body")
-      .append("svg")
-      .attr("width", this.width + this.margin.left + this.margin.right)
-      .attr("height", this.height + this.margin.top + this.margin.bottom)
-      .append("g")
-      .attr(
-        "transform",
-        "translate(" + this.margin.left + "," + this.margin.top + ")"
-      );
+      .select('body')
+      .append('svg')
+      .attr('width', this.width + this.margin.left + this.margin.right)
+      .attr('height', this.height + this.margin.top + this.margin.bottom)
+      .append('g')
+      .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
   }
 
   private drawBars(): void {

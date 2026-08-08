@@ -1,7 +1,7 @@
+<!-- NOTE: component possibly deprecated -->
+<!-- TODO: add welcoming mat. inform user of the page they are currently on -->
 <div data-component="Editor" class="relative h-lvh flex items-center justify-center">
   <a class="absolute-position top-[10px] left-[10px]" mat-stroked-button routerLink="/" routerLinkActive="active">Home</a>
-
-  <!-- TODO: add welcoming mat. inform user of the page they are currently on -->
 
   <slot data-component="Editor Component" class="editor-component--section">
     <div class="editor--section--cards">
@@ -10,8 +10,6 @@
         (PrimaryClick)="deletePlot($event)" (SecondaryClick)="editPlot($event)">
       </app-optional-selection-card>
     </div>
-  
-    <!-- create new story -->
-    <button mat-raised-button data-element="Create Button Story" class="mt-10 mx-auto" (click)="createStory()">Create</button>
+    <button mat-raised-button data-element="Create Button Story" class="mt-10 mx-auto" data-button-explanation="create new story button" (click)="createStory()">Create</button>
   </slot>
 </div>

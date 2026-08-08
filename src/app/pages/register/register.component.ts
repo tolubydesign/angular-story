@@ -1,15 +1,12 @@
-import { CommonModule } from '@angular/common';
-import {} from '@angular/common/http';
-import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from '@angular/router';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { RouterLink, RouterModule } from '@angular/router';
 import { RegisterFormComponent } from '@components/form/register-form/register-form.component';
 
 @Component({
-    selector: 'app-register',
-    imports: [RouterLink, RouterModule, CommonModule, RouterOutlet, RouterLinkActive, RegisterFormComponent],
-    templateUrl: './register.component.html',
-    styleUrl: './register.component.scss'
+  selector: 'app-register',
+  imports: [RouterLink, RouterModule, RegisterFormComponent],
+  templateUrl: './register.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './register.component.scss',
 })
-export class RegisterComponent {
-
-}
+export class RegisterComponent {}

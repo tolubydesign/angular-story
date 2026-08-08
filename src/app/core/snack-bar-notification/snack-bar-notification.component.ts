@@ -1,28 +1,26 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationService, Notification } from '@services/notification.service';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 
 @Component({
-    imports: [MatSnackBarModule],
-    selector: 'app-snack-bar-notification',
-    templateUrl: './snack-bar-notification.component.html',
-    styleUrls: ['./snack-bar-notification.component.scss']
+  imports: [MatSnackBarModule],
+  selector: 'app-snack-bar-notification',
+  templateUrl: './snack-bar-notification.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./snack-bar-notification.component.scss'],
 })
 export class SnackBarNotificationComponent implements OnInit, OnDestroy {
   duration = 5;
   private _notificationSubscription: Subscription | undefined;
 
-  constructor(
-    private notificationService: NotificationService,
-    private _snackBar: MatSnackBar
-  ) { }
+  constructor(private notificationService: NotificationService, private _snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this._notificationSubscription = this.notificationService.text.subscribe(({ message, action }: Notification) => {
       this.openSnackBar(message, action);
-    })
+    });
   }
 
   ngOnDestroy(): void {

@@ -1,18 +1,14 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { MiniNavbarComponent } from '@core/mini-navbar/mini-navbar.component';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-    imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, MiniNavbarComponent],
-    selector: 'app-not-found',
-    templateUrl: './not-found.component.html',
-    styleUrls: ['./not-found.component.scss']
+  imports: [],
+  selector: 'app-not-found',
+  templateUrl: './not-found.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./not-found.component.scss'],
 })
 export class NotFoundComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 }

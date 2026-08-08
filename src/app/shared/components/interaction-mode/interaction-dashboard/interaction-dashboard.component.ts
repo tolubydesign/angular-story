@@ -1,39 +1,31 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { falsy } from '@models/tree.model';
-import { ActivatedRoute, RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 import { URLParameters } from '@helpers/parameter';
 import { Subscription } from 'rxjs';
 import { Plot } from '@models/plot';
 import { StoriesService } from '@services/stories.service';
 import { StoryBoardComponent } from '../story-board/story-board.component';
-import { CommonModule, NgIf } from '@angular/common';
-import {} from '@angular/common/http';
+
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { HTTPSuccessResponse } from '@models/http.model';
 
 @Component({
-    imports: [
-        StoryBoardComponent, NgIf, CommonModule,
-        RouterLink, RouterModule, RouterOutlet, RouterLinkActive,
-        MatButtonModule, MatDividerModule, MatIconModule
-    ],
-    selector: 'app-interaction-dashboard',
-    templateUrl: './interaction-dashboard.component.html',
-    styleUrls: ['./interaction-dashboard.component.scss']
+  imports: [StoryBoardComponent, RouterLink, RouterModule, RouterLinkActive, MatButtonModule, MatDividerModule, MatIconModule],
+  selector: 'app-interaction-dashboard',
+  templateUrl: './interaction-dashboard.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./interaction-dashboard.component.scss'],
 })
 export class InteractionDashboardComponent implements OnInit, OnDestroy {
-
   parameterId: string | falsy;
   parameters = new URLParameters(this.activatedRoute);
   private _FetchStoriesSubscription?: Subscription;
   story: Plot | falsy = undefined;
-  
-  constructor(
-    private activatedRoute: ActivatedRoute,
-    private storiesService: StoriesService,
-  ) { }
+
+  constructor(private activatedRoute: ActivatedRoute, private storiesService: StoriesService) {}
 
   ngOnInit(): void {
     this.getParameters();
@@ -47,8 +39,7 @@ export class InteractionDashboardComponent implements OnInit, OnDestroy {
   }
 
   fetchStories() {
-    this._FetchStoriesSubscription = this.storiesService.fetchAllStories()
-      .subscribe((response: HTTPSuccessResponse<Plot[]>) => this.getStory(response.data))
+    this._FetchStoriesSubscription = this.storiesService.fetchAllStories().subscribe((response: HTTPSuccessResponse<Plot[]>) => this.getStory(response.data));
   }
 
   /**
@@ -56,16 +47,15 @@ export class InteractionDashboardComponent implements OnInit, OnDestroy {
    * @return {Promise<void>}
    */
   async getParameters(): Promise<void> {
-    await this.parameters.GetIDParameter()
+    await this.parameters.GetIDParameter();
     this.parameterId = this.parameters.parameterId;
   }
 
   async getStory(stories: Plot[]) {
     // loop through and find selected id
-    if (!stories || stories.length < 1) return new Error("ERROR Stories cant be ");
+    if (!stories || stories.length < 1) return new Error('ERROR Stories cant be ');
 
     this.story = stories.find((s, index) => s.id === this.parameterId);
-    return null
+    return null;
   }
-
 }

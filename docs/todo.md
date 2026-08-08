@@ -21,9 +21,9 @@ This list will be expanding as the project develops.
 ### Editor
 
 - [ ] Refactor Node-Based Editor. Use projects from [GitHub: awesome-node-based-uis](https://github.com/xyflow/awesome-node-based-uis) for inspiration
+- [ ] Refactor Node-Based editor. Needs to be more performance efficient.
 - [ ] Make `/editing` edits editor call
 - [ ] Make `/drafts` OR `/recent` edits editor call 
-- [ ] 
 
 ### Documentation and Task Management Tools
 

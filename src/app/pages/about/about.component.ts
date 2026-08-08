@@ -1,10 +1,10 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  selector: 'app-footer',
+  selector: 'app-about',
   imports: [],
-  templateUrl: './footer.component.html',
+  templateUrl: './about.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './footer.component.scss',
+  styleUrl: './about.component.scss',
 })
-export class FooterComponent {}
+export class AboutComponent {}

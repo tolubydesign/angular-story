@@ -11,6 +11,8 @@ type BoardProxy = {
 
 /**
  * @description Handle changes and updates made in the Editor part of the website.
+ * 
+ * TODO: class name "StoryEditor" will be deprecated in future updates to "Board"
  */
 export default class StoryEditor {
   id: string;
@@ -65,7 +67,7 @@ export default class StoryEditor {
     this.id = id;
     // NOTE: check if storage has information;
     const sessionPlot = this.getSessionStorage();
-    if (sessionPlot instanceof Error) this.errorMessage = `Class initialisation, Session graph error:  ${sessionPlot.message}`;
+    if (sessionPlot instanceof Error) this.errorMessage = `Class initialisation, Session graph error: ${sessionPlot.message}`;
     
     if (plot) {
       this.id = plot.id;
@@ -87,10 +89,13 @@ export default class StoryEditor {
    * StoryEditor.initialization()
    */
   initialization(): void {
+    // TODO: add user id
     return this.updateBoard({
       id: this.id,
       title: '',
       description: '',
+      creator: '',
+      status: 'private',
       content: {
         id: uuid.v4(),
         name: '',

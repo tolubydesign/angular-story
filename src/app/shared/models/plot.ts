@@ -1,9 +1,13 @@
 export type Plot = {
   id: string;
+  creator: string;
   title: string;
   description: string;
+  status: 'public' | 'private';
+  published?: boolean;
+  group?: string[] | number[];
   content: PlotContent;
-}
+};
 
 export type PlotContent = {
   id: string;
@@ -11,16 +15,16 @@ export type PlotContent = {
   description?: string;
   children?: PlotContent[];
   graphics?: BoardGraphic;
-  characters?: BoardCharacter[]
-}
+  characters?: BoardCharacter[];
+};
 
 export type PlotInstanceType = 'edit' | 'create';
 
 export type BoardGraphic = {
-  backgroundImage: string,
-}
+  backgroundImage: string;
+};
 
 export type BoardCharacter = {
-  name: string,
-  image: string,
-}
+  name: string;
+  image: string;
+};

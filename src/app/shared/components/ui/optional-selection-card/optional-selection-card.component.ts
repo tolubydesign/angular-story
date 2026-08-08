@@ -1,19 +1,18 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
 import { Plot } from '@models/plot';
 import { falsy } from '@models/tree.model';
-import { PlotService } from "@services/plot/plot.service";
+import { PlotService } from '@services/plot/plot.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { MatCard, MatCardActions, MatCardContent, MatCardSubtitle, MatCardTitle } from '@angular/material/card';
-import { CommonModule, NgFor, NgForOf, NgIf, NgTemplateOutlet } from '@angular/common';
 
 @Component({
-    imports: [MatCard, MatCardSubtitle, MatCardTitle, MatCardContent, MatCardActions, NgIf, CommonModule, NgFor, NgForOf, NgTemplateOutlet],
-    selector: 'app-optional-selection-card',
-    templateUrl: './optional-selection-card.component.html',
-    styleUrls: ['./optional-selection-card.component.scss']
+  imports: [MatCard, MatCardSubtitle, MatCardTitle, MatCardContent, MatCardActions],
+  selector: 'app-optional-selection-card',
+  templateUrl: './optional-selection-card.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./optional-selection-card.component.scss'],
 })
 export class OptionalSelectionCardComponent implements OnInit {
-
   @Input() stories: Plot[] = []; // decorate the property with @Input()
   @Input() primaryText: falsy | string = null;
   @Input() secondaryText: falsy | string = null;
@@ -24,25 +23,21 @@ export class OptionalSelectionCardComponent implements OnInit {
   paramId: string | falsy = undefined;
   selectedPlot: Plot | falsy = undefined;
 
-  constructor(
-    private plotService: PlotService,
-    private activatedRoute: ActivatedRoute,
-  ) { }
+  constructor(private plotService: PlotService, private activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.getParameterID();
   }
 
-  ngOnDestroy(): void {
-  }
+  ngOnDestroy(): void {}
 
   onPrimaryClick(item: Plot) {
-    this.PrimaryClick.emit(item.id)
+    this.PrimaryClick.emit(item.id);
   }
 
   onSecondaryClick(item: Plot) {
-    this.SecondaryClick.emit(item.id)
-  };
+    this.SecondaryClick.emit(item.id);
+  }
 
   /**
    * @description Get id from url. Page route
@@ -54,18 +49,18 @@ export class OptionalSelectionCardComponent implements OnInit {
       if (value && value.params && value.params.id) {
         this.paramId = value.params.id;
 
-        // Check if parameter and set-story match 
+        // Check if parameter and set-story match
         // We have the relevant parameter id. Make a request to back-end.
-        this.matchStoryId(value.params.id)
+        this.matchStoryId(value.params.id);
       }
     });
   }
 
   /**
-   * @description Check that id matches what is available 
-   * @param id 
+   * @description Check that id matches what is available
+   * @param id
    */
   matchStoryId(id: string | falsy) {
-    (id) ? this.plotService.UpdateStoryBehavior(id) : new Error('URL parameter ID could not be found.');
+    id ? this.plotService.UpdateStoryBehavior(id) : new Error('URL parameter ID could not be found.');
   }
 }

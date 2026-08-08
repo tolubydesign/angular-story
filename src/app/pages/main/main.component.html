@@ -1,6 +1,10 @@
 <section data-component="Main" class="start-screen-component--section h-screen flex flex-col">
   <app-welcome-mat></app-welcome-mat>
 
-  <app-continue-card-row></app-continue-card-row>
-  <app-draft-card-row></app-draft-card-row>
+  @if (published() && published().length > 1) {
+  <app-continue-card-row [content]="published()"></app-continue-card-row>
+  }
+  @if (drafted() && drafted().length > 1) {
+  <app-draft-card-row [content]="drafted()"></app-draft-card-row>
+  }
 </section>

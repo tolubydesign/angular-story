@@ -1,5 +1,5 @@
 import { UserService } from '@core/services/user/user.service';
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -9,10 +9,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, finalize, Observable, throwError } from 'rxjs';
 
 @Component({
-    selector: 'app-register-form',
-    imports: [ReactiveFormsModule, MatCheckboxModule, MatButtonModule],
-    templateUrl: './register-form.component.html',
-    styleUrl: './register-form.component.scss'
+  selector: 'app-register-form',
+  imports: [ReactiveFormsModule, MatCheckboxModule, MatButtonModule],
+  templateUrl: './register-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './register-form.component.scss',
 })
 export class RegisterFormComponent {
   formLabelClassName = 'form--label font-bold text-sm text-[#24110C] mb-2';
@@ -64,41 +65,41 @@ export class RegisterFormComponent {
       this.registerUserForm.errors;
     }
 
-    if (
-      (!email || email.trim() === '') ||
-      (!password || password.trim() === '') ||
-      (!forename || forename.trim() === '') ||
-      (!surname || surname.trim() === '')
-    ) {
+    if (!email || email.trim() === '' || !password || password.trim() === '' || !forename || forename.trim() === '' || !surname || surname.trim() === '') {
       console.warn('Invalid details provided');
-      this.registerUserForm.setErrors({ invalidInputs: "invalid details provided. Re-input your details."}, { emitEvent: false });
+      this.registerUserForm.setErrors({ invalidInputs: 'invalid details provided. Re-input your details.' }, { emitEvent: false });
       this.loading.set(false);
       return;
     }
 
-    return this.userService.register({
-      email,
-      password,
-      forename,
-      surname
-    })
-    .pipe(catchError((error: HttpErrorResponse, caught: Observable<any>) => {
-      console.log('error response : error', {error});
-      console.log('error response : caught', {caught});
-      if (error.status && error.error && typeof error.error === "string") {
-        // Show error message.
-        this.errorMessage.set(error.error);
-        return throwError(() => error);
-      }
+    return this.userService
+      .register({
+        email,
+        password,
+        forename,
+        surname,
+      })
+      .pipe(
+        catchError((error: HttpErrorResponse, caught: Observable<any>) => {
+          console.log('error response : error', { error });
+          console.log('error response : caught', { caught });
+          if (error.status && error.error && typeof error.error === 'string') {
+            // Show error message.
+            this.errorMessage.set(error.error);
+            return throwError(() => error);
+          }
 
-      return throwError(() => new Error('Something bad happened. Please try again later.'));
-    }))
-    .pipe(finalize(() => {
-      this.loading.set(false);
-      const hasLoggedIn = this.userService.isLoggedIn();
-      if (hasLoggedIn) this.router.navigate(['/main']);
-    }))
-    .subscribe()
+          return throwError(() => new Error('Something bad happened. Please try again later.'));
+        })
+      )
+      .pipe(
+        finalize(() => {
+          this.loading.set(false);
+          const hasLoggedIn = this.userService.isLoggedIn();
+          if (hasLoggedIn) this.router.navigate(['/main']);
+        })
+      )
+      .subscribe();
   }
 
   passwordMatch(controlName: string, matchingControlName: string): ValidatorFn {

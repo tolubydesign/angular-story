@@ -1,24 +1,21 @@
-import { Component, OnInit } from "@angular/core";
-import { StoriesService } from "@services/stories.service";
-import { Subscription } from "rxjs";
-import { Plot } from "@models/plot";
-import { Router, RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from "@angular/router";
-import { OptionalSelectionCardComponent } from "../../ui/optional-selection-card/optional-selection-card.component";
-import {} from "@angular/common/http";
-import { MatButtonModule } from "@angular/material/button";
-import { MatDividerModule } from "@angular/material/divider";
-import { MatIconModule } from "@angular/material/icon";
-import { HTTPSuccessResponse } from "@models/http.model";
+// NOTE: component possibly deprecated
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { StoriesService } from '@services/stories.service';
+import { Subscription } from 'rxjs';
+import { Plot } from '@models/plot';
+import { Router, RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
+import { OptionalSelectionCardComponent } from '../../ui/optional-selection-card/optional-selection-card.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { HTTPSuccessResponse } from '@models/http.model';
 
 @Component({
-    imports: [
-        OptionalSelectionCardComponent,
-        RouterLink, RouterModule, RouterOutlet, RouterLinkActive,
-        MatButtonModule, MatDividerModule, MatIconModule
-    ],
-    selector: "app-editor",
-    templateUrl: "./editor.component.html",
-    styleUrls: ["./editor.component.scss"]
+  imports: [OptionalSelectionCardComponent, RouterLink, RouterModule, RouterLinkActive, MatButtonModule, MatDividerModule, MatIconModule],
+  selector: 'app-editor',
+  templateUrl: './editor.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./editor.component.scss'],
 })
 export class EditorComponent implements OnInit {
   private _AllStoriesSubscription: Subscription | undefined;
@@ -27,10 +24,7 @@ export class EditorComponent implements OnInit {
   stories: Plot[] = [];
   cards: Plot[] = [];
 
-  constructor(
-    private router: Router,
-    private storiesService: StoriesService
-  ) { }
+  constructor(private router: Router, private storiesService: StoriesService) {}
 
   ngOnInit(): void {
     this.connectSubscription();
@@ -45,41 +39,37 @@ export class EditorComponent implements OnInit {
 
   connectSubscription(): void {
     this.populateList();
-  };
+  }
 
   populateList(): void {
-    this._FetchDataSubscription = this.storiesService.fetchAllStories().subscribe(
-      (response: HTTPSuccessResponse) => {
-        this.cards = response?.data;
-        return response;
-      }
-    );
-
+    this._FetchDataSubscription = this.storiesService.fetchAllStories().subscribe((response: HTTPSuccessResponse) => {
+      this.cards = response?.data;
+      return response;
+    });
   }
 
   deletePlot(editID: string) {
-    console.log("delete", editID);
+    console.log('delete', editID);
   }
 
   /**
-   * @description Modify an existing plot 
-   * @param { string } id The specific ID node
-   * 
+   * @description Modify an existing plot
+   * @param id The specific ID node
+   *
    */
   editPlot(id: string) {
     // this.plotService.UpdateStoryBehavior(id);
     // direct user to panel dashboard.
-    this.router.navigate([`/editor/${id}`])
+    this.router.navigate([`/editor/${id}`]);
   }
 
   /**
-   * @description Redirect to create a new story, in edit more.
-   * @return {Promise<void>} 
+   * Redirect to create a new story, in edit more.
    */
   async createStory(): Promise<void> {
     // TODO: call loading component
-    const id = await this.storiesService.createNewStoryGraph()
+    const id = await this.storiesService.createNewStoryGraph();
     // TODO: cancel loading component
-    this.router.navigate([`/editor/${id}`])
+    this.router.navigate([`/editor/${id}`]);
   }
 }

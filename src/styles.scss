@@ -1,14 +1,13 @@
-
 // Plus imports for other components in your app.
 
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
 @use './app/style/fonts/fonts';
-@use "./app/style/variables" as variables;
-@use "./app/style/animation";
-@import './app/style/custom-component-themes.scss';
-@import './app/style/global.scss';
+@use './app/style/variables' as variables;
+@use './app/style/animation';
+@forward './app/style/custom-component-themes.scss';
+@forward './app/style/global.scss';
 
 // Tailwind
 @tailwind base;
@@ -27,7 +26,7 @@
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $my-primary: mat.m2-define-palette(mat.$m2-indigo-palette, 500);
-// TODO: mod accent palette 
+// TODO: mod accent palette
 $my-accent: mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
 // The "warn" palette is optional and defaults to red if not specified.
 // The warn palette is optional (defaults to red).
@@ -38,52 +37,51 @@ $my-axolotl: mat.m2-define-palette(variables.$axolotl-palette, 800);
 // This function accepts, in order, CSS values for font-size, line-height, font-weight,
 // font-family, and letter-spacing. You can also specify the parameters by name,
 // as demonstrated in the example below.
-$custom-typography-level: mat.m2-define-typography-level(
-  $font-family: variables.$defined-font,
-  $font-weight: 400,
-  $font-size: 0.8rem,
-  $line-height: 1,
-  $letter-spacing: normal,
-);
+$custom-typography-level: mat.m2-define-typography-level($font-family: variables.$defined-font,
+    $font-weight: 400,
+    $font-size: 0.8rem,
+    $line-height: 1,
+    $letter-spacing: normal,
+  );
 
-$custom-typography-config: mat.m2-define-typography-config(
-  $font-family: variables.$defined-font,
-  $headline-1: mat.m2-define-typography-level(112px, 112px, 300, $letter-spacing: -0.05em),
-  $headline-2: mat.m2-define-typography-level(56px, 56px, 400, $letter-spacing: -0.02em),
-  $headline-3: mat.m2-define-typography-level(45px, 48px, 700, $letter-spacing: -0.005em),
-  $headline-4: mat.m2-define-typography-level(34px, 40px, 800),
-  $headline-5: mat.m2-define-typography-level(24px, 32px, 400),
-  $headline-6: mat.m2-define-typography-level($font-size: 18px, $line-height: null, $font-weight: 800, $font-family: variables.$defined-font, $letter-spacing: null),
-  $subtitle-1: mat.m2-define-typography-level(16px, null, 600),
-  $subtitle-2: mat.m2-define-typography-level(16px, null, 600),
-  $body-1: mat.m2-define-typography-level(14px, null, 500, $letter-spacing: null),
-  $body-2: mat.m2-define-typography-level(14px, null, 500, $letter-spacing: null),
-);
+$custom-typography-config: mat.m2-define-typography-config($font-family: variables.$defined-font,
+    $headline-1: mat.m2-define-typography-level(112px, 112px, 300, $letter-spacing: -0.05em),
+    $headline-2: mat.m2-define-typography-level(56px, 56px, 400, $letter-spacing: -0.02em),
+    $headline-3: mat.m2-define-typography-level(45px, 48px, 700, $letter-spacing: -0.005em),
+    $headline-4: mat.m2-define-typography-level(34px, 40px, 800),
+    $headline-5: mat.m2-define-typography-level(24px, 32px, 400),
+    $headline-6: mat.m2-define-typography-level($font-size: 18px,
+      $line-height: null,
+      $font-weight: 800,
+      $font-family: variables.$defined-font,
+      $letter-spacing: null,
+    ),
+    $subtitle-1: mat.m2-define-typography-level(16px, null, 600),
+    $subtitle-2: mat.m2-define-typography-level(16px, null, 600),
+    $body-1: mat.m2-define-typography-level(14px, null, 500, $letter-spacing: null),
+    $body-2: mat.m2-define-typography-level(14px, null, 500, $letter-spacing: null),
+  );
 
 // Define a light theme
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$light-theme: mat.m2-define-light-theme((
-  color: (
-    primary: $my-axolotl,
-    accent: $my-accent,
-    warn: $my-warn,
-  ),
-  typography: $custom-typography-config,
-  density: 0,
-));
+$light-theme: mat.m2-define-light-theme((color: (primary: $my-axolotl,
+        accent: $my-accent,
+        warn: $my-warn,
+      ),
+      typography: $custom-typography-config,
+      density: 0,
+    ));
 
 // Define dark theme
-$dark-theme: mat.m2-define-dark-theme((
-  color: (
-    primary: $my-primary,
-    accent: $my-accent,
-    warn: $my-warn,
-  ),
-  // Only include `typography` and `density` in the default dark theme.
-  typography: $custom-typography-config,
-  density: 0,
-));
+$dark-theme: mat.m2-define-dark-theme((color: (primary: $my-primary,
+        accent: $my-accent,
+        warn: $my-warn,
+      ),
+      // Only include `typography` and `density` in the default dark theme.
+      typography: $custom-typography-config,
+      density: 0,
+    ));
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -112,6 +110,6 @@ $dark-theme: mat.m2-define-dark-theme((
   // typography and density styles.
   // @include mat.core-color($dark-theme);
   // @include mat.button-color($dark-theme);
-};
+}
 
-
+;

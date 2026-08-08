@@ -1,2 +1,6 @@
-<h5 class="title" *ngIf="title">{{ title }}</h5>
-<p class="narrative" *ngIf="narrative">{{ narrative }}</p>
+@if (title) {
+  <h5 class="title">{{ title }}</h5>
+}
+@if (narrative) {
+  <p class="narrative">{{ narrative }}</p>
+}

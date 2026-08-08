@@ -1,15 +1,16 @@
-import { Component, OnInit } from "@angular/core";
-import { Subscription } from "rxjs";
-import { StoryService } from "@services/story/story.service";
-import { MockStoryStructure } from "@models/mock-story-structure";
-import { NgFor } from "@angular/common";
-import { CharacterPortraitComponent } from "../../ui/character-portrait/character-portrait.component";
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { StoryService } from '@services/story/story.service';
+import { MockStoryStructure } from '@models/mock-story-structure';
+
+import { CharacterPortraitComponent } from '../../ui/character-portrait/character-portrait.component';
 
 @Component({
-    imports: [NgFor, CharacterPortraitComponent],
-    selector: "app-dashboard",
-    templateUrl: "./dashboard.component.html",
-    styleUrls: ["./dashboard.component.scss"]
+  imports: [CharacterPortraitComponent],
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
   narrativePosition: number | null = null;
@@ -24,10 +25,9 @@ export class DashboardComponent implements OnInit {
   getStorySubscription: Subscription | null = null;
   narrativeSubscription: Subscription | null = null;
 
-  constructor(private storyService: StoryService) { }
+  constructor(private storyService: StoryService) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   ngOnDestroy(): void {
     // UNSUBSCRIBE
@@ -38,10 +38,10 @@ export class DashboardComponent implements OnInit {
   getStory(): void {
     this.getStorySubscription = this.storyService.getStory().subscribe(
       (story: MockStoryStructure[]) => {
-        console.log("story", story);
+        console.log('story', story);
       },
       (error: any) => {
-        console.log("an error has occurred", error);
+        console.log('an error has occurred', error);
       },
       () => {
         this.setCurrentStoryPosition();
@@ -56,15 +56,14 @@ export class DashboardComponent implements OnInit {
   }
 
   setCurrentStoryPosition() {
-    this.narrativeSubscription =
-      this.storyService.currentStoryPosition$.subscribe(
-        (res: number) => {
-          this.narrativePosition = res;
-        },
-        (error: Error) => {
-          console.warn(error);
-        }
-      );
+    this.narrativeSubscription = this.storyService.currentStoryPosition$.subscribe(
+      (res: number) => {
+        this.narrativePosition = res;
+      },
+      (error: Error) => {
+        console.warn(error);
+      }
+    );
   }
 
   /* an action a reader has decide to pick */
@@ -77,8 +76,7 @@ export class DashboardComponent implements OnInit {
 
   /* set or update the current story options the reader can decide on picking */
   updateStory(): void {
-    let narrative: MockStoryStructure[] | null =
-      this.storyService.fullNarrative.getValue();
+    let narrative: MockStoryStructure[] | null = this.storyService.fullNarrative.getValue();
     if (this.narrativePosition && narrative) {
       // this.decisions = narrative[this.narrativePosition].options.decisions;
       // this.summaries = narrative[this.narrativePosition].options.summary;
@@ -88,8 +86,7 @@ export class DashboardComponent implements OnInit {
   }
 
   setDialogue(): void {
-    let narrative: MockStoryStructure[] | null =
-      this.storyService.fullNarrative.getValue();
+    let narrative: MockStoryStructure[] | null = this.storyService.fullNarrative.getValue();
     if (this.narrativePosition && narrative) {
       this.narrative = narrative[this.narrativePosition].story;
       this.title = narrative[this.narrativePosition].title;

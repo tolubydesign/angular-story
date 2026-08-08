@@ -9,16 +9,19 @@ import { LoginComponent } from '@pages/login/login.component';
 import { MainComponent } from '@pages/main/main.component';
 import { routeGuard } from '@core/guard/route.guard';
 import { HomeComponent } from '@pages/home/home.component';
+import { AboutComponent } from '@pages/about/about.component';
 
 export const routes: Routes = [
   { path: '', title: 'Home', component: HomeComponent, pathMatch: 'full' },
   { path: 'register', title: 'Register Account', component: RegisterComponent },
   { path: 'login', title: 'Login', component: LoginComponent },
+  { path: 'about', title: 'About', component: AboutComponent },
   { path: 'main', title: 'Main', component: MainComponent, canActivate: [routeGuard] },
-  { path: 'about', redirectTo: '404' },
+
   // Work pagers
-  { path: 'editor', title: 'Editor', component: EditorComponent, canActivate: [routeGuard] },
-  { path: 'editor/:id', title: 'Interaction With ', component: EditingComponent, canActivate: [routeGuard] },
+  // NOTE: Possibly Deprecated below
+  // { path: 'editor', title: 'Editor', component: EditorComponent, canActivate: [routeGuard] },
+  { path: 'editor/:id', title: 'Editor', component: EditingComponent, canActivate: [routeGuard] },
   { path: 'interact', title: 'Interaction', component: InteractionComponent, canActivate: [routeGuard] },
   { path: 'interact/:id', component: InteractionDashboardComponent, canActivate: [routeGuard] },
   // 404 must be last
@@ -28,10 +31,12 @@ export const routes: Routes = [
 
 // setup condition when navigation bar should be hidden
 // Only show side navigation when page has canActivate. Has routing guard protecting it.
-const noNavigationSideBarRoutes = routes.map<string>((route: Route) => {
-  if (route.canActivate) return "";
-  return `/${route.path}`;
-}).filter((r: string) => r.length > 0)
+const noNavigationSideBarRoutes = routes
+  .map<string>((route: Route) => {
+    if (route.canActivate) return '';
+    return `/${route.path}`;
+  })
+  .filter((r: string) => r.length > 0);
 
 export const invalidNavigationSideBarRoutes: string[] = noNavigationSideBarRoutes;
 export const invalidMiniFooterRoutes: string[] = noNavigationSideBarRoutes;

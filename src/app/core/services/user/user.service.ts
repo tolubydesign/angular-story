@@ -51,7 +51,7 @@ export class UserService {
           username: response.data.username,
           token: response.data.token,
           email: response.data.email,
-          role: response.data.role,
+          id: response.data.id,
         })
         return response
       }));
@@ -79,7 +79,7 @@ export class UserService {
           username: response.data.username,
           token: response.data.token,
           email: response.data.email,
-          role: response.data.role,
+          id: response.data.id,
         })
         return response
       }));

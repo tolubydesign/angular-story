@@ -1,11 +1,11 @@
 import { ApplicationConfig, Injectable } from '@angular/core';
 import { RouterStateSnapshot, TitleStrategy, provideRouter } from '@angular/router';
 import { routes } from '@app/app.routes';
-import { Title, provideClientHydration } from '@angular/platform-browser';
+import { Title, provideClientHydration, withNoIncrementalHydration } from '@angular/platform-browser';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class TemplatePageTitleStrategy extends TitleStrategy {
   constructor(private readonly title: Title) {
     super();
@@ -21,10 +21,10 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    {provide: TitleStrategy, useClass: TemplatePageTitleStrategy},
-    provideClientHydration(),
+    { provide: TitleStrategy, useClass: TemplatePageTitleStrategy },
+    provideClientHydration(withNoIncrementalHydration()),
     // importProvidersFrom(AppRoutingModule),
     provideHttpClient(withFetch()),
     provideAnimationsAsync(),
-  ]
+  ],
 };

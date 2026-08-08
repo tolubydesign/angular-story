@@ -2,7 +2,6 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
@@ -14,60 +13,26 @@
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
     "module": "es2020",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
     "paths": {
-      "@/*": [
-        "*"
-      ],
-      "@data/*": [
-        "src/assets/data/*"
-      ],
-      "@services/*": [
-        "src/app/core/services/*"
-      ],
-      "@models/*": [
-        "src/app/shared/models/*"
-      ],
-      "@assets/*": [
-        "src/assets/*"
-      ],
-      "@shared/*": [
-        "src/app/shared/*"
-      ],
-      "@components/*": [
-        "src/app/shared/components/*"
-      ],
-      "@misc/*": [
-        "src/app/shared/misc/*"
-      ],
-      "@icons/*": [
-        "src/app/shared/icons/*"
-      ],
-      "@helpers/*": [
-        "src/app/shared/helpers/*"
-      ],
-      "@lib/*": [
-        "src/app/shared/lib/*"
-      ],
-      "@environment/*": [
-        "src/environments/*"
-      ],
-      "@pages/*": [
-        "src/app/pages/*"
-      ],
-      "@core/*": [
-        "src/app/core/*"
-      ],
-      "@app/*": [
-        "src/app/*"
-      ],
+      "@/*": ["./*"],
+      "@data/*": ["./src/assets/data/*"],
+      "@services/*": ["./src/app/core/services/*"], 
+      "@models/*": ["./src/app/shared/models/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@shared/*": ["./src/app/shared/*"],
+      "@components/*": ["./src/app/shared/components/*"],
+      "@misc/*": ["./src/app/shared/misc/*"],
+      "@icons/*": ["./src/app/shared/icons/*"],
+      "@helpers/*": ["./src/app/shared/helpers/*"],
+      "@lib/*": ["./src/app/shared/lib/*"],
+      "@environment/*": ["./src/environments/*"],
+      "@pages/*": ["./src/app/pages/*"],
+      "@core/*": ["./src/app/core/*"],
+      "@app/*": ["./src/app/*"]
     },
     "useDefineForClassFields": false
   },
@@ -75,6 +40,7 @@
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictTemplates": true
+    "strictTemplates": true,
+    "typeCheckHostBindings": false
   }
 }

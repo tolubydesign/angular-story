@@ -1,5 +1,5 @@
 // NOTE: component possibly deprecated
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { StoriesService } from '@services/stories.service';
 import { Subscription } from 'rxjs';
 import { Plot } from '@models/plot';
@@ -14,6 +14,7 @@ import { HTTPSuccessResponse } from '@models/http.model';
   imports: [OptionalSelectionCardComponent, RouterLink, RouterModule, RouterLinkActive, MatButtonModule, MatDividerModule, MatIconModule],
   selector: 'app-editor',
   templateUrl: './editor.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./editor.component.scss'],
 })
 export class EditorComponent implements OnInit {

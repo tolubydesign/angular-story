@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { Plot, PlotContent } from '@models/plot';
 import { falsy } from '@models/tree.model';
 import StoryBoard from '@lib/board';
@@ -6,13 +6,13 @@ import { Router } from '@angular/router';
 import { NotificationService } from '@services/notification.service';
 import { MatCard, MatCardContent, MatCardSubtitle, MatCardTitle } from '@angular/material/card';
 import { RouterModule } from '@angular/router';
-import { NgFor, NgForOf, NgIf } from '@angular/common';
 
 @Component({
-    imports: [MatCardTitle, MatCard, MatCardSubtitle, MatCardContent, RouterModule, NgIf, NgFor, NgForOf],
-    selector: 'app-story-board',
-    templateUrl: './story-board.component.html',
-    styleUrls: ['./story-board.component.scss']
+  imports: [MatCardTitle, MatCard, MatCardSubtitle, MatCardContent, RouterModule],
+  selector: 'app-story-board',
+  templateUrl: './story-board.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./story-board.component.scss'],
 })
 export class StoryBoardComponent implements OnInit {
   @Input() fullStory: Plot | falsy = undefined;
@@ -23,12 +23,9 @@ export class StoryBoardComponent implements OnInit {
   title: string = '';
   optionalSelection: PlotContent[] = [];
   narrative: PlotContent | undefined;
-  level: number = 0
+  level: number = 0;
 
-  constructor(
-    private router: Router,
-    private notificationService: NotificationService,
-  ) { }
+  constructor(private router: Router, private notificationService: NotificationService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     // Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
@@ -46,7 +43,7 @@ export class StoryBoardComponent implements OnInit {
       this.board = new StoryBoard(this.fullStory);
     }
 
-    if (!this.board) return this.notificationService.notifyUser("Initialization of board was unsuccessful.");
+    if (!this.board) return this.notificationService.notifyUser('Initialization of board was unsuccessful.');
 
     // Assign title and description
     this.title = this.board.title;
@@ -60,19 +57,19 @@ export class StoryBoardComponent implements OnInit {
       ['state', this.board.state],
     ]);
 
-    (this.narrative) ? this.updateBoard(this.narrative) : new Error('Story Board state cant be updated.');
+    this.narrative ? this.updateBoard(this.narrative) : new Error('Story Board state cant be updated.');
   }
 
   selectionOption(option: PlotContent) {
-    this.updateBoard(option)
+    this.updateBoard(option);
   }
 
   updateBoard(option: PlotContent): Error | undefined {
-    if (!this.board) return new Error('Error. Attempted to update Story Board. Cant find board.')
-    const { state, level }: { state: any, level: any } = this.board.SelectOption(option);
+    if (!this.board) return new Error('Error. Attempted to update Story Board. Cant find board.');
+    const { state, level }: { state: any; level: any } = this.board.SelectOption(option);
     this.narrative = state;
     this.level = level;
-    return
+    return;
   }
 
   reload(): void {
@@ -80,8 +77,7 @@ export class StoryBoardComponent implements OnInit {
       this.board = new StoryBoard(this.fullStory);
       this.selectionOption(this.fullStory.content);
     } else {
-      new Error('Story not fund.')
+      new Error('Story not fund.');
     }
   }
-
 }

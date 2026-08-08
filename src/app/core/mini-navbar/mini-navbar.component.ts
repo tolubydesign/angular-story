@@ -1,13 +1,13 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { UserService } from '@services/user/user.service';
 
 @Component({
   selector: 'app-mini-navbar',
-  imports: [RouterLink, RouterModule, CommonModule, MatButtonModule],
+  imports: [RouterLink, RouterModule, MatButtonModule],
   templateUrl: './mini-navbar.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './mini-navbar.component.scss',
 })
 export class MiniNavbarComponent implements OnInit {

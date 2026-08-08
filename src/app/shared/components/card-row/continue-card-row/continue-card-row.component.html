@@ -4,10 +4,12 @@
     <p class="text-sm font-medium text-[#413F5A]">Continue with the stories you were busy with.</p>
   </div>
   <div class="continue-display-card--content flex flex-wrap gap-4" >
-    <app-summary-display-card  *ngFor="let item of content()"
-      [contentType]="'continuation'"
-      [description]="item.description"
-      [title]="item.title"
-    ></app-summary-display-card>
+    @for (item of content(); track item) {
+      <app-summary-display-card
+        [contentType]="'continuation'"
+        [description]="item.description"
+        [title]="item.title"
+      ></app-summary-display-card>
+    }
   </div>
 </section>

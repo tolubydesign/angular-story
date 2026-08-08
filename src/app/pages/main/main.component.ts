@@ -1,5 +1,4 @@
-import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { RouterModule } from '@angular/router';
 import { WelcomeMatComponent } from '@components/welcome-mat/welcome-mat.component';
@@ -11,8 +10,9 @@ import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-main',
-  imports: [MatCardModule, CommonModule, RouterModule, WelcomeMatComponent, ContinueCardRowComponent, DraftCardRowComponent],
+  imports: [MatCardModule, RouterModule, WelcomeMatComponent, ContinueCardRowComponent, DraftCardRowComponent],
   templateUrl: './main.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './main.component.scss',
 })
 export class MainComponent {
@@ -35,7 +35,5 @@ export class MainComponent {
     this._UserActivities?.unsubscribe();
   }
 
-  requestContent() {
-    
-  }
+  requestContent() {}
 }

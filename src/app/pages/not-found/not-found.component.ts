@@ -1,16 +1,14 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-    imports: [CommonModule],
-    selector: 'app-not-found',
-    templateUrl: './not-found.component.html',
-    styleUrls: ['./not-found.component.scss']
+  imports: [],
+  selector: 'app-not-found',
+  templateUrl: './not-found.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./not-found.component.scss'],
 })
 export class NotFoundComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 }

@@ -1,16 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-    imports: [],
-    selector: 'app-loader',
-    templateUrl: './loader.component.html',
-    styleUrls: ['./loader.component.scss']
+  imports: [],
+  selector: 'app-loader',
+  templateUrl: './loader.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./loader.component.scss'],
 })
 export class LoaderComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

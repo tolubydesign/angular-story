@@ -1,35 +1,28 @@
-import { PlotService } from "@services/plot/plot.service";
-import { Component, OnInit } from "@angular/core";
-import { Router, RouterLink, RouterLinkActive, RouterModule } from "@angular/router";
-import { Subscription } from "rxjs";
-import { Plot } from "@models/plot";
-import { StoriesService } from "@services/stories.service";
-import { OptionalSelectionCardComponent } from "@shared/components/ui/optional-selection-card/optional-selection-card.component";
-import { CommonModule } from "@angular/common";
-import { MatIconModule } from "@angular/material/icon";
-import { MatDividerModule } from "@angular/material/divider";
-import { MatButtonModule } from "@angular/material/button";
-import { HTTPSuccessResponse } from "@models/http.model";
+import { PlotService } from '@services/plot/plot.service';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { Plot } from '@models/plot';
+import { StoriesService } from '@services/stories.service';
+import { OptionalSelectionCardComponent } from '@shared/components/ui/optional-selection-card/optional-selection-card.component';
+
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatButtonModule } from '@angular/material/button';
+import { HTTPSuccessResponse } from '@models/http.model';
 
 @Component({
-    imports: [
-        OptionalSelectionCardComponent,
-        RouterLink, RouterModule, CommonModule, RouterLinkActive,
-        MatButtonModule, MatDividerModule, MatIconModule
-    ],
-    selector: "app-interaction",
-    templateUrl: "./interaction.component.html",
-    styleUrls: ["./interaction.component.scss"]
+  imports: [OptionalSelectionCardComponent, RouterLink, RouterModule, RouterLinkActive, MatButtonModule, MatDividerModule, MatIconModule],
+  selector: 'app-interaction',
+  templateUrl: './interaction.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./interaction.component.scss'],
 })
 export class InteractionComponent implements OnInit {
   private _FetchStoriesSubscription?: Subscription;
   stories: Plot[] = [];
 
-  constructor(
-    private plotService: PlotService,
-    private router: Router,
-    private storiesService: StoriesService,
-  ) { }
+  constructor(private plotService: PlotService, private router: Router, private storiesService: StoriesService) {}
 
   ngOnInit(): void {
     this.fetchStoriesContent();
@@ -41,14 +34,13 @@ export class InteractionComponent implements OnInit {
   }
 
   fetchStoriesContent(): void {
-    this._FetchStoriesSubscription = this.storiesService.fetchAllStories()
-      .subscribe((response: HTTPSuccessResponse<Plot[]>) => {
-        this.stories = response.data
-      })
+    this._FetchStoriesSubscription = this.storiesService.fetchAllStories().subscribe((response: HTTPSuccessResponse<Plot[]>) => {
+      this.stories = response.data;
+    });
   }
 
   /**
-   * @description Story interaction button. 
+   * @description Story interaction button.
    * @param id ID of user selected narrative.
    */
   interact(id: string) {
